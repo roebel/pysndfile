@@ -343,8 +343,8 @@ _commands_to_id_tuple = (
     )
     
 
-command_name_to_id = dict(_commands_to_id_tuple)
-command_id_to_name = dict([(id, com) for com, id in _commands_to_id_tuple])
+commands_name_to_id = dict(_commands_to_id_tuple)
+commands_id_to_name = dict([(id, com) for com, id in _commands_to_id_tuple])
 
 def get_sndfile_version():
     """
@@ -368,19 +368,6 @@ def get_sndfile_version():
         micro, prerelease = micro.split('pre')
 
     return int(major), int(minor), int(micro), prerelease
-
-
-def get_sndfile_formats():
-    """Return lists of available file formats supported by libsndfile and pysndfile."""
-    fmt = []
-    for i in get_sndfile_formats():
-        # Handle the case where libsndfile supports a format we don't
-        if not i in fileformat_id_to_name:
-            warnings.warn("Format {0:x} supported by libsndfile but not "
-                          "yet supported by PySndfile".format(i & SF_FORMAT_TYPEMASK))
-        else:
-            fmt.append(fileformat_id_to_name[i & SF_FORMAT_TYPEMASK])
-    return fmt
 
 
 def get_sndfile_encodings(major):
@@ -434,7 +421,7 @@ cdef get_sub_formats_for_major(int major):
 
     return subs
 
-def get_sndfile_formats():
+cdef get_sndfile_formats_from_libsndfile():
     """
         retrieve list of major format ids
     """
@@ -452,6 +439,17 @@ def get_sndfile_formats():
 
     return majors
 
+def get_sndfile_formats():
+    """Return lists of available file formats supported by libsndfile and pysndfile."""
+    fmt = []
+    for i in get_sndfile_formats_from_libsndfile():
+        # Handle the case where libsndfile supports a format we don't
+        if not i in fileformat_id_to_name:
+            warnings.warn("Format {0:x} supported by libsndfile but not "
+                          "yet supported by PySndfile".format(i & SF_FORMAT_TYPEMASK))
+        else:
+            fmt.append(fileformat_id_to_name[i & SF_FORMAT_TYPEMASK])
+    return fmt
 
 cdef class PySndfile:
     """\
@@ -476,12 +474,49 @@ cdef class PySndfile:
 
     Returns
     -------
-        sndfile: as Sndfile instance.
+        PySndfile instance.
 
+    Methods
+    -------
+        format() return raw format specification from sndfile 
+        major_format_str() return string representation of major format (e.g. aiff)
+        encoding_str()     return string representation of encoding (e.g. pcm16)
+        channels()         return number of channels of sndfile
+        nframes()          return number for frames (number of samples per channel)
+        samplerate()       return samplerate
+        seekable()         return true for soundfiles that support seeking
+
+        read_frames(self, sf_count_t nframes=-1, dtype=np.float64):
+            read samples from soundfile returing numpy array of given type with channel data
+            in the columns. 
+
+        write_frames(np.ndarray input) :
+            write data in input array into soundfile. samples of the different channels should be placed into the columns
+            writing is most efficient if the the array is stored in ro major format
+            
+        seek(sf_count_t offset, int whence=SEEK_SET, mode='rw'):
+            put read write pointer to location that is specified by offset and whence.
+        rewind(mode='rw'):
+            put read/write/or both pointer to start of file
+        set_auto_clipping(arg = True) 
+            enable auto clipping when reading/writing samples from/to sndfile.
+            auto clipping is enabled by default.
+            auto clipping is required by libsndfile to properly handle scaling between sndfiles with pcm encoding
+            and float representation of the samples in numpy.
+            When auto clipping is set to on reading pcm data into a float vector and writing it back with libsndfile will reproduce 
+            the original samples. If auto clipping is off, samples will be changed slightly as soon as the amplitude is close to the
+            sample range because libsndfile applies slightly different scaling factors during read and write.
+            
+        writeSync() 
+           flush internal write buffers
+           
     Notes
     -----
+    the soundfile will be closed when the class is destroyed
+    
     format, channels and samplerate need to be given only in the write modes
     and for raw files."""
+
     cdef SndfileHandle *thisPtr
     cdef int fd
     cdef char* filename
@@ -524,7 +559,7 @@ cdef class PySndfile:
             self.filename = filename
 
         if self.thisPtr == NULL:
-            raise IOError("error while opening %s\n\t->%s" % (str(filename), self.thisPtr.strError()))
+            raise IOError("PySndfile::error while opening {0}\n\t->{1}".format(str(filename), self.thisPtr.strError()))
 
 
         self.set_auto_clipping(True)
@@ -684,8 +719,6 @@ cdef class PySndfile:
 
         input = np.require(input, requirements = 'C')
 
-        
-        # XXX: check for overflow ?
         if input.dtype == np.float64:
             if (self.thisPtr.format() & SF_FORMAT_SUBMASK) not in [SF_FORMAT_FLOAT, SF_FORMAT_DOUBLE]:
                 if (np.max(np.abs(input.flat)) > 1.) :
@@ -701,16 +734,28 @@ cdef class PySndfile:
         elif input.dtype == np.short:
             res = self.thisPtr.writef(<short*>input.data, nframes)
         else:
-            raise RuntimeError("type of input %s not understood" % str(input.dtype))
+            raise RuntimeError("type of input {0} not understood".format(str(input.dtype)))
 
         if not(res == nframes):
-            raise IOError("write %d frames, expected to write %d"
-                          % res, nframes)
+            raise IOError("write_frames::error::wrote {0:d} frames, expected to write {1:d}".format(res, nframes))
 
+        return res
+    
     def format(self) :
         if self.thisPtr:
             return self.thisPtr.format()
         return 0
+
+    def major_format_str(self) :
+        if self.thisPtr:
+            return fileformat_id_to_name[self.thisPtr.format() & SF_FORMAT_TYPEMASK]
+        return 0
+
+    def encoding_str(self) :
+        if self.thisPtr:
+            return encoding_id_to_name[self.thisPtr.format() & SF_FORMAT_SUBMASK]
+        return 0
+
     def channels(self) :
         if self.thisPtr:
             return self.thisPtr.channels()

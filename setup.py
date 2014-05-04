@@ -1,8 +1,14 @@
-import os
-import sys
-import numpy as np
-from numpy.distutils.core import setup, Extension
+#! /usr/bin/env python
+from ez_setup import use_setuptools
+use_setuptools()
+
+from setuptools import setup
+from numpy.distutils.core import Extension
 from distutils.command.build_ext import build_ext
+
+import subprocess
+import re
+import numpy as np
 
 ext_module = Extension("_pysndfile", ["_pysndfile.cpp"],
                         libraries = ["sndfile"],
@@ -10,13 +16,21 @@ ext_module = Extension("_pysndfile", ["_pysndfile.cpp"],
                         language="c++")
 
 def compiler_is_clang(comp) :
+    print "check for clang compiler ...",
     try:
         cc_output = subprocess.check_output(comp+['--version'],
                                             stderr = subprocess.STDOUT, shell=False)
-    except:
+    except Exception as ex:
+        print "no"
         return False
 
-    return re.search('clang', cc_output) is not None
+    ret = re.search('clang', cc_output) is not None
+    if ret :
+        print "yes"
+    else:
+        print "no"
+    return ret
+
 
 class build_ext_subclass( build_ext ):
     user_options = build_ext.user_options + [("sndfile-libdir=", None, "libdir for libsndfile"),
