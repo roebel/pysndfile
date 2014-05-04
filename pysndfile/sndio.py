@@ -1,11 +1,11 @@
-import pysndfile._pysndfile 
+import _pysndfile 
 import numpy as np
 
 def get_info(name) :
     """
     retrieve samplerate, encoding (str) and format informationfor sndfile name
     """
-    sf  = pysndfile._psysndfile.PySndfile(name)
+    sf  = _psysndfile.PySndfile(name)
     return sf.samplerate(), sf.encoding_str(), sf.major_format_str()
 
 def write(name, vec, rate=44100, format="aiff", enc='pcm16') :
@@ -15,12 +15,12 @@ def write(name, vec, rate=44100, format="aiff", enc='pcm16') :
     nchans = len(vec.shape)
     if nchans != 1 :
         nchans = vec.shape[1]
-    sf  = pysndfile._psysndfile.PySndfile(name, "w", format=pysndfile._psysndfile.construct_format(formt, enc)
+    sf  = _psysndfile.PySndfile(name, "w", format=_psysndfile.construct_format(formt, enc),
                                           channels = nchans, samplerate = rate)
     
     nf = sf.write_frames(vec)
 
-    if nf != vec.shape[0]
+    if nf != vec.shape[0]:
         raise IOError("sndio.write::error::writing of samples failed")
     return nf
 
@@ -38,7 +38,7 @@ def read(name, last=None, start=0) :
     returns subset of samples as specified by start and end arguments (Def all samples)
     normalizes samples to [-1,1] is norm argument is true
     """
-    sf  = pysndfile._psysndfile.PySndfile(name)
+    sf  = _psysndfile.PySndfile(name)
     enc = sf.encoding_str()
 
     nf = sf.seek(start, 0)

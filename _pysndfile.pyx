@@ -383,7 +383,7 @@ def get_sndfile_encodings(major):
     else:
         raise ValueError("PySndfile::File format {0} not known by PySndfile".format(str(major)))
     
-    if major not in get_sndfile_formats():
+    if major not in get_sndfile_formats_from_libsndfile():
         raise ValueError("PySndfile::File format {0}:{1:x} not supported by libsndfile".format(fileformat_id_to_name[major], major))
 
     enc = []
