@@ -1,6 +1,13 @@
 import pysndfile._pysndfile 
 import numpy as np
 
+def get_info(name) :
+    """
+    retrieve samplerate, encoding (str) and format informationfor sndfile name
+    """
+    sf  = pysndfile._psysndfile.PySndfile(name)
+    return sf.samplerate(), sf.encoding_str(), sf.major_format_str()
+
 def write(name, vec, rate=44100, format="aiff", enc='pcm16') :
     """
     Write datavector to aiff file using amplerate and encoding as specified
