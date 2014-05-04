@@ -1,6 +1,8 @@
-from _pysndfile import get_sndfile_version
-from _pysndfile import *
-import _pysndfile
+import numpy as np
+
+from pysndfile import get_sndfile_version
+from pysndfile import *
+import pysndfile
 
 print get_sndfile_version()
 
@@ -8,10 +10,10 @@ print get_sndfile_version()
 majors = get_sndfile_formats()
 print "majors", majors
 for mm in majors:
-    if mm in fileformat_id_to_name:
-        print "format {0:x}".format(mm), "->", fileformat_id_to_name[mm]
+    if mm in fileformat_name_to_id:
+        print "format {0:x}".format(fileformat_name_to_id[mm]), "->", mm
     else:
-        print "format {0:x}".format(mm), "-> not supported by pysndfile"
+        print "format {0}".format(mm), "-> not supported by pysndfile"
         
 print get_sndfile_encodings('wav')
 
@@ -40,7 +42,7 @@ b = PySndfile('test_2cC.wav', "w", a.format(), 2, a.samplerate())
 b.write_frames(np.require(ff2, requirements='C'))
 
 b = PySndfile('test_2cF.wav', "w", a.format(), 2, a.samplerate())
-b.write_frames(np.require(ff2, requirements='F')*2)
+b.write_frames(np.require(ff2, requirements='F'))
 del b
 
 b= PySndfile('test_2cF.wav')
@@ -52,7 +54,9 @@ if np.any (ff2 != bff):
     print 'error in test_2cF.wav'
     print "ff2", ff2
     print "bff", bff
-if np.any (ff2 != bfc):
+elif np.any (ff2 != bfc):
     print 'error in test_2cC.wav'
     print "ff2", ff2
     print "bfc", bfc
+else:
+    print "all seems ok"
