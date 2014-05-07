@@ -18,6 +18,11 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with pysndfile.  If not, see <http://www.gnu.org/licenses/>.
 #
+
+"""
+The Faiff module is no longer very useful, it simply calls the sndio implementation. Ii is preserved for backwards compatibility.
+"""
+
 import sndio 
 import numpy as np
 
@@ -27,12 +32,12 @@ def write(name, vec, rate=44100, enc='pcm16') :
     """
     return sndio.write(name, vec, rate=44100, enc='pcm16', format="aiff")
 
-def read(name, start=0, end=None, norm=False) :
+def read(name, start=0, end=None, dtype=np.float64) :
     """
-    Read samples from aiff file 
+    Read samples from aiff file (or any other fileformat support by pysndfile)
     return data, samplerate and encoding string
 
     returns subset of samples as specified by start and end arguments (Def all samples)
-    normalizes samples to [-1,1] is norm argument is true
+    normalizes samples to [-1,1] if the datatype is a floating point type
     """
-    return sndio.read(name, start, end, norm)
+    return sndio.read(name, start, end, dtype)

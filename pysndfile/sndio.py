@@ -18,14 +18,14 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with pysndfile.  If not, see <http://www.gnu.org/licenses/>.
 #
-import _pysndfile 
+from pysndfile import PySndfile, construct_format
 import numpy as np
 
 def get_info(name) :
     """
     retrieve samplerate, encoding (str) and format informationfor sndfile name
     """
-    sf  = _psysndfile.PySndfile(name)
+    sf  = PySndfile(name)
     return sf.samplerate(), sf.encoding_str(), sf.major_format_str()
 
 def write(name, vec, rate=44100, format="aiff", enc='pcm16') :
@@ -35,8 +35,9 @@ def write(name, vec, rate=44100, format="aiff", enc='pcm16') :
     nchans = len(vec.shape)
     if nchans != 1 :
         nchans = vec.shape[1]
-    sf  = _psysndfile.PySndfile(name, "w", format=_psysndfile.construct_format(formt, enc),
-                                          channels = nchans, samplerate = rate)
+    sf  = PySndfile(name, "w",
+                    format=construct_format(formt, enc),
+                    channels = nchans, samplerate = rate)
     
     nf = sf.write_frames(vec)
 
@@ -51,14 +52,14 @@ enc_norm_map = {
     "pcm32": np.float64(2**31),
     }
     
-def read(name, last=None, start=0) :
+def read(name, end=None, start=0, dtype=np.float64) :
     """read samples from arbitrary sound files.
     return data, samplerate and encoding string
 
     returns subset of samples as specified by start and end arguments (Def all samples)
-    normalizes samples to [-1,1] is norm argument is true
+    normalizes samples to [-1,1] if the datatype is a floating point type
     """
-    sf  = _psysndfile.PySndfile(name)
+    sf  = PySndfile(name)
     enc = sf.encoding_str()
 
     nf = sf.seek(start, 0)
@@ -66,14 +67,14 @@ def read(name, last=None, start=0) :
         raise IOError("sndio.read::error:: while seeking at starting position")
     
     if end == None:
-        ff = sf.read_frames(dtype=np.float64)
+        ff = sf.read_frames(dtype=dtype)
     else:
-        ff = sf.read_frames(end-start, dtype=np.float64)
+        ff = sf.read_frames(end-start, dtype=dtype)
         
-    if norm and (enc not in ["float32" , "float64"]) :
-        if enc in enc_norm_map :
-            ff = ff / enc_norm_map[sf.encoding_str()]
-        else :
-            raise IOError("sndio.read::error::normalization of compressed pcm data is not supported")
+    # if norm and (enc not in ["float32" , "float64"]) :
+    #     if enc in enc_norm_map :
+    #         ff = ff / enc_norm_map[sf.encoding_str()]
+    #     else :
+    #         raise IOError("sndio.read::error::normalization of compressed pcm data is not supported")
 
     return ff, sf.samplerate(), enc
