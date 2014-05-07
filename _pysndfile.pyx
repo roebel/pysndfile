@@ -1,4 +1,29 @@
+#
+# Copyright (C) 2014 IRCAM
+#
+# author: Axel Roebel
+# date  : 6.5.2014
+#
+# All rights reserved.
+#
+# This file is part of pysndfile.
+#
+# pysndfile is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# pysndfile is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with pysndfile.  If not, see <http://www.gnu.org/licenses/>.
+#
+
 # cython: embedsignature=True
+
 
 import numpy as np
 import warnings
@@ -8,7 +33,7 @@ cimport numpy as cnp
 cimport libc.string
 cimport libc.stdlib
 
-cdef extern from "sndfile.hh":
+cdef extern from "pysndfile.hh":
 
     cdef struct SF_FORMAT_INFO:
         int format
@@ -40,7 +65,7 @@ cdef extern from "sndfile.hh":
     cdef cppclass SndfileHandle :
         SNDFILE_ref *p
         SndfileHandle(const char *path, int mode, int format, int channels, int samplerate)
-        SndfileHandle(const int fh, int mode, int format, int channels, int samplerate)
+        SndfileHandle(const int fh, int close_desc, int mode, int format, int channels, int samplerate)
         sf_count_t frames()
         int format()
         int channels()
@@ -453,9 +478,10 @@ def get_sndfile_formats():
 
 cdef class PySndfile:
     """\
-    PySndfile is the core class to read/write audio files. Once an instance is
-    created, it can be used to read and/or writes data from numpy arrays, query
-    the audio file meta-data, etc...
+    PySndfile is a python class for reading/writeing audio files.
+    PySndfile is proxy for the SndfileHandle class in sndfile.hh
+    Once an instance is created, it can be used to read and/or write
+    data from/to numpy arrays, query the audio file meta-data, etc...
 
     Parameters
     ----------
@@ -464,9 +490,9 @@ cdef class PySndfile:
     mode : string
         'r' for read, 'w' for write, or 'rw' for read and
         write.
-    format : Format
+    format : int
         Required when opening a new file for writing, or to read raw audio
-        files (without header).
+        files (without header). See function construct_format.
     channels : int
         number of channels.
     samplerate : int
@@ -547,7 +573,7 @@ cdef class PySndfile:
         self.fd = -1
         if isinstance(filename, int):
             fh = filename
-            self.thisPtr = new SndfileHandle(fh, sfmode, format, channels, samplerate)
+            self.thisPtr = new SndfileHandle(fh, 0, sfmode, format, channels, samplerate)
             self.filename = ""
             self.fd = filename
         else:
@@ -574,6 +600,8 @@ cdef class PySndfile:
         return self.thisPtr.command(command, NULL, arg);
 
     def set_auto_clipping( self, arg = True) :
+        if self.thisPtr == NULL or not self.thisPtr:
+            raise RuntimeError("PySndfile::error::no valid soundfilehandle")
         return self.thisPtr.command(SFC_SET_CLIPPING, NULL, arg);
              
     def writeSync(self):
@@ -582,10 +610,14 @@ cdef class PySndfile:
         file cache buffers to disk the file.
 
         No effect if file is open as read"""
+        if self.thisPtr == NULL or not self.thisPtr:
+            raise RuntimeError("PySndfile::error::no valid soundfilehandle")
         self.thisPtr.writeSync()
         
                   
     def __str__( self):
+        if self.thisPtr == NULL or not self.thisPtr:
+            return "invalid sndfile"
         repstr = ["----------------------------------------"]
         if not self.fd == -1:
             repstr += ["File        : %d (opened by file descriptor)" % self.fd]
@@ -620,6 +652,9 @@ cdef class PySndfile:
         One column per channel.
 
         """
+        if self.thisPtr == NULL or not self.thisPtr:
+            raise RuntimeError("PySndfile::error::no valid soundfilehandle")
+
         if nframes < 0 :
             nframes = self.thisPtr.frames()
         if dtype == np.float64:
@@ -701,6 +736,9 @@ cdef class PySndfile:
         cdef int nc
         cdef sf_count_t nframes
 
+        if self.thisPtr == NULL or not self.thisPtr:
+            raise RuntimeError("PySndfile::error::no valid soundfilehandle")
+        
         # First, get the number of channels and frames from input
         if input.ndim == 2:
             nc = input.shape[1]
@@ -742,36 +780,54 @@ cdef class PySndfile:
         return res
     
     def format(self) :
-        if self.thisPtr:
-            return self.thisPtr.format()
-        return 0
+        if self.thisPtr == NULL or not self.thisPtr:
+            raise RuntimeError("PySndfile::error::no valid soundfilehandle")
+        return self.thisPtr.format()
 
     def major_format_str(self) :
-        if self.thisPtr:
-            return fileformat_id_to_name[self.thisPtr.format() & SF_FORMAT_TYPEMASK]
-        return 0
+        if self.thisPtr == NULL or not self.thisPtr:
+            raise RuntimeError("PySndfile::error::no valid soundfilehandle")
+        return fileformat_id_to_name[self.thisPtr.format() & SF_FORMAT_TYPEMASK]
 
     def encoding_str(self) :
-        if self.thisPtr:
-            return encoding_id_to_name[self.thisPtr.format() & SF_FORMAT_SUBMASK]
-        return 0
+        if self.thisPtr == NULL or not self.thisPtr:
+            raise RuntimeError("PySndfile::error::no valid soundfilehandle")
+        return encoding_id_to_name[self.thisPtr.format() & SF_FORMAT_SUBMASK]
 
     def channels(self) :
-        if self.thisPtr:
-            return self.thisPtr.channels()
-        return 0
+        if self.thisPtr == NULL or not self.thisPtr:
+            raise RuntimeError("PySndfile::error::no valid soundfilehandle")
+        return self.thisPtr.channels()
+
     def frames(self) :
-        if self.thisPtr:
-            return self.thisPtr.frames()
-        return 0
+        if self.thisPtr == NULL or not self.thisPtr:
+            raise RuntimeError("PySndfile::error::no valid soundfilehandle")
+        return self.thisPtr.frames()
+
     def samplerate(self) :
-        if self.thisPtr:
-            return self.thisPtr.samplerate()
-        return 0
+        if self.thisPtr == NULL or not self.thisPtr:
+            raise RuntimeError("PySndfile::error::no valid soundfilehandle")
+        return self.thisPtr.samplerate()
+
     def seekable(self) :
-        if self.thisPtr:
-            return self.thisPtr.seekable()
-        return 0
+        if self.thisPtr == NULL or not self.thisPtr:
+            raise RuntimeError("PySndfile::error::no valid soundfilehandle")
+        return self.thisPtr.seekable()
+
+    def error(self) :
+        """
+        report error numbers related to the current sound file
+        """
+        if self.thisPtr == NULL or not self.thisPtr:
+            raise RuntimeError("PySndfile::error::no valid soundfilehandle")
+        return self.thisPtr.error()
+    def strError(self) :            
+        """
+        report error strings related  to the current sound file
+        """
+        if self.thisPtr == NULL or not self.thisPtr:
+            raise RuntimeError("PySndfile::error::no valid soundfilehandle")
+        return self.thisPtr.error()
 
     def seek(self, sf_count_t offset, int whence=SEEK_SET, mode='rw'):
         """\
@@ -805,6 +861,10 @@ cdef class PySndfile:
         if an invalid seek is given (beyond or before the file), an IOError is
         launched; note that this is different from the seek method of a File
         object."""
+
+        if self.thisPtr == NULL or not self.thisPtr:
+            raise RuntimeError("PySndfile::error::no valid soundfilehandle")
+
         cdef sf_count_t pos
         if mode == 'rw':
             # Update both read and write pointers
@@ -829,6 +889,9 @@ cdef class PySndfile:
         """
         cdef sf_count_t pos
         cdef int whence = SEEK_SET     
+
+        if self.thisPtr == NULL or not self.thisPtr:
+            raise RuntimeError("PySndfile::error::no valid soundfilehandle")
        
         if mode == 'rw':
             # Update both read and write pointers

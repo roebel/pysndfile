@@ -9,6 +9,7 @@ from distutils.command.build_ext import build_ext
 import subprocess
 import re
 import numpy as np
+import errno
 
 ext_module = Extension("_pysndfile", ["_pysndfile.cpp"],
                         libraries = ["sndfile"],
@@ -20,7 +21,8 @@ def compiler_is_clang(comp) :
     try:
         cc_output = subprocess.check_output(comp+['--version'],
                                             stderr = subprocess.STDOUT, shell=False)
-    except Exception as ex:
+    except OSError as ex:
+        print "compiler test call failed with error {0:d} msg: {1}".format(ex.errno, ex.strerror)
         print "no"
         return False
 
@@ -67,15 +69,19 @@ class build_ext_subclass( build_ext ):
         build_ext.build_extensions(self)
 
     
-setup( name = "pysndfile",
-       version = "0.1",
-       ext_package = 'pysndfile',
-       ext_modules = [ext_module],
-       author = "A. Roebel",
-       author_email = "axel.roebel@ircam.fr",
-       description = "Extension modules used for accessing sndfiles io based on libsndfile/sndfile.hh",
-       license = "Copyright IRCAM",
-       keywords = "",
-       cmdclass = {'build_ext': build_ext_subclass }, 
+setup(
+    name = "pysndfile",
+    version = "0.1",
+    # add all python files in pysndfile dir
+    packages = ["pysndfile"],
+    # put extension into pysndfile dir
+    ext_package = 'pysndfile',
+    ext_modules = [ext_module],
+    author = "A. Roebel",
+    author_email = "axel.roebel@ircam.fr",
+    description = "Extension modules used for accessing sndfiles io based on libsndfile/sndfile.hh",
+    license = "Copyright IRCAM",
+    keywords = "",
+    cmdclass = {'build_ext': build_ext_subclass }, 
     )
 
