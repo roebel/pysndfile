@@ -371,6 +371,9 @@ _commands_to_id_tuple = (
 commands_name_to_id = dict(_commands_to_id_tuple)
 commands_id_to_name = dict([(id, com) for com, id in _commands_to_id_tuple])
 
+def get_pysndfile_version():
+    return (0,2,0)
+
 def get_sndfile_version():
     """
     return a tuple of ints representing the version of the libsdnfile that is used
