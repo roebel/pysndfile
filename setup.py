@@ -9,7 +9,7 @@ import numpy as np
 import errno
 
 from setuptools import setup, Command
-from numpy.distutils.core import Extension
+from distutils.core import Extension
 from distutils.command.build_ext import build_ext
 
 ext_modules = [Extension("_pysndfile", ["_pysndfile.pyx"],
@@ -25,7 +25,8 @@ except ImportError  :
     print "cythonize not available use pre_cythonized source"
     shutil.copy2("_pysndfile_precythonized.cpp", "_pysndfile.cpp")
     ext_modules[0].sources[0] =  "_pysndfile.cpp"
-    
+
+# check clang compiler and disable warning
 def compiler_is_clang(comp) :
     print "check for clang compiler ...",
     try:
@@ -77,10 +78,15 @@ class build_ext_subclass( build_ext ):
             #    e.extra_link_args.append('-stdlib=libstdc++')
         build_ext.build_extensions(self)
 
+# get _pysndfile version number
+for line in open("_pysndfile.pyx") :
+    if "_pysndfile_version=" in line:
+        _pysndfile_version_str = re.split('[()]', line)[1].replace(',','.')
+        break
     
 setup(
     name = "pysndfile",
-    version = "0.1",
+    version = _pysndfile_version_str,
     # add all python files in pysndfile dir
     packages = ["pysndfile"],
     # put extension into pysndfile dir

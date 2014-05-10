@@ -33,6 +33,7 @@ cimport numpy as cnp
 cimport libc.string
 cimport libc.stdlib
 
+
 cdef extern from "pysndfile.hh":
 
     cdef struct SF_FORMAT_INFO:
@@ -371,8 +372,9 @@ _commands_to_id_tuple = (
 commands_name_to_id = dict(_commands_to_id_tuple)
 commands_id_to_name = dict([(id, com) for com, id in _commands_to_id_tuple])
 
+_pysndfile_version=(0,2,0)
 def get_pysndfile_version():
-    return (0,2,0)
+    return _pysndfile_version
 
 def get_sndfile_version():
     """
