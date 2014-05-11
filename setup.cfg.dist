@@ -1,0 +1,11 @@
+[egg_info]
+tag_build = 
+tag_date = 0
+tag_svn_revision = 0
+
+[build_ext]
+# set these if your libsndfile is installed in custom directories
+# alternatively use --sndfile-libdir= and --sndfile-incdir= 
+# command line options for build_ext
+#sndfile-libdir = /u/formes/share/packages/macports/lib
+#sndfile-incdir = /u/formes/share/packages/macports/include

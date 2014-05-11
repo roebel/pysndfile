@@ -2,20 +2,20 @@
 from ez_setup import use_setuptools
 use_setuptools()
 
+import os
 import shutil
 import subprocess
 import re
 import numpy as np
-import errno
 
-from setuptools import setup, Command
+from setuptools import setup
 from distutils.core import Extension
 from distutils.command.build_ext import build_ext
 from distutils.command.sdist import sdist 
 
 ext_modules = [Extension("_pysndfile", ["_pysndfile.pyx"],
                             libraries = ["sndfile"],
-                            include_dirs=[np.get_include()],
+                            include_dirs = [np.get_include()],
                             language="c++")]
 
 try :
@@ -49,7 +49,10 @@ class sdist_subclass(sdist) :
         # Make sure the compiled Cython files in the distribution are up-to-date
         from Cython.Build import cythonize
         cythonize(['_pysndfile.pyx'])
+        shutil.move("setup.cfg", "setup.cfg.default")
+        shutil.copy2("setup.cfg.dist", "setup.cfg")
         sdist.run(self)
+        shutil.move("setup.cfg.default", "setup.cfg")
 
 # sub class build_ext to handle build options for specification of libsndfile
 class build_ext_subclass( build_ext ):
@@ -57,12 +60,12 @@ class build_ext_subclass( build_ext ):
         ("sndfile-libdir=", None, "libdir for libsndfile"),
         ("sndfile-incdir=", None, "include for libsndfile")
         ]
+    fcompiler = None
+    sndfile_incdir = None
+    sndfile_libdir = None
         
     def initialize_options(self) :
         build_ext.initialize_options(self)
-        self.fcompiler = None
-        self.sndfile_incdir = None
-        self.sndfile_libdir = None
 
     def finalize_options(self) :
         build_ext.finalize_options(self)
@@ -90,7 +93,22 @@ for line in open("_pysndfile.pyx") :
     if "_pysndfile_version=" in line:
         _pysndfile_version_str = re.split('[()]', line)[1].replace(',','.')
         break
-    
+
+# Utility function to read the README file.
+# Used for the long_description.  It's nice, because now 1) we have a top level
+# README file and 2) it's easier to type in the README file than to put a raw
+# string in below ...
+def read_long_descr():
+    README_path     = os.path.join(os.path.dirname(__file__), 'README.txt')
+    LONG_DESCR_path = os.path.join(os.path.dirname(__file__), 'LONG_DESCR.txt')
+    if ((not os.path.exists(LONG_DESCR_path))
+        or os.path.getmtime(README_path) > os.path.getmtime(LONG_DESCR_path)):
+        try :
+            subprocess.check_call(["pandoc", "-f", "markdown", '-t', 'rst', '-o', 'LONG_DESCR.txt', 'README.txt'], shell=False)
+        except (OSError, subprocess.CalledProcessError) :
+            print "setup.py::error:: pandoc command failed. Cannot update LONG_DESCR.txt from modified README.txt"
+    return open(LONG_DESCR_path).read()
+
 setup(
     name = "pysndfile",
     version = _pysndfile_version_str,
@@ -100,9 +118,11 @@ setup(
     ext_package = 'pysndfile',
     ext_modules = ext_modules,
     author = "A. Roebel",
-    author_email = "axel.roebel@ircam.fr",
-    description = "Extension modules used for accessing sndfiles io based on libsndfile/sndfile.hh",
-    license = "Copyright IRCAM",
+    author_email = "axel [ dot ] roebel [ at ] ircam [ dot ] fr",
+    description = "pysndfile is a [http://cython.org/](cython) wrapper around [http://www.mega-nerd.com/libsndfile/](libsndfile)",
+    long_description = read_long_descr(),
+    license = "LGPL",
+    url = "http://forge.ircam.fr/p/pysndfile",
     keywords = "",
     cmdclass = {
         'build_ext': build_ext_subclass,
