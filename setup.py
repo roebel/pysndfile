@@ -11,6 +11,7 @@ import errno
 from setuptools import setup, Command
 from distutils.core import Extension
 from distutils.command.build_ext import build_ext
+from distutils.command.sdist import sdist 
 
 ext_modules = [Extension("_pysndfile", ["_pysndfile.pyx"],
                             libraries = ["sndfile"],
@@ -42,6 +43,13 @@ def compiler_is_clang(comp) :
     else:
         print "no"
     return ret
+
+class sdist_subclass(sdist) :
+    def run(self):
+        # Make sure the compiled Cython files in the distribution are up-to-date
+        from Cython.Build import cythonize
+        cythonize(['_pysndfile.pyx'])
+        sdist.run(self)
 
 # sub class build_ext to handle build options for specification of libsndfile
 class build_ext_subclass( build_ext ):
@@ -96,6 +104,9 @@ setup(
     description = "Extension modules used for accessing sndfiles io based on libsndfile/sndfile.hh",
     license = "Copyright IRCAM",
     keywords = "",
-    cmdclass = {'build_ext': build_ext_subclass }, 
+    cmdclass = {
+        'build_ext': build_ext_subclass,
+        'sdist'    : sdist_subclass,
+        }, 
     )
 
