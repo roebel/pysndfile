@@ -34,6 +34,11 @@ cimport libc.string
 cimport libc.stdlib
 
 
+_pysndfile_version=(0,2,1)
+def get_pysndfile_version():
+    return _pysndfile_version
+
+
 cdef extern from "pysndfile.hh":
 
     cdef struct SF_FORMAT_INFO:
@@ -53,18 +58,13 @@ cdef extern from "pysndfile.hh":
 
     cdef struct SNDFILE :
         pass
-    
-    cdef cppclass SNDFILE_ref :
-        SNDFILE *sf
-        SF_INFO sfinfo
-        int ref
          
     
     ctypedef SF_FORMAT_INFO SF_FORMAT_INFO
     cdef int sf_command(SNDFILE *sndfile, int command, void *data, int datasize)
     cdef int sf_format_check (const SF_INFO *info)
+    cdef char *sf_error_number(int errnum) 
     cdef cppclass SndfileHandle :
-        SNDFILE_ref *p
         SndfileHandle(const char *path, int mode, int format, int channels, int samplerate)
         SndfileHandle(const int fh, int close_desc, int mode, int format, int channels, int samplerate)
         sf_count_t frames()
@@ -77,14 +77,6 @@ cdef extern from "pysndfile.hh":
         int command (int cmd, void *data, int datasize)
         sf_count_t seek (sf_count_t frames, int whence)
         void writeSync () 
-        sf_count_t read (short *ptr, sf_count_t items) 
-        sf_count_t read (int *ptr, sf_count_t items) 
-        sf_count_t read (float *ptr, sf_count_t items) 
-        sf_count_t read (double *ptr, sf_count_t items)
-        sf_count_t write (const short *ptr, sf_count_t items) 
-        sf_count_t write (const int *ptr, sf_count_t items) 
-        sf_count_t write (const float *ptr, sf_count_t items) 
-        sf_count_t write (const double *ptr, sf_count_t items)
         sf_count_t readf (short *ptr, sf_count_t items) 
         sf_count_t readf (int *ptr, sf_count_t items) 
         sf_count_t readf (float *ptr, sf_count_t items) 
@@ -93,9 +85,10 @@ cdef extern from "pysndfile.hh":
         sf_count_t writef (const int *ptr, sf_count_t items) 
         sf_count_t writef (const float *ptr, sf_count_t items) 
         sf_count_t writef (const double *ptr, sf_count_t items)
+        SNDFILE* rawHandle()
+        int setString (int str_type, const char* str)
+        const char* getString (int str_type)
 
-    
-    
     cdef int SF_FORMAT_WAV = 0x010000    # /* Microsoft WAV format (little endian default). */
     cdef int SF_FORMAT_AIFF = 0x020000   # /* Apple/SGI AIFF format (big endian). */
     cdef int SF_FORMAT_AU   = 0x030000   # /* Sun/NeXT AU format (big endian). */
@@ -219,7 +212,16 @@ cdef extern from "pysndfile.hh":
     cdef int SF_STR_ARTIST  = 0x04
     cdef int SF_STR_COMMENT  = 0x05
     cdef int SF_STR_DATE  = 0x06
+    cdef int SF_STR_ALBUM = 0x07
+    cdef int SF_STR_LICENSE = 0x08
+    cdef int SF_STR_TRACKNUMBER = 0x09
+    cdef int SF_STR_GENRE = 0x10
 
+    # these are the only values retrieved from the header file. So we cannot
+    # try to write/get strings thatare not supported by the library we use.
+    int SF_STR_FIRST
+    int SF_STR_LAST
+    
     cdef int SF_FALSE  = 0
     cdef int SF_TRUE  = 1
 
@@ -276,7 +278,7 @@ encoding_name_to_id = dict(_encoding_id_tuple)
 encoding_id_to_name = dict([(id, enc) for enc, id in _encoding_id_tuple])
 
 _fileformat_id_tuple = (
-    ( 'wav' , SF_FORMAT_WAV),
+    ('wav' , SF_FORMAT_WAV),
     ('aiff' , SF_FORMAT_AIFF),
     ('au'   , SF_FORMAT_AU),
     ('raw'  , SF_FORMAT_RAW),
@@ -372,9 +374,25 @@ _commands_to_id_tuple = (
 commands_name_to_id = dict(_commands_to_id_tuple)
 commands_id_to_name = dict([(id, com) for com, id in _commands_to_id_tuple])
 
-_pysndfile_version=(0,2,0)
-def get_pysndfile_version():
-    return _pysndfile_version
+# define these by hand so we can use here all string types known for the
+# most recent libsndfile version. STrings will be filtered according to SF_STR_LAST
+
+_stringtype_to_id_tuple = (
+    ("SF_STR_TITLE", SF_STR_TITLE),
+    ("SF_STR_COPYRIGHT", SF_STR_COPYRIGHT),
+    ("SF_STR_SOFTWARE", SF_STR_SOFTWARE),
+    ("SF_STR_ARTIST", SF_STR_ARTIST),
+    ("SF_STR_COMMENT", SF_STR_COMMENT),
+    ("SF_STR_DATE", SF_STR_DATE),
+    ("SF_STR_ALBUM", SF_STR_ALBUM),
+    ("SF_STR_LICENSE", SF_STR_LICENSE),
+    ("SF_STR_TRACKNUMBER", SF_STR_TRACKNUMBER),
+    ("SF_STR_GENRE", SF_STR_GENRE),
+    )
+
+stringtype_name_to_id = dict(_stringtype_to_id_tuple[:SF_STR_LAST+1])
+stringtype_id_to_name = dict([(id, com) for com, id in _stringtype_to_id_tuple[:SF_STR_LAST+1]])
+
 
 def get_sndfile_version():
     """
@@ -582,25 +600,40 @@ cdef class PySndfile:
             self.filename = ""
             self.fd = filename
         else:
-            if filename[0] == "~" and len(filename) > 2:
+            if len(filename)> 2 and filename[0] == "~" and filename[1] == "/":
                 filename = os.path.join(libc.stdlib.getenv('HOME'),
                                         filename[2:])
             cfilename = filename
             self.thisPtr = new SndfileHandle(cfilename, sfmode, format, channels, samplerate)
             self.filename = filename
 
-        if self.thisPtr == NULL:
+        if self.thisPtr == NULL or self.thisPtr.rawHandle() == NULL:
             raise IOError("PySndfile::error while opening {0}\n\t->{1}".format(str(filename), self.thisPtr.strError()))
-
 
         self.set_auto_clipping(True)
 
     def __dealloc__(self):
         del self.thisPtr
-
-    def command(self, command, arg) :
+            
+    def command(self, command, arg=0) :
         """
         interface for passing commands via sf_command to underlying soundfile
+        using sf_command(this_sndfile, command, NULL, arg)
+        supported commands are
+        SFC_SET_NORM_FLOAT
+        SFC_SET_NORM_DOUBLE
+        SFC_GET_NORM_FLOAT
+        SFC_GET_NORM_DOUBLE
+        SFC_SET_SCALE_FLOAT_INT_READ
+        SFC_SET_SCALE_INT_FLOAT_WRITE
+        SFC_SET_ADD_PEAK_CHUNK
+        SFC_UPDATE_HEADER_NOW
+        SFC_SET_UPDATE_HEADER_AUTO
+        SFC_SET_CLIPPING (see set_auto_clipping)
+        SFC_GET_CLIPPING (see set_auto_clipping)
+        SFC_WAVEX_GET_AMBISONIC
+        SFC_WAVEX_SET_AMBISONIC
+        SFC_RAW_NEEDS_ENDSWAP
         """
         return self.thisPtr.command(command, NULL, arg);
 
@@ -818,6 +851,44 @@ cdef class PySndfile:
         if self.thisPtr == NULL or not self.thisPtr:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
         return self.thisPtr.seekable()
+
+    def get_strings(self) :
+        """
+        get all stringtypes from the sound file.
+        
+        see stringtype_name_top_id.keys() for the list of strings that are supported
+        by the libsndfile version you use.  
+        
+        """
+        cdef const char* string_value
+        if self.thisPtr == NULL or not self.thisPtr:
+            raise RuntimeError("PySndfile::error::no valid soundfilehandle")
+
+        str_dict = {}
+        for ii  in xrange(SF_STR_FIRST, SF_STR_LAST):
+            string_value = self.thisPtr.getString(ii)
+            if string_value != NULL:
+                str_dict [stringtype_id_to_name[ii]] = string_value
+                
+        return str_dict 
+
+
+    def set_string(self, stringtype_name, string) :
+        """
+        set one of the stringtypes to the strig given as argument.
+        If you try to write a stringtype that is not  supported byty the library
+        a RuntimeError will be raised
+        """
+        cdef int res = 0
+        
+        if self.thisPtr == NULL or not self.thisPtr:
+            raise RuntimeError("PySndfile::error::no valid soundfilehandle")
+        if stringtype_name not in stringtype_name_to_id :
+            raise RuntimeError("PySndfile::error::set_string called with an unsupported stringtype:{0}".format(stringtype_name))
+            
+        res = self.thisPtr.setString(stringtype_name_to_id[stringtype_name], string)
+        if res :
+            raise RuntimeError("PySndfile::error::setting string of type {0}\nerror messge is:{1}".format(stringtype_name, sf_error_number(res)))
 
     def error(self) :
         """
