@@ -635,7 +635,11 @@ cdef class PySndfile:
         SFC_WAVEX_SET_AMBISONIC
         SFC_RAW_NEEDS_ENDSWAP
         """
-        return self.thisPtr.command(command, NULL, arg);
+        if isinstance(command, str) :
+            return self.thisPtr.command(commands_name_to_id[command], NULL, arg)
+        # so we suppose it is an int
+        return self.thisPtr.command(command, NULL, arg)
+        
 
     def set_auto_clipping( self, arg = True) :
         if self.thisPtr == NULL or not self.thisPtr:
