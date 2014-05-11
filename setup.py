@@ -20,7 +20,6 @@ ext_modules = [Extension("_pysndfile", ["_pysndfile.pyx"],
 try :
     from Cython.Build import cythonize
     ext_modules = cythonize(ext_modules )
-    CYTHONIZE_DONE = True    
 except ImportError  :
     print "cythonize not available use pre_cythonized source"
     shutil.copy2("_pysndfile_precythonized.cpp", "_pysndfile.cpp")
