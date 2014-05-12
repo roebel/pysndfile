@@ -123,7 +123,7 @@ setup(
     long_description = read_long_descr(),
     license = "LGPL",
     url = "http://forge.ircam.fr/p/pysndfile",
-    keywords = "",
+    keywords = "soundfile,audiofile",
     cmdclass = {
         'build_ext': build_ext_subclass,
         'sdist'    : sdist_subclass,
