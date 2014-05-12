@@ -5,5 +5,4 @@ specify the library and include directories to be added to this search paths. Fo
 command line options --sndfile-libdir and --sndfile-incdir that are available for the build_ext command
 or specify these two parameters in the setup.cfg file.
 
-Besides the setup is pretty standard. Note, that the cython source _pysndfile.pyx will be compiled with cython only if cython is installed. If this is not the case it will use the cynthonized source available on _pysndfile_precythonized.cpp.
-
+Besides the setup is pretty standard. Note, that the cython source _pysndfile.pyx will be compiled with cython only if cython is installed.
