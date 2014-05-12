@@ -506,8 +506,8 @@ cdef class PySndfile:
     Once an instance is created, it can be used to read and/or write
     data from/to numpy arrays, query the audio file meta-data, etc...
 
-    Parameters
-    ----------
+    **Parameters**
+   
     filename : string or int
         name of the file to open (string), or file descriptor (integer)
     mode : string
@@ -521,50 +521,20 @@ cdef class PySndfile:
     samplerate : int
         sampling rate.
 
-    Returns
-    -------
-        PySndfile instance.
-
-    Methods
-    -------
-        format() return raw format specification from sndfile 
-        major_format_str() return string representation of major format (e.g. aiff)
-        encoding_str()     return string representation of encoding (e.g. pcm16)
-        channels()         return number of channels of sndfile
-        nframes()          return number for frames (number of samples per channel)
-        samplerate()       return samplerate
-        seekable()         return true for soundfiles that support seeking
-
-        read_frames(self, sf_count_t nframes=-1, dtype=np.float64):
-            read samples from soundfile returing numpy array of given type with channel data
-            in the columns. 
-
-        write_frames(np.ndarray input) :
-            write data in input array into soundfile. samples of the different channels should be placed into the columns
-            writing is most efficient if the the array is stored in ro major format
+    **Returns**
+   
+        valid PySndfile instance. An IOError exception is thrown if any error is
+        encountered. 
             
-        seek(sf_count_t offset, int whence=SEEK_SET, mode='rw'):
-            put read write pointer to location that is specified by offset and whence.
-        rewind(mode='rw'):
-            put read/write/or both pointer to start of file
-        set_auto_clipping(arg = True) 
-            enable auto clipping when reading/writing samples from/to sndfile.
-            auto clipping is enabled by default.
-            auto clipping is required by libsndfile to properly handle scaling between sndfiles with pcm encoding
-            and float representation of the samples in numpy.
-            When auto clipping is set to on reading pcm data into a float vector and writing it back with libsndfile will reproduce 
-            the original samples. If auto clipping is off, samples will be changed slightly as soon as the amplitude is close to the
-            sample range because libsndfile applies slightly different scaling factors during read and write.
-            
-        writeSync() 
-           flush internal write buffers
            
-    Notes
-    -----
-    the soundfile will be closed when the class is destroyed
-    
-    format, channels and samplerate need to be given only in the write modes
-    and for raw files."""
+    **Notes**
+
+      * the files will be opened with auto clipping set to True
+        see the member set_autoclipping for more information.
+      * the soundfile will be closed when the class is destroyed    
+      * format, channels and samplerate need to be given only
+        in the write modes and for raw files.
+    """
 
     cdef SndfileHandle *thisPtr
     cdef int fd
@@ -642,6 +612,15 @@ cdef class PySndfile:
         
 
     def set_auto_clipping( self, arg = True) :
+        """
+        enable auto clipping when reading/writing samples from/to sndfile.
+
+        auto clipping is enabled by default.
+        auto clipping is required by libsndfile to properly handle scaling between sndfiles with pcm encoding and float representation of the samples in numpy.
+        When auto clipping is set to on reading pcm data into a float vector and writing it back with libsndfile will reproduce 
+        the original samples. If auto clipping is off, samples will be changed slightly as soon as the amplitude is close to the
+        sample range because libsndfile applies slightly different scaling factors during read and write.
+        """
         if self.thisPtr == NULL or not self.thisPtr:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
         return self.thisPtr.command(SFC_SET_CLIPPING, NULL, arg);
@@ -822,36 +801,60 @@ cdef class PySndfile:
         return res
     
     def format(self) :
+        """
+        return raw format specification from sndfile 
+        """
         if self.thisPtr == NULL or not self.thisPtr:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
         return self.thisPtr.format()
 
     def major_format_str(self) :
+        """
+        return short string representation of major format (e.g. aiff)
+        see fileformat_name_to_id for a complete lst of fileformats
+
+        """
         if self.thisPtr == NULL or not self.thisPtr:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
         return fileformat_id_to_name[self.thisPtr.format() & SF_FORMAT_TYPEMASK]
 
     def encoding_str(self) :
+        """
+        return string representation of encoding (e.g. pcm16)
+        see encoding_name_to_id for a list of available encoding strings
+        """
         if self.thisPtr == NULL or not self.thisPtr:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
         return encoding_id_to_name[self.thisPtr.format() & SF_FORMAT_SUBMASK]
 
     def channels(self) :
+        """
+        return number of channels of sndfile
+        """
         if self.thisPtr == NULL or not self.thisPtr:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
         return self.thisPtr.channels()
 
     def frames(self) :
+        """
+        return number for frames (number of samples per channel)
+        """
         if self.thisPtr == NULL or not self.thisPtr:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
         return self.thisPtr.frames()
 
     def samplerate(self) :
+        """
+        return samplerate
+        """
         if self.thisPtr == NULL or not self.thisPtr:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
         return self.thisPtr.samplerate()
 
     def seekable(self) :
+        """
+        return true for soundfiles that support seeking
+        """
         if self.thisPtr == NULL or not self.thisPtr:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
         return self.thisPtr.seekable()
@@ -914,8 +917,8 @@ cdef class PySndfile:
         Seek into audio file: similar to python seek function, taking only in
         account audio data.
 
-        Parameters
-        ----------
+        **Parameters**
+
         offset : int
             the number of frames (eg two samples for stereo files) to move
             relatively to position set by whence.
@@ -928,13 +931,12 @@ cdef class PySndfile:
             write one is (this may of course make sense only if you open
             the file in a certain mode).
 
-        Returns
-        -------
+        **Returns**
+
         offset : int
             the number of frames from the beginning of the file
 
-        Notes
-        -----
+        **Notes**
 
         Offset relative to audio data: meta-data are ignored.
 
