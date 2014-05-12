@@ -119,7 +119,7 @@ setup(
     ext_modules = ext_modules,
     author = "A. Roebel",
     author_email = "axel [ dot ] roebel [ at ] ircam [ dot ] fr",
-    description = "PySndfile is a Cython wrapper class for reading/writing soundfiles using libsndfile",
+    description = "pysndfile provides PySndfile is a Cython wrapper class for reading/writing soundfiles using libsndfile",
     long_description = read_long_descr(),
     license = "LGPL",
     url = "http://forge.ircam.fr/p/pysndfile",
