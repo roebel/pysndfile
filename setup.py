@@ -100,11 +100,11 @@ for line in open("_pysndfile.pyx") :
 # string in below ...
 def read_long_descr():
     README_path     = os.path.join(os.path.dirname(__file__), 'README.txt')
-    LONG_DESCR_path = os.path.join(os.path.dirname(__file__), 'LONG_DESCR.txt')
+    LONG_DESCR_path = os.path.join(os.path.dirname(__file__), 'LONG_DESCR')
     if ((not os.path.exists(LONG_DESCR_path))
         or os.path.getmtime(README_path) > os.path.getmtime(LONG_DESCR_path)):
         try :
-            subprocess.check_call(["pandoc", "-f", "markdown", '-t', 'rst', '-o', 'LONG_DESCR.txt', 'README.txt'], shell=False)
+            subprocess.check_call(["pandoc", "-f", "markdown", '-t', 'rst', '-o', LONG_DESCR_path, README_path], shell=False)
         except (OSError, subprocess.CalledProcessError) :
             print "setup.py::error:: pandoc command failed. Cannot update LONG_DESCR.txt from modified README.txt"
     return open(LONG_DESCR_path).read()
@@ -119,7 +119,7 @@ setup(
     ext_modules = ext_modules,
     author = "A. Roebel",
     author_email = "axel [ dot ] roebel [ at ] ircam [ dot ] fr",
-    description = "pysndfile is a [http://cython.org/](cython) wrapper around [http://www.mega-nerd.com/libsndfile/](libsndfile)",
+    description = "PySndfile is a Cython wrapper class for reading/writing soundfiles using libsndfile",
     long_description = read_long_descr(),
     license = "LGPL",
     url = "http://forge.ircam.fr/p/pysndfile",
@@ -127,6 +127,16 @@ setup(
     cmdclass = {
         'build_ext': build_ext_subclass,
         'sdist'    : sdist_subclass,
-        }, 
+        },
+    classifiers = [
+        "Topic :: Multimedia :: Sound/Audio",
+        "Programming Language :: Python",
+        "Programming Language :: Cython",
+        "Development Status :: 4 - Beta",
+        "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
+        "Operating System :: MacOS :: MacOS X",
+        "Operating System :: POSIX :: Linux",
+        "Operating System :: Microsoft :: Windows",
+        ]
     )
 

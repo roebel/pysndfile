@@ -36,6 +36,9 @@ cimport libc.stdlib
 
 _pysndfile_version=(0,2,1)
 def get_pysndfile_version():
+    """
+    return tuple describing the version opf pysndfile
+    """
     return _pysndfile_version
 
 
@@ -301,6 +304,9 @@ _fileformat_id_tuple = (
     ('caf'  , SF_FORMAT_CAF),
     )
 
+"""
+dict containing major file format names as keys and the related ids as values
+"""
 fileformat_name_to_id = dict (_fileformat_id_tuple)
 fileformat_id_to_name = dict ([(id, format) for format, id in _fileformat_id_tuple])
 
@@ -420,7 +426,13 @@ def get_sndfile_version():
 
 def get_sndfile_encodings(major):
     """
-    Return lists of available encoding for the given major format.
+    Return lists of available encoding for the given sndfile format.
+
+    *Parameters*
+    
+       major sndfile format for that the list of available fomramst should
+             be returned. format should be specified as a string, using
+             one of the straings returned by :py:func:`get_sndfile_formats`
     """
 
     # make major an id
@@ -506,28 +518,32 @@ cdef class PySndfile:
     Once an instance is created, it can be used to read and/or write
     data from/to numpy arrays, query the audio file meta-data, etc...
 
-    **Parameters**
+    *Parameters*
    
-    filename : string or int
-        name of the file to open (string), or file descriptor (integer)
-    mode : string
-        'r' for read, 'w' for write, or 'rw' for read and
-        write.
-    format : int
-        Required when opening a new file for writing, or to read raw audio
-        files (without header). See function construct_format.
-    channels : int
-        number of channels.
-    samplerate : int
-        sampling rate.
+        filename: <string or int>
+            name of the file to open (string), or file descriptor (integer)
+            
+        mode: <string>
+            'r' for read, 'w' for write, or 'rw' for read and
+            write.
+            
+        format: <int>
+            Required when opening a new file for writing, or to read raw audio
+            files (without header). See function construct_format.
 
-    **Returns**
+        channels: <int>
+            number of channels.
+            
+        samplerate: <int>
+            sampling rate.
+
+    *Returns*
    
         valid PySndfile instance. An IOError exception is thrown if any error is
-        encountered. 
+        encountered in libsndfile. A ValueError exception is raised if the arguments are invalid. 
             
            
-    **Notes**
+    *Notes*
 
       * the files will be opened with auto clipping set to True
         see the member set_autoclipping for more information.
@@ -588,22 +604,29 @@ cdef class PySndfile:
     def command(self, command, arg=0) :
         """
         interface for passing commands via sf_command to underlying soundfile
-        using sf_command(this_sndfile, command, NULL, arg)
-        supported commands are
-        SFC_SET_NORM_FLOAT
-        SFC_SET_NORM_DOUBLE
-        SFC_GET_NORM_FLOAT
-        SFC_GET_NORM_DOUBLE
-        SFC_SET_SCALE_FLOAT_INT_READ
-        SFC_SET_SCALE_INT_FLOAT_WRITE
-        SFC_SET_ADD_PEAK_CHUNK
-        SFC_UPDATE_HEADER_NOW
-        SFC_SET_UPDATE_HEADER_AUTO
-        SFC_SET_CLIPPING (see set_auto_clipping)
-        SFC_GET_CLIPPING (see set_auto_clipping)
-        SFC_WAVEX_GET_AMBISONIC
-        SFC_WAVEX_SET_AMBISONIC
-        SFC_RAW_NEEDS_ENDSWAP
+        using sf_command(this_sndfile, command_id, NULL, arg)        
+
+        *Parameters*
+
+            command: <string or int>
+              libsndfile command macro to be used. They can be specified either as string using the command macros name, or the command id.
+
+              Supported commands are:
+        
+|                 SFC_SET_NORM_FLOAT
+|                 SFC_SET_NORM_DOUBLE
+|                 SFC_GET_NORM_FLOAT
+|                 SFC_GET_NORM_DOUBLE
+|                 SFC_SET_SCALE_FLOAT_INT_READ
+|                 SFC_SET_SCALE_INT_FLOAT_WRITE
+|                 SFC_SET_ADD_PEAK_CHUNK
+|                 SFC_UPDATE_HEADER_NOW
+|                 SFC_SET_UPDATE_HEADER_AUTO
+|                 SFC_SET_CLIPPING (see :py:func:`pysndfile.PySndfile.set_auto_clipping`)
+|                 SFC_GET_CLIPPING (see :py:func:`pysndfile.PySndfile.set_auto_clipping`)
+|                 SFC_WAVEX_GET_AMBISONIC
+|                 SFC_WAVEX_SET_AMBISONIC
+|                 SFC_RAW_NEEDS_ENDSWAP
         """
         if isinstance(command, str) :
             return self.thisPtr.command(commands_name_to_id[command], NULL, arg)
@@ -661,16 +684,15 @@ cdef class PySndfile:
         Read the given number of frames and put the data into a numpy array of
         the requested dtype.
 
-        Parameters
-        ----------
-        nframes : int
-            number of frames to read (default = -1 -> read all).
-        dtype : numpy dtype
-            dtype of the returned array containing read data (see note).
+        *Parameters*
+          nframes: <int>
+             number of frames to read (default = -1 -> read all).
+          dtype: <numpy dtype>
+             dtype of the returned array containing read data (see note).
 
-        Notes
-        -----
-        One column per channel.
+        *Notes*
+        
+          * One column per channel.
 
         """
         if self.thisPtr == NULL or not self.thisPtr:
@@ -740,20 +762,18 @@ cdef class PySndfile:
         """\
         write 1 or 2 dimensional array into sndfile.
 
-        Parameters
-        ----------
-        input : numpy array containing data to write.
+        *Parameters*
+           input: <numpy array>
+               containing data to write.
 
-        Notes
-        -----
-        One column per channel.
-
-        updates the write pointer.
-
-        if the input type is float, and the file encoding is an integer type,
-        you should make sure the input data are normalized normalized data
-        (that is in the range [-1..1] - which will corresponds to the maximum
-        range allowed by the integer bitwidth)."""
+        *Notes*
+          * One column per channel.
+          * updates the write pointer.
+          * if the input type is float, and the file encoding is an integer type,
+            you should make sure the input data are normalized normalized data
+            (that is in the range [-1..1] - which will corresponds to the maximum
+            range allowed by the integer bitwidth).
+        """
         cdef int nc
         cdef sf_count_t nframes
 
@@ -811,7 +831,7 @@ cdef class PySndfile:
     def major_format_str(self) :
         """
         return short string representation of major format (e.g. aiff)
-        see fileformat_name_to_id for a complete lst of fileformats
+        see :py:func:`pysndfile.get_sndfile_formats` for a complete lst of fileformats
 
         """
         if self.thisPtr == NULL or not self.thisPtr:
@@ -821,7 +841,8 @@ cdef class PySndfile:
     def encoding_str(self) :
         """
         return string representation of encoding (e.g. pcm16)
-        see encoding_name_to_id for a list of available encoding strings
+        see :py:func:`pysndfile.get_sndfile_encodings` for a list of
+        available encoding strings that are supported by a given sndfile format
         """
         if self.thisPtr == NULL or not self.thisPtr:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
@@ -917,32 +938,33 @@ cdef class PySndfile:
         Seek into audio file: similar to python seek function, taking only in
         account audio data.
 
-        **Parameters**
+        *Parameters*
 
-        offset : int
-            the number of frames (eg two samples for stereo files) to move
-            relatively to position set by whence.
-        whence : int
-            only 0 (beginning), 1 (current) and 2 (end of the file) are
-            valid.
-        mode : string
-            If set to 'rw', both read and write pointers are updated. If
-            'r' is given, only read pointer is updated, if 'w', only the
-            write one is (this may of course make sense only if you open
-            the file in a certain mode).
+            offset: <int>
+                the number of frames (eg two samples for stereo files) to move
+                relatively to position set by whence.
+            whence: <int>
+                only 0 (beginning), 1 (current) and 2 (end of the file) are
+                valid.
+            mode:  <string>
+                If set to 'rw', both read and write pointers are updated. If
+                'r' is given, only read pointer is updated, if 'w', only the
+                write one is (this may of course make sense only if you open
+                the file in a certain mode).
 
-        **Returns**
+        *Returns*
 
-        offset : int
-            the number of frames from the beginning of the file
+            :offset: int
+                the number of frames from the beginning of the file
 
-        **Notes**
+        *Notes*
 
-        Offset relative to audio data: meta-data are ignored.
+           * Offset relative to audio data: meta-data are ignored.
 
-        if an invalid seek is given (beyond or before the file), an IOError is
-        launched; note that this is different from the seek method of a File
-        object."""
+           * if an invalid seek is given (beyond or before the file), an IOError is
+             raised; note that this is different from the seek method of a File object.
+             
+        """
 
         if self.thisPtr == NULL or not self.thisPtr:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
