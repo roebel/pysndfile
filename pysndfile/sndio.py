@@ -30,13 +30,16 @@ def get_info(name) :
 
 def write(name, vec, rate=44100, format="aiff", enc='pcm16') :
     """
-    Write datavector to aiff file using amplerate and encoding as specified
+    Write datavector to sndfile using samplerate, format and encoding as specified
+    valid format strings are all the keys in the dict pysndfile.fileformat_name_to_id
+    valid encodings are those that are supported from the list of keys in pysndfile.encoding_name_to_id
+    by the selected format and 
     """
     nchans = len(vec.shape)
     if nchans != 1 :
         nchans = vec.shape[1]
     sf  = PySndfile(name, "w",
-                    format=construct_format(formt, enc),
+                    format=construct_format(format, enc),
                     channels = nchans, samplerate = rate)
     
     nf = sf.write_frames(vec)
