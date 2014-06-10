@@ -217,8 +217,6 @@ cdef extern from "pysndfile.hh":
     cdef int SF_STR_DATE  = 0x06
     cdef int SF_STR_ALBUM = 0x07
     cdef int SF_STR_LICENSE = 0x08
-    cdef int SF_STR_TRACKNUMBER = 0x09
-    cdef int SF_STR_GENRE = 0x10
 
     # these are the only values retrieved from the header file. So we cannot
     # try to write/get strings thatare not supported by the library we use.
@@ -244,7 +242,13 @@ cdef extern from "pysndfile.hh":
     cdef int SF_ERR_UNSUPPORTED_ENCODING  = 4
     
     cdef int SF_COUNT_MAX  = 0x7FFFFFFFFFFFFFFFLL
-            
+
+
+# these two come with more recent versions of libsndfile
+# to not break compilation they are defined outside sndfile.h
+cdef int SF_STR_TRACKNUMBER = 0x09
+cdef int SF_STR_GENRE = 0x10
+
 _encoding_id_tuple = (
     ('pcms8' , SF_FORMAT_PCM_S8),
     ('pcm16' , SF_FORMAT_PCM_16),
