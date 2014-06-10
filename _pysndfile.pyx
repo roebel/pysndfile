@@ -215,8 +215,6 @@ cdef extern from "pysndfile.hh":
     cdef int SF_STR_ARTIST  = 0x04
     cdef int SF_STR_COMMENT  = 0x05
     cdef int SF_STR_DATE  = 0x06
-    cdef int SF_STR_ALBUM = 0x07
-    cdef int SF_STR_LICENSE = 0x08
 
     # these are the only values retrieved from the header file. So we cannot
     # try to write/get strings thatare not supported by the library we use.
@@ -246,6 +244,8 @@ cdef extern from "pysndfile.hh":
 
 # these two come with more recent versions of libsndfile
 # to not break compilation they are defined outside sndfile.h
+cdef int SF_STR_ALBUM = 0x07
+cdef int SF_STR_LICENSE = 0x08
 cdef int SF_STR_TRACKNUMBER = 0x09
 cdef int SF_STR_GENRE = 0x10
 
