@@ -1,0 +1,21 @@
+Version_0.2.1 (2014-05-12)
+--------------------------
+
+2014-06-10 Axel Roebel (5b06fb8) :
+
+	* _pysndfile_precythonized.cpp:
+        update for 0.2.2.
+
+	* _pysndfile.pyx :
+        Increased version to 0.2.2.
+	don't use SF_STR_ALBUM and SF_STR_LICENSE from sndfile.h because this breaks compilation for older versions.
+        don't use SF_STR_TRACKNUMBER and SF_STR_GENRE from sndfile.h because this breaks compilation for older versions.
+
+	* pysndfile/sndio.py
+        Fixed documentation for write function.
+	Fixed typo in accessing function argument
+
+Version_0.2.1 (2014-05-12)
+--------------------------
+
+	Initial release
