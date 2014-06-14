@@ -38,7 +38,7 @@ def write(name, data, rate=44100, format="aiff", enc='pcm16') :
     nchans = len(data.shape)
     if nchans == 2 :
         nchans = data.shape[1]
-    elif nchans > 2:
+    elif nchans != 1:
         raise RuntimeError("error:sndio.write:can only be called with vectors or matrices ")
 
     sf  = PySndfile(name, "w",
