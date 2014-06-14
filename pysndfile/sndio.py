@@ -28,23 +28,26 @@ def get_info(name) :
     sf  = PySndfile(name)
     return sf.samplerate(), sf.encoding_str(), sf.major_format_str()
 
-def write(name, vec, rate=44100, format="aiff", enc='pcm16') :
+def write(name, data, rate=44100, format="aiff", enc='pcm16') :
     """
     Write datavector to sndfile using samplerate, format and encoding as specified
     valid format strings are all the keys in the dict pysndfile.fileformat_name_to_id
-    valid encodings are those that are supported from the list of keys in pysndfile.encoding_name_to_id
-    by the selected format and 
+    valid encodings are those that are supported by the selected format
+    from the list of keys in pysndfile.encoding_name_to_id.
     """
-    nchans = len(vec.shape)
-    if nchans != 1 :
-        nchans = vec.shape[1]
+    nchans = len(data.shape)
+    if nchans == 2 :
+        nchans = data.shape[1]
+    elif nchans > 2:
+        raise RuntimeError("error:sndio.write:can only be called with vectors or matrices ")
+
     sf  = PySndfile(name, "w",
                     format=construct_format(format, enc),
                     channels = nchans, samplerate = rate)
     
-    nf = sf.write_frames(vec)
+    nf = sf.write_frames(data)
 
-    if nf != vec.shape[0]:
+    if nf != data.shape[0]:
         raise IOError("sndio.write::error::writing of samples failed")
     return nf
 
