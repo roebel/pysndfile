@@ -1,4 +1,6 @@
 #! /usr/bin/env python
+from __future__ import print_function
+
 from ez_setup import use_setuptools
 use_setuptools()
 
