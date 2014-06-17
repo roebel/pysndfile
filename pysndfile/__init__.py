@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 #
 # Copyright (C) 2014 IRCAM
 #
@@ -18,10 +19,10 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with pysndfile.  If not, see <http://www.gnu.org/licenses/>.
 #
-from _pysndfile import PySndfile, get_pysndfile_version, get_sndfile_version, get_sndfile_formats, get_sndfile_encodings, construct_format, encoding_id_to_name, encoding_name_to_id, fileformat_name_to_id, fileformat_id_to_name, endian_name_to_id, endian_id_to_name, commands_name_to_id, commands_id_to_name, stringtype_name_to_id, stringtype_id_to_name
+from ._pysndfile import PySndfile, get_pysndfile_version, get_sndfile_version, get_sndfile_formats, get_sndfile_encodings, construct_format, encoding_id_to_name, encoding_name_to_id, fileformat_name_to_id, fileformat_id_to_name, endian_name_to_id, endian_id_to_name, commands_name_to_id, commands_id_to_name, stringtype_name_to_id, stringtype_id_to_name
 
-import sndio
-import Faiff
+from . import sndio
+from . import Faiff
 
 __all__ = [
     "PySndfile", "construct_format", "get_pysndfile_version", "get_sndfile_version",
