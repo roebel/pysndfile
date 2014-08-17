@@ -9,14 +9,14 @@ print(get_sndfile_version())
 
 
 majors = get_sndfile_formats()
-print("majors", majors)
+print( "majors", majors)
 for mm in majors:
     if mm in fileformat_name_to_id:
         print("format {0:x}".format(fileformat_name_to_id[mm]), "->", mm)
     else:
         print("format {0}".format(mm), "-> not supported by pysndfile")
         
-print get_sndfile_encodings('wav')
+print( get_sndfile_encodings('wav'))
 
 try:
     a = PySndfile('test1.wav')
