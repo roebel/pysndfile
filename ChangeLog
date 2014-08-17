@@ -1,3 +1,35 @@
+Version_0.2.3 (2014-08-17)
+--------------------------
+
+2014-08-17 Axel Roebel (c190cb0, b64354a) :
+	* pysndfile_test.py, setup.py :
+	Fixed small problems of py3 branch:
+        - Use print function syntax for a print statement that was not yet using it.
+        - Avoid newline in compiler detection message.
+
+2014-08-17 Axel Roebel (45f5ce9) :
+	* _pysndfile.pyx :
+        Updated version to 0.2.3.
+
+2014-08-17 Axel Roebel (e5926ab) :
+
+	* _pysndfile.pyx, pysndfile/Faiff.py, pysndfile/__init__.py,
+	* pysndfile_test.py, setup.py :
+
+        Merge branch 'py3' contributed by Eduardo Moguillansky for python
+	3 compatibility :
+
+	2014-06-17 Eduardo Moguillansky (aea7be1, e95e726) :
+        (github/py3, py3) import print_function for compatibility with 2.6
+setup.py
+
+        python 3 compatibility
+
+2014-06-14 Axel Roebel (a34234f, 6df94aa) :
+
+	* pysndfile/sndio.py :
+        Generate error message for too high dimensional input.
+
 Version_0.2.2 (2014-06-11)
 --------------------------
 
