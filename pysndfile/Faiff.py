@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 #
 # Copyright (C) 2014 IRCAM
 #
@@ -23,7 +24,7 @@
 The Faiff module is no longer very useful, it simply calls the sndio implementation. Ii is preserved for backwards compatibility.
 """
 
-import sndio 
+from . import sndio
 import numpy as np
 
 def write(name, vec, rate=44100, enc='pcm16') :

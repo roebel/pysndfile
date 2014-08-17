@@ -593,6 +593,8 @@ cdef class PySndfile:
             if len(filename)> 2 and filename[0] == "~" and filename[1] == "/":
                 filename = os.path.join(libc.stdlib.getenv('HOME'),
                                         filename[2:])
+            if isinstance(filename, unicode):
+                filename = filename.encode("UTF-8")
             cfilename = filename
             self.thisPtr = new SndfileHandle(cfilename, sfmode, format, channels, samplerate)
             self.filename = filename

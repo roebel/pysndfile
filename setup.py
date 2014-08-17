@@ -1,4 +1,6 @@
 #! /usr/bin/env python
+from __future__ import print_function
+
 from ez_setup import use_setuptools
 use_setuptools()
 
@@ -22,26 +24,26 @@ try :
     from Cython.Build import cythonize
     ext_modules = cythonize(ext_modules )
 except ImportError  :
-    print "cythonize not available use pre_cythonized source"
+    print("cythonize not available use pre_cythonized source")
     shutil.copy2("_pysndfile_precythonized.cpp", "_pysndfile.cpp")
     ext_modules[0].sources[0] =  "_pysndfile.cpp"
 
 # check clang compiler and disable warning
 def compiler_is_clang(comp) :
-    print "check for clang compiler ...",
+    print("check for clang compiler ...")
     try:
         cc_output = subprocess.check_output(comp+['--version'],
                                             stderr = subprocess.STDOUT, shell=False)
     except OSError as ex:
-        print "compiler test call failed with error {0:d} msg: {1}".format(ex.errno, ex.strerror)
-        print "no"
+        print("compiler test call failed with error {0:d} msg: {1}".format(ex.errno, ex.strerror))
+        print("no")
         return False
 
-    ret = re.search('clang', cc_output) is not None
+    ret = re.search(b"clang", cc_output) is not None
     if ret :
-        print "yes"
+        print("yes")
     else:
-        print "no"
+        print("no")
     return ret
 
 class sdist_subclass(sdist) :
@@ -77,9 +79,9 @@ class build_ext_subclass( build_ext ):
                 
     def build_extensions(self):
         #c = self.compiler.compiler_type
-        #print "compiler attr", self.compiler.__dict__
-        #print "compiler", self.compiler.compiler
-        #print "compiler is",c
+        #print("compiler attr", self.compiler.__dict__)
+        #print("compiler", self.compiler.compiler)
+        #print("compiler is",c)
         if compiler_is_clang(self.compiler.compiler):
             for e in self.extensions:
                 #e.extra_compile_args.append('-stdlib=libstdc++')
@@ -106,7 +108,7 @@ def read_long_descr():
         try :
             subprocess.check_call(["pandoc", "-f", "markdown", '-t', 'rst', '-o', LONG_DESCR_path, README_path], shell=False)
         except (OSError, subprocess.CalledProcessError) :
-            print "setup.py::error:: pandoc command failed. Cannot update LONG_DESCR.txt from modified README.txt"
+            print("setup.py::error:: pandoc command failed. Cannot update LONG_DESCR.txt from modified README.txt")
     return open(LONG_DESCR_path).read()
 
 setup(
