@@ -30,7 +30,7 @@ except ImportError  :
 
 # check clang compiler and disable warning
 def compiler_is_clang(comp) :
-    print("check for clang compiler ...")
+    print("check for clang compiler ... ", end="")
     try:
         cc_output = subprocess.check_output(comp+['--version'],
                                             stderr = subprocess.STDOUT, shell=False)
