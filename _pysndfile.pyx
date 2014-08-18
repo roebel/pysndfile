@@ -720,7 +720,7 @@ cdef class PySndfile:
             raise RuntimeError("Sorry, dtype %s not supported" % str(dtype))
 
         if y.shape[1] == 1:
-            y.reshape((y.shape[0],))
+            y.shape = (y.shape[0],)
         return y
 
     cdef read_frames_double(self, sf_count_t nframes):
