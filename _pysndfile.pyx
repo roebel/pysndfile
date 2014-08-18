@@ -720,15 +720,13 @@ cdef class PySndfile:
             raise RuntimeError("Sorry, dtype %s not supported" % str(dtype))
 
         if y.shape[1] == 1:
-            return y[:, 0]
+            y.reshape((y.shape[0],))
         return y
 
     cdef read_frames_double(self, sf_count_t nframes):
         cdef sf_count_t res
         cdef cnp.ndarray[cnp.float64_t, ndim=2] ty = np.empty((nframes, self.thisPtr.channels()),
                                                                 dtype=np.float64, order='C')
-
-        PyArray_ENABLEFLAGS(ty, cnp.NPY_OWNDATA)
 
         res = self.thisPtr.readf(<double*>ty.data, nframes)
         if not res == nframes:
@@ -740,7 +738,6 @@ cdef class PySndfile:
         # Use Fortran order to cope with interleaving
         cdef cnp.ndarray[cnp.float32_t, ndim=2] ty = np.empty((nframes, self.thisPtr.channels()),
                                                                 dtype=np.float32, order='C')
-        PyArray_ENABLEFLAGS(ty, cnp.NPY_OWNDATA)
 
         res = self.thisPtr.readf(<float*>ty.data, nframes)
         if not res == nframes:
@@ -753,7 +750,6 @@ cdef class PySndfile:
         cdef cnp.ndarray[cnp.int32_t, ndim=2] ty = np.empty((nframes, self.thisPtr.channels()),
                                                             dtype=np.int32, order='C')
 
-        PyArray_ENABLEFLAGS(ty, cnp.NPY_OWNDATA)
         res = self.thisPtr.readf(<int*>ty.data, nframes)
         if not res == nframes:
             raise RuntimeError("Asked %d frames, read %d" % (nframes, res))
@@ -765,7 +761,6 @@ cdef class PySndfile:
         cdef cnp.ndarray[cnp.int16_t, ndim=2] ty = np.empty((nframes, self.thisPtr.channels()),
                                                             dtype=np.short, order='C')
 
-        PyArray_ENABLEFLAGS(ty, cnp.NPY_OWNDATA)
         res = self.thisPtr.readf(<short*>ty.data, nframes)
         if not res == nframes:
             raise RuntimeError("Asked %d frames, read %d" % (nframes, res))
