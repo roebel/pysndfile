@@ -34,13 +34,15 @@ cimport libc.string
 cimport libc.stdlib
 
 
-_pysndfile_version=(0,2,3)
+_pysndfile_version=(0,2,4)
 def get_pysndfile_version():
     """
     return tuple describing the version opf pysndfile
     """
     return _pysndfile_version
 
+cdef extern from "numpy/arrayobject.h":
+    void PyArray_ENABLEFLAGS(cnp.ndarray arr, int flags)
 
 cdef extern from "pysndfile.hh":
 
@@ -726,6 +728,8 @@ cdef class PySndfile:
         cdef cnp.ndarray[cnp.float64_t, ndim=2] ty = np.empty((nframes, self.thisPtr.channels()),
                                                                 dtype=np.float64, order='C')
 
+        PyArray_ENABLEFLAGS(ty, cnp.NPY_OWNDATA)
+
         res = self.thisPtr.readf(<double*>ty.data, nframes)
         if not res == nframes:
             raise RuntimeError("Asked %d frames, read %d" % (nframes, res))
@@ -736,6 +740,7 @@ cdef class PySndfile:
         # Use Fortran order to cope with interleaving
         cdef cnp.ndarray[cnp.float32_t, ndim=2] ty = np.empty((nframes, self.thisPtr.channels()),
                                                                 dtype=np.float32, order='C')
+        PyArray_ENABLEFLAGS(ty, cnp.NPY_OWNDATA)
 
         res = self.thisPtr.readf(<float*>ty.data, nframes)
         if not res == nframes:
@@ -748,6 +753,7 @@ cdef class PySndfile:
         cdef cnp.ndarray[cnp.int32_t, ndim=2] ty = np.empty((nframes, self.thisPtr.channels()),
                                                             dtype=np.int32, order='C')
 
+        PyArray_ENABLEFLAGS(ty, cnp.NPY_OWNDATA)
         res = self.thisPtr.readf(<int*>ty.data, nframes)
         if not res == nframes:
             raise RuntimeError("Asked %d frames, read %d" % (nframes, res))
@@ -759,6 +765,7 @@ cdef class PySndfile:
         cdef cnp.ndarray[cnp.int16_t, ndim=2] ty = np.empty((nframes, self.thisPtr.channels()),
                                                             dtype=np.short, order='C')
 
+        PyArray_ENABLEFLAGS(ty, cnp.NPY_OWNDATA)
         res = self.thisPtr.readf(<short*>ty.data, nframes)
         if not res == nframes:
             raise RuntimeError("Asked %d frames, read %d" % (nframes, res))
