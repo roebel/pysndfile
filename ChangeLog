@@ -1,3 +1,19 @@
+Version_0.2.4 (2014-08-19)
+--------------------------
+
+2014-08-19 Axel Roebel (fa687dc, 58e5970, 5d42be2) :
+	* _pysndfile.pyx :
+        Ensure to return monofiles as 1d arrays without effecting the
+	ownership of the arrays returned by read_frames.
+
+2014-08-18 Axel Roebel (d4790e6, 7834f11, 81f8b6b, 4ffd00f) :
+	* test.wav, tests/test.wav, tests/pysndfile_test.py, pysndfile_test.py
+	* tests/pysndfile_test.py :
+        merged from remote master changes of test organization
+        search and create test sounds in tests sub directory
+        moved testsnds into tests directory
+        moved test file into its own directory
+
 Version_0.2.3 (2014-08-17)
 --------------------------
 
