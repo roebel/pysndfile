@@ -24,6 +24,11 @@ To avoid this problem PySndfile sets clipping by default to on. If you don't lik
 
 The implementation is based on a slightly modified version of the header sndfile.hh that is distributed with libsndfile. The only modification is the addition of a methode querying the seekable state of the open Sndfile.
 
+##Changes in Version 0.2.4##
+
+ * Compatibility with python 3 (thanks to Eduardo Moguillansky)
+ * bug fix: ensure that vectors returned by read_frames function own their data.
+
 ## Copyright##
 
 Copyright (C) 2014 IRCAM
