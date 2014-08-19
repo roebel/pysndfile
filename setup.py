@@ -134,7 +134,7 @@ setup(
         "Topic :: Multimedia :: Sound/Audio",
         "Programming Language :: Python",
         "Programming Language :: Cython",
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Production/Stable",
         "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: POSIX :: Linux",
