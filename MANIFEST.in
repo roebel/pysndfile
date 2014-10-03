@@ -1,4 +1,4 @@
 include *.txt
 include ChangeLog
 recursive-include docs *.txt
-incude _pysndfile.pyx
+include _pysndfile.pyx
