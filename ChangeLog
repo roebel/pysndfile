@@ -1,8 +1,9 @@
-Version_0.2.6 (2014-10-03)
+Version_0.2.7 (2014-10-03)
 --------------------------
 
-2014-10-03 Axel Roebel (827221d, c157421) :
-	* MANIFEST.in, _pysndfile.pyx :
+2014-10-03 Axel Roebel (827221d, c157421, 84d201f, ff81c14, 0bd039f,
+	2938e16, 827221d, c157421) :
+	* MANIFEST.in, _pysndfile.pyx, _pysndfile_precythonized.cpp :
         Fixed typo in include directive in MANIFEST.in.
 
 Version_0.2.5 (2014-10-03)
