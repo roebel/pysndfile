@@ -54,8 +54,16 @@ sndfile.hh that is distributed with libsndfile. The only modification is
 the addition of a methode querying the seekable state of the open
 Sndfile.
 
-Changes in Version 0.2.4
-------------------------
+Changes
+-------
+
+Version 0.2.6
+~~~~~~~~~~~~~
+
+-  Added missing source file back into distribution.
+
+Version 0.2.4
+~~~~~~~~~~~~~
 
 -  Compatibility with python 3 (thanks to Eduardo Moguillansky)
 -  bug fix: ensure that vectors returned by read\_frames function own
