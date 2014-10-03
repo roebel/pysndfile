@@ -60,8 +60,7 @@ Changes
 Version 0.2.7
 ~~~~~~~~~~~~~
 
--  Added missing source files (*pysndfile.pyx,
-   *\ pysndfile\_precythonized.cpp) back into distribution.
+-  Added missing source files back into distribution.
 
 Version 0.2.4
 ~~~~~~~~~~~~~

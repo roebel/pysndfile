@@ -28,7 +28,7 @@ The implementation is based on a slightly modified version of the header sndfile
 
 ### Version 0.2.7 ###
 
- * Added missing source files (_pysndfile.pyx, _pysndfile_precythonized.cpp) back into distribution.
+ * Added missing source files back into distribution.
 
 ### Version 0.2.4 ###
  
