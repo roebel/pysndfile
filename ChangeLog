@@ -1,3 +1,12 @@
+Version_0.2.5 (2014-10-03)
+--------------------------
+
+2014-10-03 Axel Roebel (2ac71ed, 648ab07) :
+	* MANIFEST.in, _pysndfile.pyx :
+        (HEAD, master) Added missing file _pysndfile.pyx.
+        Updated version to 0.2.5. 
+	Only change is to include the missing _pysndfile.pyx to the distribution.
+
 Version_0.2.4 (2014-08-19)
 --------------------------
 
