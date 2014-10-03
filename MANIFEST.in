@@ -2,3 +2,4 @@ include *.txt
 include ChangeLog
 recursive-include docs *.txt
 include _pysndfile.pyx
+include _pysndfile_precythonized.cpp
