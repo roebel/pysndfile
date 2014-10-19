@@ -53,6 +53,7 @@ class sdist_subclass(sdist) :
         cythonize(['_pysndfile.pyx'])
         shutil.move("setup.cfg", "setup.cfg.default")
         shutil.copy2("setup.cfg.dist", "setup.cfg")
+        shutil.copy2("_pysndfile.cpp", "_pysndfile_precythonized.cpp")
         sdist.run(self)
         shutil.move("setup.cfg.default", "setup.cfg")
 
