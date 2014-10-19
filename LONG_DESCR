@@ -57,6 +57,12 @@ Sndfile.
 Changes
 -------
 
+Version 0.2.8
+~~~~~~~~~~~~~
+
+-  Still another source file added to distribution.
+-  force current cythonized version to be distributed.
+
 Version 0.2.7
 ~~~~~~~~~~~~~
 

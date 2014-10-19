@@ -26,6 +26,11 @@ The implementation is based on a slightly modified version of the header sndfile
 
 ##Changes ##
 
+### Version 0.2.8 ###
+
+ * Still another source file added to distribution.
+ * force current cythonized version to be distributed.
+
 ### Version 0.2.7 ###
 
  * Added missing source files back into distribution.
