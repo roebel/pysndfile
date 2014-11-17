@@ -34,7 +34,7 @@ cimport libc.string
 cimport libc.stdlib
 
 
-_pysndfile_version=(0,2,8)
+_pysndfile_version=(0,2,9)
 def get_pysndfile_version():
     """
     return tuple describing the version opf pysndfile
