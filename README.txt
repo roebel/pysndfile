@@ -26,6 +26,10 @@ The implementation is based on a slightly modified version of the header sndfile
 
 ##Changes ##
 
+### Version 0.2.10 ###
+
+ * setup.py: rebuild LONG_DESC only if sdist method is used.
+
 ### Version 0.2.9 ###
 
  * Added missing files to distribution.

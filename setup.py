@@ -50,6 +50,7 @@ class sdist_subclass(sdist) :
     def run(self):
         # Make sure the compiled Cython files in the distribution are up-to-date
         from Cython.Build import cythonize
+        update_long_descr()
         cythonize(['_pysndfile.pyx'])
         shutil.move("setup.cfg", "setup.cfg.default")
         shutil.copy2("setup.cfg.dist", "setup.cfg")
@@ -101,15 +102,19 @@ for line in open("_pysndfile.pyx") :
 # Used for the long_description.  It's nice, because now 1) we have a top level
 # README file and 2) it's easier to type in the README file than to put a raw
 # string in below ...
-def read_long_descr():
+def update_long_descr():
     README_path     = os.path.join(os.path.dirname(__file__), 'README.txt')
     LONG_DESCR_path = os.path.join(os.path.dirname(__file__), 'LONG_DESCR')
     if ((not os.path.exists(LONG_DESCR_path))
-        or os.path.getmtime(README_path) > os.path.getmtime(LONG_DESCR_path)):
+                          or os.path.getmtime(README_path) > os.path.getmtime(LONG_DESCR_path)):
         try :
             subprocess.check_call(["pandoc", "-f", "markdown", '-t', 'rst', '-o', LONG_DESCR_path, README_path], shell=False)
         except (OSError, subprocess.CalledProcessError) :
             print("setup.py::error:: pandoc command failed. Cannot update LONG_DESCR.txt from modified README.txt")
+    return open(LONG_DESCR_path).read()
+
+def read_long_descr():
+    LONG_DESCR_path = os.path.join(os.path.dirname(__file__), 'LONG_DESCR')
     return open(LONG_DESCR_path).read()
 
 setup(

@@ -57,6 +57,11 @@ Sndfile.
 Changes
 -------
 
+Version 0.2.10
+~~~~~~~~~~~~~~
+
+-  setup.py: rebuild LONG\_DESC only if sdist method is used.
+
 Version 0.2.9
 ~~~~~~~~~~~~~
 
