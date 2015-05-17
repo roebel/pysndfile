@@ -57,6 +57,15 @@ Sndfile.
 Changes
 -------
 
+Version 0.2.11
+~~~~~~~~~~~~~~
+
+-  setup.py: fixed problem with compilers not providing the compiler
+   attribute (MSVC) (Thanks to Felix Hanke for reporting the problem)
+-  \_pysndfile.pyx: fixed problem when deriving from PySndfile using a
+   modified list of **init** parameters in the derived class (Thanks to
+   Sam Perry for the suggestion).
+
 Version 0.2.10
 ~~~~~~~~~~~~~~
 
