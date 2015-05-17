@@ -1,3 +1,19 @@
+Version_0.2.11 (2015-05-17)
+---------------------------
+
+2015-05-17 Roebel (3981343, 6eec597, 1cd1617)
+	* setup.py: fixed problem with compilers not providing the
+	  compiler attribute (e.g. MSVC) (Thanks to Felix Hanke for reporting the problem)
+	* _pysndfile.pyx: fixed problem when deriving from PySndfile using
+	  a modified list of __init__ parameters in the derived class
+          (Thanks to Sam Perry for the suggestion).
+
+Version_0.2.8-0.2.10 (2014-11-17)
+---------------------------------
+2014-11-17 Roebel (f924fe9, 0257328, 4ec9497, 56445f8, ffb6d31, a06a40d,
+	22b9c4f, 49eb5ed, b9f8c3c)
+	* Various problems with missing files and documentation.
+
 Version_0.2.7 (2014-10-03)
 --------------------------
 
