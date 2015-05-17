@@ -26,6 +26,12 @@ The implementation is based on a slightly modified version of the header sndfile
 
 ##Changes ##
 
+### Version 0.2.11 ###
+    
+ * setup.py: fixed problem with compilers not providing the compiler attribute (MSVC) (Thanks to Felix Hanke for reporting the problem)
+ * _pysndfile.pyx: fixed problem when deriving from PySndfile using a modified list of __init__ parameters in the derived class
+     (Thanks to Sam Perry for the suggestion).
+
 ### Version 0.2.10 ###
 
  * setup.py: rebuild LONG_DESC only if sdist method is used.
