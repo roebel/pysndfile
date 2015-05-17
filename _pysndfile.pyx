@@ -34,7 +34,7 @@ cimport libc.string
 cimport libc.stdlib
 
 
-_pysndfile_version=(0,2,10)
+_pysndfile_version=(0,2,11)
 def get_pysndfile_version():
     """
     return tuple describing the version opf pysndfile
@@ -562,7 +562,7 @@ cdef class PySndfile:
     cdef int fd
     cdef char* filename
     def __cinit__(self, filename, mode='r', int format=0,
-                 int channels=0, int samplerate=0):
+                  int channels=0, int samplerate=0, *args, **kwrds):
         cdef int sfmode
         cdef const char*cfilename
         cdef int fh
