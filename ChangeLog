@@ -1,6 +1,15 @@
+Version_0.2.12 (2017-05-11)
+---------------------------
+2017-05-11 Roebel (5d4d543)
+	* fixed problem in sndio.read:
+	 - optionally return full information required to store the file using the corresponding write function
+	* _pysndfile.pyx:
+	 - add constants SF_FORMAT_TYPEMASK and SF_FORMAT_SUBMASK, SF_FORMAT_ENDMASK to python interface
+	 - Added new function for getting internal sf log in case of errors.
+	 - Improved consistency of variable definitions by means of retrieving them automatically from sndfile.h
+
 Version_0.2.11 (2015-05-17)
 ---------------------------
-
 2015-05-17 Roebel (3981343, 6eec597, 1cd1617)
 	* setup.py: fixed problem with compilers not providing the
 	  compiler attribute (e.g. MSVC) (Thanks to Felix Hanke for reporting the problem)
