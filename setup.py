@@ -128,7 +128,7 @@ setup(
     ext_package = 'pysndfile',
     ext_modules = ext_modules,
     author = "A. Roebel",
-    author_email = "axel [ dot ] roebel [ at ] ircam [ dot ] fr",
+    author_email = "axel.dot.roebel@ircam.dot.fr",
     description = "pysndfile provides PySndfile, a Cython wrapper class for reading/writing soundfiles using libsndfile",
     long_description = read_long_descr(),
     license = "LGPL",
