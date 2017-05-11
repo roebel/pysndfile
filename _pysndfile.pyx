@@ -34,7 +34,7 @@ cimport libc.string
 cimport libc.stdlib
 
 
-_pysndfile_version=(0,2,11)
+_pysndfile_version=(0,2,12)
 def get_pysndfile_version():
     """
     return tuple describing the version opf pysndfile
@@ -94,192 +94,197 @@ cdef extern from "pysndfile.hh":
         int setString (int str_type, const char* str)
         const char* getString (int str_type)
 
-    cdef int SF_FORMAT_WAV = 0x010000    # /* Microsoft WAV format (little endian default). */
-    cdef int SF_FORMAT_AIFF = 0x020000   # /* Apple/SGI AIFF format (big endian). */
-    cdef int SF_FORMAT_AU   = 0x030000   # /* Sun/NeXT AU format (big endian). */
-    cdef int SF_FORMAT_RAW  = 0x040000   # /* RAW PCM data. */
-    cdef int SF_FORMAT_PAF  = 0x050000   # /* Ensoniq PARIS file format. */
-    cdef int SF_FORMAT_SVX  = 0x060000   # /* Amiga IFF / SVX8 / SV16 format. */
-    cdef int SF_FORMAT_NIST  = 0x070000  # /* Sphere NIST format. */
-    cdef int SF_FORMAT_VOC  = 0x080000   # /* VOC files. */
-    cdef int SF_FORMAT_IRCAM  = 0x0A0000 # /* Berkeley/IRCAM/CARL */
-    cdef int SF_FORMAT_W64  = 0x0B0000   # /* Sonic Foundry's 64 bit RIFF/WAV */
-    cdef int SF_FORMAT_MAT4  = 0x0C0000  # /* Matlab (tm) V4.2 / GNU Octave 2.0 */
-    cdef int SF_FORMAT_MAT5  = 0x0D0000  # /* Matlab (tm) V5.0 / GNU Octave 2.1 */
-    cdef int SF_FORMAT_PVF  = 0x0E0000   # /* Portable Voice Format */
-    cdef int SF_FORMAT_XI  = 0x0F0000    # /* Fasttracker 2 Extended Instrument */
-    cdef int SF_FORMAT_HTK  = 0x100000   # /* HMM Tool Kit format */
-    cdef int SF_FORMAT_SDS  = 0x110000   # /* Midi Sample Dump Standard */
-    cdef int SF_FORMAT_AVR  = 0x120000   # /* Audio Visual Research */
-    cdef int SF_FORMAT_WAVEX  = 0x130000 # /* MS WAVE with WAVEFORMATEX */
-    cdef int SF_FORMAT_SD2  = 0x160000   # /* Sound Designer 2 */
-    cdef int SF_FORMAT_FLAC  = 0x170000  # /* FLAC lossless file format */
-    cdef int SF_FORMAT_CAF  = 0x180000   # /* Core Audio File format */
+    cdef int C_SF_FORMAT_WAV "SF_FORMAT_WAV"     # /* Microsoft WAV format (little endian default). */
+    cdef int C_SF_FORMAT_AIFF "SF_FORMAT_AIFF"   # /* Apple/SGI AIFF format (big endian). */
+    cdef int C_SF_FORMAT_AU "SF_FORMAT_AU"       # /* Sun/NeXT AU format (big endian). */
+    cdef int C_SF_FORMAT_RAW "SF_FORMAT_RAW"     # /* RAW PCM data. */
+    cdef int C_SF_FORMAT_PAF "SF_FORMAT_PAF"     # /* Ensoniq PARIS file format. */
+    cdef int C_SF_FORMAT_SVX "SF_FORMAT_SVX"     # /* Amiga IFF / SVX8 / SV16 format. */
+    cdef int C_SF_FORMAT_NIST "SF_FORMAT_NIST"   # /* Sphere NIST format. */
+    cdef int C_SF_FORMAT_VOC "SF_FORMAT_VOC"     # /* VOC files. */
+    cdef int C_SF_FORMAT_IRCAM "SF_FORMAT_IRCAM" # /* Berkeley/IRCAM/CARL */
+    cdef int C_SF_FORMAT_W64 "SF_FORMAT_W64"     # /* Sonic Foundry's 64 bit RIFF/WAV */
+    cdef int C_SF_FORMAT_MAT4 "SF_FORMAT_MAT4"   # /* Matlab (tm) V4.2 / GNU Octave 2.0 */
+    cdef int C_SF_FORMAT_MAT5 "SF_FORMAT_MAT5"   # /* Matlab (tm) V5.0 / GNU Octave 2.1 */
+    cdef int C_SF_FORMAT_PVF "SF_FORMAT_PVF"     # /* Portable Voice Format */
+    cdef int C_SF_FORMAT_XI "SF_FORMAT_XI"       # /* Fasttracker 2 Extended Instrument */
+    cdef int C_SF_FORMAT_HTK "SF_FORMAT_HTK"     # /* HMM Tool Kit format */
+    cdef int C_SF_FORMAT_SDS "SF_FORMAT_SDS"     # /* Midi Sample Dump Standard */
+    cdef int C_SF_FORMAT_AVR "SF_FORMAT_AVR"     # /* Audio Visual Research */
+    cdef int C_SF_FORMAT_WAVEX "SF_FORMAT_WAVEX" # /* MS WAVE with WAVEFORMATEX */
+    cdef int C_SF_FORMAT_SD2 "SF_FORMAT_SD2"     # /* Sound Designer 2 */
+    cdef int C_SF_FORMAT_FLAC "SF_FORMAT_FLAC"   # /* FLAC lossless file format */
+    cdef int C_SF_FORMAT_CAF "SF_FORMAT_CAF"     # /* Core Audio File format */
 
     #/* Subtypes from here on. */
-    cdef int SF_FORMAT_PCM_S8  = 0x0001  # /* Signed 8 bit data */
-    cdef int SF_FORMAT_PCM_16  = 0x0002  # /* Signed 16 bit data */
-    cdef int SF_FORMAT_PCM_24  = 0x0003  # /* Signed 24 bit data */
-    cdef int SF_FORMAT_PCM_32  = 0x0004  # /* Signed 32 bit data */
+    cdef int C_SF_FORMAT_PCM_S8 "SF_FORMAT_PCM_S8"    # /* Signed 8 bit data */
+    cdef int C_SF_FORMAT_PCM_16 "SF_FORMAT_PCM_16"    # /* Signed 16 bit data */
+    cdef int C_SF_FORMAT_PCM_24 "SF_FORMAT_PCM_24"    # /* Signed 24 bit data */
+    cdef int C_SF_FORMAT_PCM_32 "SF_FORMAT_PCM_32"    # /* Signed 32 bit data */
 
-    cdef int SF_FORMAT_PCM_U8  = 0x0005  # /* Unsigned 8 bit data (WAV and RAW only) */
+    cdef int C_SF_FORMAT_PCM_U8 "SF_FORMAT_PCM_U8"    # /* Unsigned 8 bit data (WAV and RAW only) */
 
-    cdef int SF_FORMAT_FLOAT  = 0x0006   # /* 32 bit float data */
-    cdef int SF_FORMAT_DOUBLE  = 0x0007  # /* 64 bit float data */
+    cdef int C_SF_FORMAT_FLOAT "SF_FORMAT_FLOAT"      # /* 32 bit float data */
+    cdef int C_SF_FORMAT_DOUBLE "SF_FORMAT_DOUBLE"    # /* 64 bit float data */
 
-    cdef int SF_FORMAT_ULAW  = 0x0010    # /* U-Law encoded. */
-    cdef int SF_FORMAT_ALAW  = 0x0011    # /* A-Law encoded. */
-    cdef int SF_FORMAT_IMA_ADPCM = 0x0012# /* IMA ADPCM. */
-    cdef int SF_FORMAT_MS_ADPCM  = 0x0013# /* Microsoft ADPCM. */
+    cdef int C_SF_FORMAT_ULAW "SF_FORMAT_ULAW"            # /* U-Law encoded. */
+    cdef int C_SF_FORMAT_ALAW "SF_FORMAT_ALAW"            # /* A-Law encoded. */
+    cdef int C_SF_FORMAT_IMA_ADPCM "SF_FORMAT_IMA_ADPCM"  # /* IMA ADPCM. */
+    cdef int C_SF_FORMAT_MS_ADPCM "SF_FORMAT_MS_ADPCM"    # /* Microsoft ADPCM. */
 
-    cdef int SF_FORMAT_GSM610  = 0x0020  # /* GSM 6.10 encoding. */
-    cdef int SF_FORMAT_VOX_ADPCM = 0x0021# /* OKI / Dialogix ADPCM */
-    cdef int SF_FORMAT_G721_32  = 0x0030 # /* 32kbs G721 ADPCM encoding. */
-    cdef int SF_FORMAT_G723_24  = 0x0031 # /* 24kbs G723 ADPCM encoding. */
-    cdef int SF_FORMAT_G723_40  = 0x0032 # /* 40kbs G723 ADPCM encoding. */
+    cdef int C_SF_FORMAT_GSM610 "SF_FORMAT_GSM610"    # /* GSM 6.10 encoding. */
+    cdef int C_SF_FORMAT_VOX_ADPCM "SF_FORMAT_VOX_ADPCM"  # /* OKI / Dialogix ADPCM */
+    cdef int C_SF_FORMAT_G721_32 "SF_FORMAT_G721_32"   # /* 32kbs G721 ADPCM encoding. */
+    cdef int C_SF_FORMAT_G723_24 "SF_FORMAT_G723_24"   # /* 24kbs G723 ADPCM encoding. */
+    cdef int C_SF_FORMAT_G723_40 "SF_FORMAT_G723_40"   # /* 40kbs G723 ADPCM encoding. */
 
-    cdef int SF_FORMAT_DWVW_12  = 0x0040 # /* 12 bit Delta Width Variable Word encoding. */
-    cdef int SF_FORMAT_DWVW_16  = 0x0041 # /* 16 bit Delta Width Variable Word encoding. */
-    cdef int SF_FORMAT_DWVW_24  = 0x0042 # /* 24 bit Delta Width Variable Word encoding. */
-    cdef int SF_FORMAT_DWVW_N  = 0x0043  # /* N bit Delta Width Variable Word encoding. */
+    cdef int C_SF_FORMAT_DWVW_12 "SF_FORMAT_DWVW_12"   # /* 12 bit Delta Width Variable Word encoding. */
+    cdef int C_SF_FORMAT_DWVW_16 "SF_FORMAT_DWVW_16"   # /* 16 bit Delta Width Variable Word encoding. */
+    cdef int C_SF_FORMAT_DWVW_24 "SF_FORMAT_DWVW_24"   # /* 24 bit Delta Width Variable Word encoding. */
+    cdef int C_SF_FORMAT_DWVW_N "SF_FORMAT_DWVW_N"    # /* N bit Delta Width Variable Word encoding. */
 
-    cdef int SF_FORMAT_DPCM_8  = 0x0050  # /* 8 bit differential PCM (XI only) */
-    cdef int SF_FORMAT_DPCM_16  = 0x0051 # /* 16 bit differential PCM (XI only) */
+    cdef int C_SF_FORMAT_DPCM_8 "SF_FORMAT_DPCM_8"    # /* 8 bit differential PCM (XI only) */
+    cdef int C_SF_FORMAT_DPCM_16 "SF_FORMAT_DPCM_16"   # /* 16 bit differential PCM (XI only) */
 
     #    /* Endian-ness options. */
-    cdef int SF_ENDIAN_FILE = 0x00000000 # /* Default file endian-ness. */
-    cdef int SF_ENDIAN_LITTLE  = 0x100000# /* Force little endian-ness. */
-    cdef int SF_ENDIAN_BIG  = 0x20000000 # /* Force big endian-ness. */
-    cdef int SF_ENDIAN_CPU  = 0x30000000 # /* Force CPU endian-ness. */
+    cdef int C_SF_ENDIAN_FILE "SF_ENDIAN_FILE"   # /* Default file endian-ness. */
+    cdef int C_SF_ENDIAN_LITTLE "SF_ENDIAN_LITTLE"  # /* Force little endian-ness. */
+    cdef int C_SF_ENDIAN_BIG "SF_ENDIAN_BIG"   # /* Force big endian-ness. */
+    cdef int C_SF_ENDIAN_CPU "SF_ENDIAN_CPU"   # /* Force CPU endian-ness. */
 
-    cdef int SF_FORMAT_SUBMASK  = 0x0000FFFF
-    cdef int SF_FORMAT_TYPEMASK = 0x0FFF0000
-    cdef int SF_FORMAT_ENDMASK  = 0x30000000
+    cdef int C_SF_FORMAT_SUBMASK "SF_FORMAT_SUBMASK" 
+    cdef int C_SF_FORMAT_TYPEMASK "SF_FORMAT_TYPEMASK" 
+    cdef int C_SF_FORMAT_ENDMASK "SF_FORMAT_ENDMASK"
 
     # commands
-    cdef int SFC_GET_LIB_VERSION        = 0x1000
-    cdef int SFC_GET_LOG_INFO  = 0x1001
+    cdef int C_SFC_GET_LIB_VERSION "SFC_GET_LIB_VERSION"  
+    cdef int C_SFC_GET_LOG_INFO "SFC_GET_LOG_INFO"  
 
-    cdef int SFC_GET_NORM_DOUBLE  = 0x1010
-    cdef int SFC_GET_NORM_FLOAT  = 0x1011
-    cdef int SFC_SET_NORM_DOUBLE  = 0x1012
-    cdef int SFC_SET_NORM_FLOAT  = 0x1013
-    cdef int SFC_SET_SCALE_FLOAT_INT_READ  = 0x1014
+    cdef int C_SFC_GET_NORM_DOUBLE "SFC_GET_NORM_DOUBLE"  
+    cdef int C_SFC_GET_NORM_FLOAT "SFC_GET_NORM_FLOAT"  
+    cdef int C_SFC_SET_NORM_DOUBLE "SFC_SET_NORM_DOUBLE"  
+    cdef int C_SFC_SET_NORM_FLOAT "SFC_SET_NORM_FLOAT"  
+    cdef int C_SFC_SET_SCALE_FLOAT_INT_READ "SFC_SET_SCALE_FLOAT_INT_READ"  
 
-    cdef int SFC_GET_SIMPLE_FORMAT_COUNT  = 0x1020
-    cdef int SFC_GET_SIMPLE_FORMAT  = 0x1021
+    cdef int C_SFC_GET_SIMPLE_FORMAT_COUNT "SFC_GET_SIMPLE_FORMAT_COUNT"  
+    cdef int C_SFC_GET_SIMPLE_FORMAT "SFC_GET_SIMPLE_FORMAT"  
 
-    cdef int SFC_GET_FORMAT_INFO  = 0x1028
+    cdef int C_SFC_GET_FORMAT_INFO "SFC_GET_FORMAT_INFO"  
 
-    cdef int SFC_GET_FORMAT_MAJOR_COUNT  = 0x1030
-    cdef int SFC_GET_FORMAT_MAJOR  = 0x1031
-    cdef int SFC_GET_FORMAT_SUBTYPE_COUNT  = 0x1032
-    cdef int SFC_GET_FORMAT_SUBTYPE  = 0x1033
+    cdef int C_SFC_GET_FORMAT_MAJOR_COUNT "SFC_GET_FORMAT_MAJOR_COUNT"  
+    cdef int C_SFC_GET_FORMAT_MAJOR "SFC_GET_FORMAT_MAJOR"  
+    cdef int C_SFC_GET_FORMAT_SUBTYPE_COUNT "SFC_GET_FORMAT_SUBTYPE_COUNT"  
+    cdef int C_SFC_GET_FORMAT_SUBTYPE "SFC_GET_FORMAT_SUBTYPE"  
 
-    cdef int SFC_CALC_SIGNAL_MAX  = 0x1040
-    cdef int SFC_CALC_NORM_SIGNAL_MAX  = 0x1041
-    cdef int SFC_CALC_MAX_ALL_CHANNELS  = 0x1042
-    cdef int SFC_CALC_NORM_MAX_ALL_CHANNELS  = 0x1043
-    cdef int SFC_GET_SIGNAL_MAX  = 0x1044
-    cdef int SFC_GET_MAX_ALL_CHANNELS  = 0x1045
+    cdef int C_SFC_CALC_SIGNAL_MAX "SFC_CALC_SIGNAL_MAX"  
+    cdef int C_SFC_CALC_NORM_SIGNAL_MAX "SFC_CALC_NORM_SIGNAL_MAX"  
+    cdef int C_SFC_CALC_MAX_ALL_CHANNELS "SFC_CALC_MAX_ALL_CHANNELS"  
+    cdef int C_SFC_CALC_NORM_MAX_ALL_CHANNELS "SFC_CALC_NORM_MAX_ALL_CHANNELS"  
+    cdef int C_SFC_GET_SIGNAL_MAX "SFC_GET_SIGNAL_MAX"  
+    cdef int C_SFC_GET_MAX_ALL_CHANNELS "SFC_GET_MAX_ALL_CHANNELS"  
 
-    cdef int SFC_SET_ADD_PEAK_CHUNK  = 0x1050
+    cdef int C_SFC_SET_ADD_PEAK_CHUNK "SFC_SET_ADD_PEAK_CHUNK"  
 
-    cdef int SFC_UPDATE_HEADER_NOW  = 0x1060
-    cdef int SFC_SET_UPDATE_HEADER_AUTO  = 0x1061
+    cdef int C_SFC_UPDATE_HEADER_NOW "SFC_UPDATE_HEADER_NOW"  
+    cdef int C_SFC_SET_UPDATE_HEADER_AUTO "SFC_SET_UPDATE_HEADER_AUTO"  
 
-    cdef int SFC_FILE_TRUNCATE  = 0x1080
+    cdef int C_SFC_FILE_TRUNCATE "SFC_FILE_TRUNCATE"  
 
-    cdef int SFC_SET_RAW_START_OFFSET  = 0x1090
+    cdef int C_SFC_SET_RAW_START_OFFSET "SFC_SET_RAW_START_OFFSET"  
 
-    cdef int SFC_SET_DITHER_ON_WRITE  = 0x10A0
-    cdef int SFC_SET_DITHER_ON_READ  = 0x10A1
+    cdef int C_SFC_SET_DITHER_ON_WRITE "SFC_SET_DITHER_ON_WRITE"  
+    cdef int C_SFC_SET_DITHER_ON_READ "SFC_SET_DITHER_ON_READ"  
 
-    cdef int SFC_GET_DITHER_INFO_COUNT  = 0x10A2
-    cdef int SFC_GET_DITHER_INFO  = 0x10A3
+    cdef int C_SFC_GET_DITHER_INFO_COUNT "SFC_GET_DITHER_INFO_COUNT"  
+    cdef int C_SFC_GET_DITHER_INFO "SFC_GET_DITHER_INFO"  
 
-    cdef int SFC_GET_EMBED_FILE_INFO  = 0x10B0
+    cdef int C_SFC_GET_EMBED_FILE_INFO "SFC_GET_EMBED_FILE_INFO"  
 
-    cdef int SFC_SET_CLIPPING  = 0x10C0
-    cdef int SFC_GET_CLIPPING  = 0x10C1
+    cdef int C_SFC_SET_CLIPPING "SFC_SET_CLIPPING"  
+    cdef int C_SFC_GET_CLIPPING "SFC_GET_CLIPPING"  
 
-    cdef int SFC_GET_INSTRUMENT  = 0x10D0
-    cdef int SFC_SET_INSTRUMENT  = 0x10D1
+    cdef int C_SFC_GET_INSTRUMENT "SFC_GET_INSTRUMENT"  
+    cdef int C_SFC_SET_INSTRUMENT "SFC_SET_INSTRUMENT"  
 
-    cdef int SFC_GET_LOOP_INFO  = 0x10E0
+    cdef int C_SFC_GET_LOOP_INFO "SFC_GET_LOOP_INFO"  
 
-    cdef int SFC_GET_BROADCAST_INFO  = 0x10F0
-    cdef int SFC_SET_BROADCAST_INFO  = 0x10F1
+    cdef int C_SFC_GET_BROADCAST_INFO "SFC_GET_BROADCAST_INFO"  
+    cdef int C_SFC_SET_BROADCAST_INFO "SFC_SET_BROADCAST_INFO"  
 
-    cdef int SF_STR_TITLE  = 0x01
-    cdef int SF_STR_COPYRIGHT  = 0x02
-    cdef int SF_STR_SOFTWARE  = 0x03
-    cdef int SF_STR_ARTIST  = 0x04
-    cdef int SF_STR_COMMENT  = 0x05
-    cdef int SF_STR_DATE  = 0x06
+    cdef int C_SF_STR_TITLE "SF_STR_TITLE"  
+    cdef int C_SF_STR_COPYRIGHT "SF_STR_COPYRIGHT"  
+    cdef int C_SF_STR_SOFTWARE "SF_STR_SOFTWARE"  
+    cdef int C_SF_STR_ARTIST "SF_STR_ARTIST"  
+    cdef int C_SF_STR_COMMENT "SF_STR_COMMENT"  
+    cdef int C_SF_STR_DATE "SF_STR_DATE"  
 
     # these are the only values retrieved from the header file. So we cannot
-    # try to write/get strings thatare not supported by the library we use.
-    int SF_STR_FIRST
-    int SF_STR_LAST
+    # try to write/get strings that are not supported by the library we use.
+    cdef int C_SF_STR_FIRST "SF_STR_FIRST"
+    cdef int C_SF_STR_LAST  "SF_STR_LAST"
     
-    cdef int SF_FALSE  = 0
-    cdef int SF_TRUE  = 1
+    cdef int C_SF_FALSE "SF_FALSE"  
+    cdef int C_SF_TRUE "SF_TRUE"  
 
     #        /* Modes for opening files. */
-    cdef int SFM_READ   = 0x10
-    cdef int SFM_WRITE  = 0x20
-    cdef int SFM_RDWR   = 0x30
+    cdef int C_SFM_READ "SFM_READ"  
+    cdef int C_SFM_WRITE "SFM_WRITE"  
+    cdef int C_SFM_RDWR "SFM_RDWR"  
 
-    cdef int SEEK_SET = 0
-    cdef int SEEK_CUR = 1
-    cdef int SEEK_END = 2
+    cdef int C_SEEK_SET "SEEK_SET"  
+    cdef int C_SEEK_CUR "SEEK_CUR"  
+    cdef int C_SEEK_END "SEEK_END"  
     
-    cdef int SF_ERR_NO_ERROR  = 0
-    cdef int SF_ERR_UNRECOGNISED_FORMAT  = 1
-    cdef int SF_ERR_SYSTEM  = 2
-    cdef int SF_ERR_MALFORMED_FILE  = 3
-    cdef int SF_ERR_UNSUPPORTED_ENCODING  = 4
+    cdef int C_SF_ERR_NO_ERROR "SF_ERR_NO_ERROR"  
+    cdef int C_SF_ERR_UNRECOGNISED_FORMAT "SF_ERR_UNRECOGNISED_FORMAT"  
+    cdef int C_SF_ERR_SYSTEM "SF_ERR_SYSTEM"  
+    cdef int C_SF_ERR_MALFORMED_FILE "SF_ERR_MALFORMED_FILE"  
+    cdef int C_SF_ERR_UNSUPPORTED_ENCODING "SF_ERR_UNSUPPORTED_ENCODING"  
     
-    cdef int SF_COUNT_MAX  = 0x7FFFFFFFFFFFFFFFLL
+    cdef int C_SF_COUNT_MAX "SF_COUNT_MAX"  
 
 
 # these two come with more recent versions of libsndfile
 # to not break compilation they are defined outside sndfile.h
-cdef int SF_STR_ALBUM = 0x07
-cdef int SF_STR_LICENSE = 0x08
-cdef int SF_STR_TRACKNUMBER = 0x09
-cdef int SF_STR_GENRE = 0x10
+cdef int C_SF_STR_ALBUM = 0x07
+cdef int C_SF_STR_LICENSE = 0x08
+cdef int C_SF_STR_TRACKNUMBER = 0x09
+cdef int C_SF_STR_GENRE = 0x10
+
+
+SF_FORMAT_SUBMASK  = C_SF_FORMAT_SUBMASK
+SF_FORMAT_TYPEMASK = C_SF_FORMAT_TYPEMASK
+SF_FORMAT_ENDMASK  = C_SF_FORMAT_ENDMASK
 
 _encoding_id_tuple = (
-    ('pcms8' , SF_FORMAT_PCM_S8),
-    ('pcm16' , SF_FORMAT_PCM_16),
-    ('pcm24' , SF_FORMAT_PCM_24),
-    ('pcm32' , SF_FORMAT_PCM_32),
-    ('pcmu8' , SF_FORMAT_PCM_U8),
+    ('pcms8' , C_SF_FORMAT_PCM_S8),
+    ('pcm16' , C_SF_FORMAT_PCM_16),
+    ('pcm24' , C_SF_FORMAT_PCM_24),
+    ('pcm32' , C_SF_FORMAT_PCM_32),
+    ('pcmu8' , C_SF_FORMAT_PCM_U8),
 
-    ('float32' , SF_FORMAT_FLOAT),
-    ('float64' , SF_FORMAT_DOUBLE),
+    ('float32' , C_SF_FORMAT_FLOAT),
+    ('float64' , C_SF_FORMAT_DOUBLE),
 
-    ('ulaw'      , SF_FORMAT_ULAW),
-    ('alaw'      , SF_FORMAT_ALAW),
-    ('ima_adpcm' , SF_FORMAT_IMA_ADPCM),
-    ('ms_adpcm'  , SF_FORMAT_MS_ADPCM),
+    ('ulaw'      , C_SF_FORMAT_ULAW),
+    ('alaw'      , C_SF_FORMAT_ALAW),
+    ('ima_adpcm' , C_SF_FORMAT_IMA_ADPCM),
+    ('ms_adpcm'  , C_SF_FORMAT_MS_ADPCM),
 
-    ('gsm610'    , SF_FORMAT_GSM610),
-    ('vox_adpcm' , SF_FORMAT_VOX_ADPCM),
+    ('gsm610'    , C_SF_FORMAT_GSM610),
+    ('vox_adpcm' , C_SF_FORMAT_VOX_ADPCM),
 
-    ('g721_32'   , SF_FORMAT_G721_32),
-    ('g723_24'   , SF_FORMAT_G723_24),
-    ('g723_40'   , SF_FORMAT_G723_40),
+    ('g721_32'   , C_SF_FORMAT_G721_32),
+    ('g723_24'   , C_SF_FORMAT_G723_24),
+    ('g723_40'   , C_SF_FORMAT_G723_40),
 
-    ('dww12' , SF_FORMAT_DWVW_12),
-    ('dww16' , SF_FORMAT_DWVW_16),
-    ('dww24' , SF_FORMAT_DWVW_24),
-    ('dwwN'  , SF_FORMAT_DWVW_N),
+    ('dww12' , C_SF_FORMAT_DWVW_12),
+    ('dww16' , C_SF_FORMAT_DWVW_16),
+    ('dww24' , C_SF_FORMAT_DWVW_24),
+    ('dwwN'  , C_SF_FORMAT_DWVW_N),
 
-    ('dpcm8' , SF_FORMAT_DPCM_8),
-    ('dpcm16', SF_FORMAT_DPCM_16)
+    ('dpcm8' , C_SF_FORMAT_DPCM_8),
+    ('dpcm16', C_SF_FORMAT_DPCM_16)
     )
 
 
@@ -287,27 +292,27 @@ encoding_name_to_id = dict(_encoding_id_tuple)
 encoding_id_to_name = dict([(id, enc) for enc, id in _encoding_id_tuple])
 
 _fileformat_id_tuple = (
-    ('wav' , SF_FORMAT_WAV),
-    ('aiff' , SF_FORMAT_AIFF),
-    ('au'   , SF_FORMAT_AU),
-    ('raw'  , SF_FORMAT_RAW),
-    ('paf'  , SF_FORMAT_PAF),
-    ('svx'  , SF_FORMAT_SVX),
-    ('nist' , SF_FORMAT_NIST),
-    ('voc'  , SF_FORMAT_VOC),
-    ('ircam', SF_FORMAT_IRCAM),
-    ('wav64', SF_FORMAT_W64),
-    ('mat4' , SF_FORMAT_MAT4),
-    ('mat5' , SF_FORMAT_MAT5),
-    ('pvf'  , SF_FORMAT_PVF),
-    ('xi'   , SF_FORMAT_XI),
-    ('htk'  , SF_FORMAT_HTK),
-    ('sds'  , SF_FORMAT_SDS),
-    ('avr'  , SF_FORMAT_AVR),
-    ('wavex', SF_FORMAT_WAVEX),
-    ('sd2'  , SF_FORMAT_SD2),
-    ('flac' , SF_FORMAT_FLAC),
-    ('caf'  , SF_FORMAT_CAF),
+    ('wav' , C_SF_FORMAT_WAV),
+    ('aiff' , C_SF_FORMAT_AIFF),
+    ('au'   , C_SF_FORMAT_AU),
+    ('raw'  , C_SF_FORMAT_RAW),
+    ('paf'  , C_SF_FORMAT_PAF),
+    ('svx'  , C_SF_FORMAT_SVX),
+    ('nist' , C_SF_FORMAT_NIST),
+    ('voc'  , C_SF_FORMAT_VOC),
+    ('ircam', C_SF_FORMAT_IRCAM),
+    ('wav64', C_SF_FORMAT_W64),
+    ('mat4' , C_SF_FORMAT_MAT4),
+    ('mat5' , C_SF_FORMAT_MAT5),
+    ('pvf'  , C_SF_FORMAT_PVF),
+    ('xi'   , C_SF_FORMAT_XI),
+    ('htk'  , C_SF_FORMAT_HTK),
+    ('sds'  , C_SF_FORMAT_SDS),
+    ('avr'  , C_SF_FORMAT_AVR),
+    ('wavex', C_SF_FORMAT_WAVEX),
+    ('sd2'  , C_SF_FORMAT_SD2),
+    ('flac' , C_SF_FORMAT_FLAC),
+    ('caf'  , C_SF_FORMAT_CAF),
     )
 
 """
@@ -317,69 +322,69 @@ fileformat_name_to_id = dict (_fileformat_id_tuple)
 fileformat_id_to_name = dict ([(id, format) for format, id in _fileformat_id_tuple])
 
 _endian_to_id_tuple = (
-    ('file'   , SF_ENDIAN_FILE),
-    ('little' , SF_ENDIAN_LITTLE),
-    ('big'    , SF_ENDIAN_BIG),
-    ('cpu'    , SF_ENDIAN_CPU)
+    ('file'   , C_SF_ENDIAN_FILE),
+    ('little' , C_SF_ENDIAN_LITTLE),
+    ('big'    , C_SF_ENDIAN_BIG),
+    ('cpu'    , C_SF_ENDIAN_CPU)
     )
 
 endian_name_to_id = dict(_endian_to_id_tuple)
 endian_id_to_name = dict([(id, endname) for endname, id in _endian_to_id_tuple])
 
 _commands_to_id_tuple = (
-    ("SFC_GET_LIB_VERSION" , SFC_GET_LIB_VERSION),
-    ("SFC_GET_LOG_INFO" ,     SFC_GET_LOG_INFO),
+    ("SFC_GET_LIB_VERSION" , C_SFC_GET_LIB_VERSION),
+    ("SFC_GET_LOG_INFO" ,     C_SFC_GET_LOG_INFO),
     
-    ("SFC_GET_NORM_DOUBLE" , SFC_GET_NORM_DOUBLE),
-    ("SFC_GET_NORM_FLOAT" , SFC_GET_NORM_FLOAT),
-    ("SFC_SET_NORM_DOUBLE" , SFC_SET_NORM_DOUBLE),
-    ("SFC_SET_NORM_FLOAT" , SFC_SET_NORM_FLOAT),
-    ("SFC_SET_SCALE_FLOAT_INT_READ" , SFC_SET_SCALE_FLOAT_INT_READ),
+    ("SFC_GET_NORM_DOUBLE" , C_SFC_GET_NORM_DOUBLE),
+    ("SFC_GET_NORM_FLOAT" , C_SFC_GET_NORM_FLOAT),
+    ("SFC_SET_NORM_DOUBLE" , C_SFC_SET_NORM_DOUBLE),
+    ("SFC_SET_NORM_FLOAT" , C_SFC_SET_NORM_FLOAT),
+    ("SFC_SET_SCALE_FLOAT_INT_READ" , C_SFC_SET_SCALE_FLOAT_INT_READ),
 
-    ("SFC_GET_SIMPLE_FORMAT_COUNT" , SFC_GET_SIMPLE_FORMAT_COUNT),
-    ("SFC_GET_SIMPLE_FORMAT" , SFC_GET_SIMPLE_FORMAT),
+    ("SFC_GET_SIMPLE_FORMAT_COUNT" , C_SFC_GET_SIMPLE_FORMAT_COUNT),
+    ("SFC_GET_SIMPLE_FORMAT" , C_SFC_GET_SIMPLE_FORMAT),
 
-    ("SFC_GET_FORMAT_INFO" , SFC_GET_FORMAT_INFO),
+    ("SFC_GET_FORMAT_INFO" , C_SFC_GET_FORMAT_INFO),
 
-    ("SFC_GET_FORMAT_MAJOR_COUNT" , SFC_GET_FORMAT_MAJOR_COUNT),
-    ("SFC_GET_FORMAT_MAJOR" , SFC_GET_FORMAT_MAJOR),
-    ("SFC_GET_FORMAT_SUBTYPE_COUNT" , SFC_GET_FORMAT_SUBTYPE_COUNT),
-    ("SFC_GET_FORMAT_SUBTYPE" , SFC_GET_FORMAT_SUBTYPE),
+    ("SFC_GET_FORMAT_MAJOR_COUNT" , C_SFC_GET_FORMAT_MAJOR_COUNT),
+    ("SFC_GET_FORMAT_MAJOR" , C_SFC_GET_FORMAT_MAJOR),
+    ("SFC_GET_FORMAT_SUBTYPE_COUNT" , C_SFC_GET_FORMAT_SUBTYPE_COUNT),
+    ("SFC_GET_FORMAT_SUBTYPE" , C_SFC_GET_FORMAT_SUBTYPE),
 
-    ("SFC_CALC_SIGNAL_MAX" , SFC_CALC_SIGNAL_MAX),
-    ("SFC_CALC_NORM_SIGNAL_MAX" , SFC_CALC_NORM_SIGNAL_MAX),
-    ("SFC_CALC_MAX_ALL_CHANNELS" , SFC_CALC_MAX_ALL_CHANNELS),
-    ("SFC_CALC_NORM_MAX_ALL_CHANNELS" , SFC_CALC_NORM_MAX_ALL_CHANNELS),
-    ("SFC_GET_SIGNAL_MAX" , SFC_GET_SIGNAL_MAX),
-    ("SFC_GET_MAX_ALL_CHANNELS" , SFC_GET_MAX_ALL_CHANNELS),
+    ("SFC_CALC_SIGNAL_MAX" , C_SFC_CALC_SIGNAL_MAX),
+    ("SFC_CALC_NORM_SIGNAL_MAX" , C_SFC_CALC_NORM_SIGNAL_MAX),
+    ("SFC_CALC_MAX_ALL_CHANNELS" , C_SFC_CALC_MAX_ALL_CHANNELS),
+    ("SFC_CALC_NORM_MAX_ALL_CHANNELS" , C_SFC_CALC_NORM_MAX_ALL_CHANNELS),
+    ("SFC_GET_SIGNAL_MAX" , C_SFC_GET_SIGNAL_MAX),
+    ("SFC_GET_MAX_ALL_CHANNELS" , C_SFC_GET_MAX_ALL_CHANNELS),
 
-    ("SFC_SET_ADD_PEAK_CHUNK" , SFC_SET_ADD_PEAK_CHUNK),
+    ("SFC_SET_ADD_PEAK_CHUNK" , C_SFC_SET_ADD_PEAK_CHUNK),
 
-    ("SFC_UPDATE_HEADER_NOW" , SFC_UPDATE_HEADER_NOW),
-    ("SFC_SET_UPDATE_HEADER_AUTO" , SFC_SET_UPDATE_HEADER_AUTO),
+    ("SFC_UPDATE_HEADER_NOW" , C_SFC_UPDATE_HEADER_NOW),
+    ("SFC_SET_UPDATE_HEADER_AUTO" , C_SFC_SET_UPDATE_HEADER_AUTO),
 
-    ("SFC_FILE_TRUNCATE" , SFC_FILE_TRUNCATE),
+    ("SFC_FILE_TRUNCATE" , C_SFC_FILE_TRUNCATE),
 
-    ("SFC_SET_RAW_START_OFFSET" , SFC_SET_RAW_START_OFFSET),
+    ("SFC_SET_RAW_START_OFFSET" , C_SFC_SET_RAW_START_OFFSET),
 
-    ("SFC_SET_DITHER_ON_WRITE" , SFC_SET_DITHER_ON_WRITE),
-    ("SFC_SET_DITHER_ON_READ" , SFC_SET_DITHER_ON_READ),
+    ("SFC_SET_DITHER_ON_WRITE" , C_SFC_SET_DITHER_ON_WRITE),
+    ("SFC_SET_DITHER_ON_READ" , C_SFC_SET_DITHER_ON_READ),
 
-    ("SFC_GET_DITHER_INFO_COUNT" , SFC_GET_DITHER_INFO_COUNT),
-    ("SFC_GET_DITHER_INFO" , SFC_GET_DITHER_INFO),
+    ("SFC_GET_DITHER_INFO_COUNT" , C_SFC_GET_DITHER_INFO_COUNT),
+    ("SFC_GET_DITHER_INFO" , C_SFC_GET_DITHER_INFO),
 
-    ("SFC_GET_EMBED_FILE_INFO" , SFC_GET_EMBED_FILE_INFO),
+    ("SFC_GET_EMBED_FILE_INFO" , C_SFC_GET_EMBED_FILE_INFO),
 
-    ("SFC_SET_CLIPPING" , SFC_SET_CLIPPING),
-    ("SFC_GET_CLIPPING" , SFC_GET_CLIPPING),
+    ("SFC_SET_CLIPPING" , C_SFC_SET_CLIPPING),
+    ("SFC_GET_CLIPPING" , C_SFC_GET_CLIPPING),
 
-    ("SFC_GET_INSTRUMENT" , SFC_GET_INSTRUMENT),
-    ("SFC_SET_INSTRUMENT" , SFC_SET_INSTRUMENT),
+    ("SFC_GET_INSTRUMENT" , C_SFC_GET_INSTRUMENT),
+    ("SFC_SET_INSTRUMENT" , C_SFC_SET_INSTRUMENT),
 
-    ("SFC_GET_LOOP_INFO" , SFC_GET_LOOP_INFO),
+    ("SFC_GET_LOOP_INFO" , C_SFC_GET_LOOP_INFO),
 
-    ("SFC_GET_BROADCAST_INFO" , SFC_GET_BROADCAST_INFO),
-    ("SFC_SET_BROADCAST_INFO" , SFC_SET_BROADCAST_INFO),
+    ("SFC_GET_BROADCAST_INFO" , C_SFC_GET_BROADCAST_INFO),
+    ("SFC_SET_BROADCAST_INFO" , C_SFC_SET_BROADCAST_INFO),
     )
     
 
@@ -390,20 +395,20 @@ commands_id_to_name = dict([(id, com) for com, id in _commands_to_id_tuple])
 # most recent libsndfile version. STrings will be filtered according to SF_STR_LAST
 
 _stringtype_to_id_tuple = (
-    ("SF_STR_TITLE", SF_STR_TITLE),
-    ("SF_STR_COPYRIGHT", SF_STR_COPYRIGHT),
-    ("SF_STR_SOFTWARE", SF_STR_SOFTWARE),
-    ("SF_STR_ARTIST", SF_STR_ARTIST),
-    ("SF_STR_COMMENT", SF_STR_COMMENT),
-    ("SF_STR_DATE", SF_STR_DATE),
-    ("SF_STR_ALBUM", SF_STR_ALBUM),
-    ("SF_STR_LICENSE", SF_STR_LICENSE),
-    ("SF_STR_TRACKNUMBER", SF_STR_TRACKNUMBER),
-    ("SF_STR_GENRE", SF_STR_GENRE),
+    ("SF_STR_TITLE", C_SF_STR_TITLE),
+    ("SF_STR_COPYRIGHT", C_SF_STR_COPYRIGHT),
+    ("SF_STR_SOFTWARE", C_SF_STR_SOFTWARE),
+    ("SF_STR_ARTIST", C_SF_STR_ARTIST),
+    ("SF_STR_COMMENT", C_SF_STR_COMMENT),
+    ("SF_STR_DATE", C_SF_STR_DATE),
+    ("SF_STR_ALBUM", C_SF_STR_ALBUM),
+    ("SF_STR_LICENSE", C_SF_STR_LICENSE),
+    ("SF_STR_TRACKNUMBER", C_SF_STR_TRACKNUMBER),
+    ("SF_STR_GENRE", C_SF_STR_GENRE),
     )
 
-stringtype_name_to_id = dict(_stringtype_to_id_tuple[:SF_STR_LAST+1])
-stringtype_id_to_name = dict([(id, com) for com, id in _stringtype_to_id_tuple[:SF_STR_LAST+1]])
+stringtype_name_to_id = dict(_stringtype_to_id_tuple[:C_SF_STR_LAST+1])
+stringtype_id_to_name = dict([(id, com) for com, id in _stringtype_to_id_tuple[:C_SF_STR_LAST+1]])
 
 
 def get_sndfile_version():
@@ -413,7 +418,7 @@ def get_sndfile_version():
     cdef int status
     cdef char buffer[256]
 
-    st = sf_command(NULL, SFC_GET_LIB_VERSION, buffer, 256)
+    st = sf_command(NULL, C_SFC_GET_LIB_VERSION, buffer, 256)
     version = buffer
     
     # Get major, minor and micro from version
@@ -457,9 +462,9 @@ def get_sndfile_encodings(major):
         # Handle the case where libsndfile supports an encoding we don't
         if i not in encoding_id_to_name:
             warnings.warn("Encoding {0:x} supported by libsndfile but not by PySndfile"
-                          .format(i & SF_FORMAT_SUBMASK))
+                          .format(i & C_SF_FORMAT_SUBMASK))
         else:
-            enc.append(encoding_id_to_name[i & SF_FORMAT_SUBMASK])
+            enc.append(encoding_id_to_name[i & C_SF_FORMAT_SUBMASK])
     return enc
 
 cdef get_sub_formats_for_major(int major):
@@ -472,7 +477,7 @@ cdef get_sub_formats_for_major(int major):
     cdef SF_FORMAT_INFO info
     cdef SF_INFO sfinfo
 
-    sf_command (NULL, SFC_GET_FORMAT_SUBTYPE_COUNT, &nsub, sizeof(int))
+    sf_command (NULL, C_SFC_GET_FORMAT_SUBTYPE_COUNT, &nsub, sizeof(int))
 
     subs = []
     # create a valid sfinfo struct
@@ -480,8 +485,8 @@ cdef get_sub_formats_for_major(int major):
     sfinfo.samplerate = 44100
     for i in range(nsub):
         info.format = i
-        sf_command (NULL, SFC_GET_FORMAT_SUBTYPE, &info, sizeof (info))
-        sfinfo.format = (major & SF_FORMAT_TYPEMASK) | info.format
+        sf_command (NULL, C_SFC_GET_FORMAT_SUBTYPE, &info, sizeof (info))
+        sfinfo.format = (major & C_SF_FORMAT_TYPEMASK) | info.format
         if sf_format_check(&sfinfo):
             subs.append(info.format)
 
@@ -495,16 +500,24 @@ cdef get_sndfile_formats_from_libsndfile():
     cdef int i
     cdef SF_FORMAT_INFO info
 
-    sf_command (NULL, SFC_GET_FORMAT_MAJOR_COUNT, &nmajor, sizeof(int))
+    sf_command (NULL, C_SFC_GET_FORMAT_MAJOR_COUNT, &nmajor, sizeof(int))
 
     majors = []
     for i in xrange(nmajor):
         info.format = i
-        sf_command (NULL, SFC_GET_FORMAT_MAJOR, &info, sizeof (info))
+        sf_command (NULL, C_SFC_GET_FORMAT_MAJOR, &info, sizeof (info))
         majors.append(info.format)
 
     return majors
 
+def get_sf_log():
+    """
+    retrieve internal log from libsndfile, notably useful in case of errors.
+    """
+    cdef char buf[2048]
+    sf_command (NULL, C_SFC_GET_LOG_INFO, &buf, sizeof (buf))
+    return str(buf)
+    
 def get_sndfile_formats():
     """Return lists of available file formats supported by libsndfile and pysndfile."""
     fmt = []
@@ -512,9 +525,9 @@ def get_sndfile_formats():
         # Handle the case where libsndfile supports a format we don't
         if not i in fileformat_id_to_name:
             warnings.warn("Format {0:x} supported by libsndfile but not "
-                          "yet supported by PySndfile".format(i & SF_FORMAT_TYPEMASK))
+                          "yet supported by PySndfile".format(i & C_SF_FORMAT_TYPEMASK))
         else:
-            fmt.append(fileformat_id_to_name[i & SF_FORMAT_TYPEMASK])
+            fmt.append(fileformat_id_to_name[i & C_SF_FORMAT_TYPEMASK])
     return fmt
 
 cdef class PySndfile:
@@ -562,7 +575,7 @@ cdef class PySndfile:
     cdef int fd
     cdef char* filename
     def __cinit__(self, filename, mode='r', int format=0,
-                  int channels=0, int samplerate=0, *args, **kwrds):
+                    int channels=0, int samplerate=0, *args, **kwrds):
         cdef int sfmode
         cdef const char*cfilename
         cdef int fh
@@ -573,13 +586,13 @@ cdef class PySndfile:
 
         # Check the mode is one of the expected values
         if mode == 'r':
-            sfmode = SFM_READ
+            sfmode = C_SFM_READ
         elif mode == 'w':
-            sfmode = SFM_WRITE
+            sfmode = C_SFM_WRITE
             if format is 0:
                 raise ValueError( "PySndfile::opening for writing requires a format argument !")
         elif mode == 'rw':
-            sfmode  = SFM_RDWR
+            sfmode  = C_SFM_RDWR
             if format is 0:
                 raise ValueError( "PySndfile::opening for writing requires a format argument !")
         else:
@@ -654,7 +667,7 @@ cdef class PySndfile:
         """
         if self.thisPtr == NULL or not self.thisPtr:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
-        return self.thisPtr.command(SFC_SET_CLIPPING, NULL, arg);
+        return self.thisPtr.command(C_SFC_SET_CLIPPING, NULL, arg);
              
     def writeSync(self):
         """\
@@ -679,8 +692,8 @@ cdef class PySndfile:
         repstr  += ["Sample rate : %d" % self.thisPtr.samplerate()]
         repstr  += ["Frames      : %d" % self.thisPtr.frames()]
         repstr  += ["Raw Format  : %#010x" % self.thisPtr.format()]
-        repstr  += ["File format : %s" % fileformat_id_to_name[self.thisPtr.format()& SF_FORMAT_TYPEMASK]]
-        repstr  += ["Encoding    : %s" % encoding_id_to_name[self.thisPtr.format()& SF_FORMAT_SUBMASK]]
+        repstr  += ["File format : %s" % fileformat_id_to_name[self.thisPtr.format()& C_SF_FORMAT_TYPEMASK]]
+        repstr  += ["Encoding    : %s" % encoding_id_to_name[self.thisPtr.format()& C_SF_FORMAT_SUBMASK]]
         #repstr  += ["Endianness  : %s" % ]
         #repstr  += "Sections    : %d\n" % self._sfinfo.sections
         repstr  += ["Seekable    : %s\n" % self.thisPtr.seekable()]
@@ -807,12 +820,12 @@ cdef class PySndfile:
         input = np.require(input, requirements = 'C')
 
         if input.dtype == np.float64:
-            if (self.thisPtr.format() & SF_FORMAT_SUBMASK) not in [SF_FORMAT_FLOAT, SF_FORMAT_DOUBLE]:
+            if (self.thisPtr.format() & C_SF_FORMAT_SUBMASK) not in [C_SF_FORMAT_FLOAT, C_SF_FORMAT_DOUBLE]:
                 if (np.max(np.abs(input.flat)) > 1.) :
                     warnings.warn("write_frames::warning::audio data has been clipped while writing to file {0}.".format(self.filename))
             res = self.thisPtr.writef(<double*>input.data, nframes)
         elif input.dtype == np.float32:
-            if (self.thisPtr.format() & SF_FORMAT_SUBMASK) not in [SF_FORMAT_FLOAT, SF_FORMAT_DOUBLE]:
+            if (self.thisPtr.format() & C_SF_FORMAT_SUBMASK) not in [C_SF_FORMAT_FLOAT, C_SF_FORMAT_DOUBLE]:
                 if (np.max(np.abs(input.flat)) > 1.) :
                     warnings.warn("write_frames::warning::audio data has been clipped while writing to file {0}.".format(self.filename))
             res = self.thisPtr.writef(<float*>input.data, nframes)
@@ -844,7 +857,7 @@ cdef class PySndfile:
         """
         if self.thisPtr == NULL or not self.thisPtr:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
-        return fileformat_id_to_name[self.thisPtr.format() & SF_FORMAT_TYPEMASK]
+        return fileformat_id_to_name[self.thisPtr.format() & C_SF_FORMAT_TYPEMASK]
 
     def encoding_str(self) :
         """
@@ -854,7 +867,7 @@ cdef class PySndfile:
         """
         if self.thisPtr == NULL or not self.thisPtr:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
-        return encoding_id_to_name[self.thisPtr.format() & SF_FORMAT_SUBMASK]
+        return encoding_id_to_name[self.thisPtr.format() & C_SF_FORMAT_SUBMASK]
 
     def channels(self) :
         """
@@ -901,7 +914,7 @@ cdef class PySndfile:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
 
         str_dict = {}
-        for ii  in xrange(SF_STR_FIRST, SF_STR_LAST):
+        for ii  in xrange(C_SF_STR_FIRST, C_SF_STR_LAST):
             string_value = self.thisPtr.getString(ii)
             if string_value != NULL:
                 str_dict [stringtype_id_to_name[ii]] = string_value
@@ -941,7 +954,7 @@ cdef class PySndfile:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
         return self.thisPtr.error()
 
-    def seek(self, sf_count_t offset, int whence=SEEK_SET, mode='rw'):
+    def seek(self, sf_count_t offset, int whence=C_SEEK_SET, mode='rw'):
         """\
         Seek into audio file: similar to python seek function, taking only in
         account audio data.
@@ -982,10 +995,10 @@ cdef class PySndfile:
             # Update both read and write pointers
             pos = self.thisPtr.seek(offset, whence)
         elif mode == 'r':
-            whence = whence | SFM_READ
+            whence = whence | C_SFM_READ
             pos = self.thisPtr.seek(offset, whence)
         elif mode == 'w':
-            whence = whence | SFM_WRITE
+            whence = whence | C_SFM_WRITE
             pos = self.thisPtr.seek(offset, whence)
         else:
             raise ValueError("mode should be one of 'r', 'w' or 'rw' only")
@@ -1000,7 +1013,7 @@ cdef class PySndfile:
         rewind read/write/read and write position given by mode to start of file
         """
         cdef sf_count_t pos
-        cdef int whence = SEEK_SET     
+        cdef int whence = C_SEEK_SET     
 
         if self.thisPtr == NULL or not self.thisPtr:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
@@ -1009,10 +1022,10 @@ cdef class PySndfile:
             # Update both read and write pointers
             pos = self.thisPtr.seek(0, whence)
         elif mode == 'r':
-            whence = whence | SFM_READ
+            whence = whence | C_SFM_READ
             pos = self.thisPtr.seek(0, whence)
         elif mode == 'w':
-            whence = whence | SFM_WRITE
+            whence = whence | C_SFM_WRITE
             pos = self.thisPtr.seek(0, whence)
         else:
             raise ValueError("mode should be one of 'r', 'w' or 'rw' only")

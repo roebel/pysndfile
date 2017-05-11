@@ -58,7 +58,7 @@ enc_norm_map = {
     "pcm32": np.float64(2**31),
     }
     
-def read(name, end=None, start=0, dtype=np.float64) :
+def read(name, end=None, start=0, dtype=np.float64, return_format=False) :
     """read samples from arbitrary sound files.
     return data, samplerate and encoding string
 
@@ -83,4 +83,6 @@ def read(name, end=None, start=0, dtype=np.float64) :
     #     else :
     #         raise IOError("sndio.read::error::normalization of compressed pcm data is not supported")
 
+    if return_format:
+        return ff, sf.samplerate(), enc, sf.major_format_str()
     return ff, sf.samplerate(), enc
