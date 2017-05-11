@@ -26,7 +26,16 @@ The implementation is based on a slightly modified version of the header sndfile
 
 ##Changes ##
 
-### Version 0.2.11 ###
+### Version 0.2.12 (2017-05-11) ###
+
+ * fixed problem in sndio.read:
+  Optionally return full information required to store the file using the corresponding write function
+ * _pysndfile.pyx:
+  add constants SF_FORMAT_TYPEMASK and SF_FORMAT_SUBMASK, SF_FORMAT_ENDMASK to python interface
+  Added new function for getting internal sf log in case of errors.
+  Improved consistency of variable definitions by means of retrieving them automatically from sndfile.h
+
+### Version 0.2.11 (2015-05-17) ###
     
  * setup.py: fixed problem with compilers not providing the compiler attribute (MSVC) (Thanks to Felix Hanke for reporting the problem)
  * _pysndfile.pyx: fixed problem when deriving from PySndfile using a modified list of __init__ parameters in the derived class
