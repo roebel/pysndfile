@@ -1,3 +1,10 @@
+Version_0.2.13 (2017-06-03)
+---------------------------
+2017-05-11 Roebel (03caffc)
+	* fixed problem when using "~" for representing $HOME in filenames:
+	 -  replaced using cython getenv by os.environ to avoid
+	type incompatibilities in python3
+
 Version_0.2.12 (2017-05-11)
 ---------------------------
 2017-05-11 Roebel (5d4d543)
