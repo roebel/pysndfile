@@ -24,17 +24,15 @@
 
 # cython: embedsignature=True
 
-
 import numpy as np
 import warnings
 import os
 
 cimport numpy as cnp
 cimport libc.string
-cimport libc.stdlib
 
 
-_pysndfile_version=(0,2,12)
+_pysndfile_version=(0,2,13)
 def get_pysndfile_version():
     """
     return tuple describing the version opf pysndfile
@@ -606,8 +604,7 @@ cdef class PySndfile:
             self.fd = filename
         else:
             if len(filename)> 2 and filename[0] == "~" and filename[1] == "/":
-                filename = os.path.join(libc.stdlib.getenv('HOME'),
-                                        filename[2:])
+                filename = os.path.join(os.environ['HOME'], filename[2:])
             if isinstance(filename, unicode):
                 filename = filename.encode("UTF-8")
             cfilename = filename

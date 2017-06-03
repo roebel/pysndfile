@@ -26,6 +26,12 @@ The implementation is based on a slightly modified version of the header sndfile
 
 ##Changes ##
 
+### Version 0.2.13 (2017-06-03) ###
+
+ * fixed using "~" for representing $HOME in filenames:
+ * _pysndfile.pyx: replaced using cython getenv by os.environ to avoid
+    type incompatibilities in python3 
+
 ### Version 0.2.12 (2017-05-11) ###
 
  * fixed problem in sndio.read:
