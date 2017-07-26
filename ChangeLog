@@ -1,3 +1,10 @@
+Version_1.0.0 (2017-07-26)
+---------------------------
+2017-07-26 Roebel
+
+ * No interface changes. but after a long time of successful use under
+	python 2 and python 3 I decided to move to a 1.0.0 release.
+
 Version_0.2.15 (2017-07-26)
 ---------------------------
 2017-07-26 Roebel 
