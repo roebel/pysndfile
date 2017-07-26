@@ -6,3 +6,5 @@ recursive-include docs *.txt *.md
 include pysndfile.hh
 include _pysndfile.pyx
 include _pysndfile_precythonized.cpp
+include tests/*.wav
+include tests/*.py

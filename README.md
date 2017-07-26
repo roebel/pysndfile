@@ -26,6 +26,11 @@ The implementation is based on a slightly modified version of the header sndfile
 
 ## Changes
 
+### Version_0.2.15 (2017-07-26)
+
+ * fixed get_sndfile_version function and tests script:
+	adapted char handling to be compatible with python 3.
+
 ### Version 0.2.14 (2017-07-26)
 
  * fixed filename display in warning messages due to invalid pointer:

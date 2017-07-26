@@ -8,8 +8,8 @@ import pysndfile
 
 mydir = os.path.dirname(__file__)
 
-print(get_sndfile_version())
-
+print("pysndfile version:",get_pysndfile_version())
+print("libsndfile version:",get_sndfile_version())
 
 majors = get_sndfile_formats()
 print( "majors", majors)
