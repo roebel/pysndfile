@@ -29,10 +29,9 @@ import warnings
 import os
 
 cimport numpy as cnp
-cimport libc.string
+from libcpp.string cimport string
 
-
-_pysndfile_version=(0,2,13)
+_pysndfile_version=(0,2,14)
 def get_pysndfile_version():
     """
     return tuple describing the version opf pysndfile
@@ -571,7 +570,7 @@ cdef class PySndfile:
 
     cdef SndfileHandle *thisPtr
     cdef int fd
-    cdef char* filename
+    cdef string filename
     def __cinit__(self, filename, mode='r', int format=0,
                     int channels=0, int samplerate=0, *args, **kwrds):
         cdef int sfmode
@@ -600,21 +599,24 @@ cdef class PySndfile:
         if isinstance(filename, int):
             fh = filename
             self.thisPtr = new SndfileHandle(fh, 0, sfmode, format, channels, samplerate)
-            self.filename = ""
+            self.filename = b""
             self.fd = filename
         else:
             if len(filename)> 2 and filename[0] == "~" and filename[1] == "/":
                 filename = os.path.join(os.environ['HOME'], filename[2:])
             if isinstance(filename, unicode):
-                filename = filename.encode("UTF-8")
-            cfilename = filename
-            self.thisPtr = new SndfileHandle(cfilename, sfmode, format, channels, samplerate)
+                filename = bytes(filename, "UTF-8")
             self.filename = filename
+            self.thisPtr = new SndfileHandle(self.filename.c_str(), sfmode, format, channels, samplerate)
 
         if self.thisPtr == NULL or self.thisPtr.rawHandle() == NULL:
-            raise IOError("PySndfile::error while opening {0}\n\t->{1}".format(str(filename), self.thisPtr.strError()))
+            raise IOError("PySndfile::error while opening {0}\n\t->{1}".format(self.filename,
+                                                                                   self.thisPtr.strError()))
 
         self.set_auto_clipping(True)
+
+    def get_name(self):
+        return self.filename
 
     def __dealloc__(self):
         del self.thisPtr
@@ -684,7 +686,7 @@ cdef class PySndfile:
         if not self.fd == -1:
             repstr += ["File        : %d (opened by file descriptor)" % self.fd]
         else:
-            repstr += ["File        : %s" % self.filename]
+            repstr += ["File        : %s" % self.filename.decode("UTF-8")]
         repstr  += ["Channels    : %d" % self.thisPtr.channels()]
         repstr  += ["Sample rate : %d" % self.thisPtr.samplerate()]
         repstr  += ["Frames      : %d" % self.thisPtr.frames()]
@@ -819,12 +821,12 @@ cdef class PySndfile:
         if input.dtype == np.float64:
             if (self.thisPtr.format() & C_SF_FORMAT_SUBMASK) not in [C_SF_FORMAT_FLOAT, C_SF_FORMAT_DOUBLE]:
                 if (np.max(np.abs(input.flat)) > 1.) :
-                    warnings.warn("write_frames::warning::audio data has been clipped while writing to file {0}.".format(self.filename))
+                    warnings.warn("write_frames::warning::audio data has been clipped while writing to file {0}.".format(self.filename.decode("UTF-8")))
             res = self.thisPtr.writef(<double*>input.data, nframes)
         elif input.dtype == np.float32:
             if (self.thisPtr.format() & C_SF_FORMAT_SUBMASK) not in [C_SF_FORMAT_FLOAT, C_SF_FORMAT_DOUBLE]:
                 if (np.max(np.abs(input.flat)) > 1.) :
-                    warnings.warn("write_frames::warning::audio data has been clipped while writing to file {0}.".format(self.filename))
+                    warnings.warn("write_frames::warning::audio data has been clipped while writing to file {0}.".format(self.filename.decode("UTF-8")))
             res = self.thisPtr.writef(<float*>input.data, nframes)
         elif input.dtype == np.int32:
             res = self.thisPtr.writef(<int*>input.data, nframes)

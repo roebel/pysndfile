@@ -26,6 +26,11 @@ The implementation is based on a slightly modified version of the header sndfile
 
 ##Changes ##
 
+### Version 0.2.14 (2017-07-26) ###
+
+ * fixed filename display in warning messages due to invalid pointer:
+    replaced char* by std::string
+
 ### Version 0.2.13 (2017-06-03) ###
 
  * fixed using "~" for representing $HOME in filenames:

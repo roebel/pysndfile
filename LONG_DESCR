@@ -57,6 +57,12 @@ Sndfile.
 Changes
 -------
 
+Version 0.2.14 (2017-07-26)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  fixed filename display in warning messages due to invalid pointer:
+   replaced char\* by std::string
+
 Version 0.2.13 (2017-06-03)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
