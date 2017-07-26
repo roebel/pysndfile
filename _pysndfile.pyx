@@ -31,7 +31,7 @@ import os
 cimport numpy as cnp
 from libcpp.string cimport string
 
-_pysndfile_version=(0,2,14)
+_pysndfile_version=(0,2,15)
 def get_pysndfile_version():
     """
     return tuple describing the version opf pysndfile
@@ -416,7 +416,7 @@ def get_sndfile_version():
     cdef char buffer[256]
 
     st = sf_command(NULL, C_SFC_GET_LIB_VERSION, buffer, 256)
-    version = buffer
+    version = buffer.decode("UTF-8")
     
     # Get major, minor and micro from version
     # Template: libsndfile-X.X.XpreX with preX being optional
