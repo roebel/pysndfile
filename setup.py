@@ -105,14 +105,14 @@ for line in open("_pysndfile.pyx") :
 # README file and 2) it's easier to type in the README file than to put a raw
 # string in below ...
 def update_long_descr():
-    README_path     = os.path.join(os.path.dirname(__file__), 'README.txt')
+    README_path     = os.path.join(os.path.dirname(__file__), 'README.md')
     LONG_DESCR_path = os.path.join(os.path.dirname(__file__), 'LONG_DESCR')
     if ((not os.path.exists(LONG_DESCR_path))
                           or os.path.getmtime(README_path) > os.path.getmtime(LONG_DESCR_path)):
         try :
             subprocess.check_call(["pandoc", "-f", "markdown", '-t', 'rst', '-o', LONG_DESCR_path, README_path], shell=False)
         except (OSError, subprocess.CalledProcessError) :
-            print("setup.py::error:: pandoc command failed. Cannot update LONG_DESCR.txt from modified README.txt")
+            print("setup.py::error:: pandoc command failed. Cannot update LONG_DESCR.txt from modified README.md")
     return open(LONG_DESCR_path).read()
 
 def read_long_descr():
