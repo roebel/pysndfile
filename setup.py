@@ -108,13 +108,14 @@ def update_long_descr():
     README_path     = os.path.join(os.path.dirname(__file__), 'README.md')
     LONG_DESCR_path = os.path.join(os.path.dirname(__file__), 'LONG_DESCR')
     if ((not os.path.exists(LONG_DESCR_path))
-                          or os.path.getmtime(README_path) > os.path.getmtime(LONG_DESCR_path)):
+            or os.path.getmtime(README_path) > os.path.getmtime(LONG_DESCR_path)):
         try :
             subprocess.check_call(["pandoc", "-f", "markdown", '-t', 'rst', '-o', LONG_DESCR_path, README_path], shell=False)
         except (OSError, subprocess.CalledProcessError) :
             print("setup.py::error:: pandoc command failed. Cannot update LONG_DESCR.txt from modified README.md")
     return open(LONG_DESCR_path).read()
 
+# read should not be used because it does update LONG_DESCR if required.
 def read_long_descr():
     LONG_DESCR_path = os.path.join(os.path.dirname(__file__), 'LONG_DESCR')
     return open(LONG_DESCR_path).read()
@@ -130,7 +131,7 @@ setup(
     author = "A. Roebel",
     author_email = "axel.dot.roebel@ircam.dot.fr",
     description = "pysndfile provides PySndfile, a Cython wrapper class for reading/writing soundfiles using libsndfile",
-    long_description = read_long_descr(),
+    long_description = update_long_descr(),
     license = "LGPL",
     url = "http://forge.ircam.fr/p/pysndfile",
     keywords = "soundfile,audiofile",

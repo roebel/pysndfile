@@ -26,6 +26,12 @@ The implementation is based on a slightly modified version of the header sndfile
 
 ## Changes
 
+### Version_1.0.0 (2017-07-26)
+
+ * Updated version number to 1.0.0:
+  - pysndfile has now been used for quiet a while under python 3 and most problems seem to be fixed.
+  - changed setup.py to avoid uploading outdated LONG_DESC file.
+  
 ### Version_0.2.15 (2017-07-26)
 
  * fixed get_sndfile_version function and tests script:
