@@ -26,6 +26,11 @@ The implementation is based on a slightly modified version of the header sndfile
 
 ## Changes
 
+### Version_1.1.0 (2018-02-13)
+
+ * support returning extended sndfile info covering number of frames and number of channels 
+   from function sndio.get_info.
+ 
 ### Version_1.0.0 (2017-07-26)
 
  * Updated version number to 1.0.0:

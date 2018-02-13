@@ -57,6 +57,12 @@ Sndfile.
 Changes
 -------
 
+Version\_1.1.0 (2018-02-13)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  support returning extended sndfile info covering number of frames and
+   number of channels from function sndio.get\_info.
+
 Version\_1.0.0 (2017-07-26)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

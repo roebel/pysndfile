@@ -1,3 +1,9 @@
+Version_1.1.0 (2018-02-13)
+---------------------------
+
+ * changed sndio.get_info function to be able to return addtional info about number of frames and
+	number of channels.
+
 Version_1.0.0 (2017-07-26)
 ---------------------------
 2017-07-26 Roebel

@@ -21,11 +21,17 @@
 from pysndfile import PySndfile, construct_format
 import numpy as np
 
-def get_info(name) :
+def get_info(name, extended_info=False) :
     """
-    retrieve samplerate, encoding (str) and format informationfor sndfile name
+    return samplerate, encoding (str), format information, for sound file
+    in case extended_info is set then also the number of frames and number of channels in the sound file
+    are returned
+    
+    return samplerate, encoding (str), format information(, number of frames, and number of channels)
     """
     sf  = PySndfile(name)
+    if extended_info:
+        return sf.samplerate(), sf.encoding_str(), sf.major_format_str(), sf.frames(), sf.channels()
     return sf.samplerate(), sf.encoding_str(), sf.major_format_str()
 
 def write(name, data, rate=44100, format="aiff", enc='pcm16') :
