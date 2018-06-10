@@ -54,6 +54,23 @@ sndfile.hh that is distributed with libsndfile. The only modification is
 the addition of a methode querying the seekable state of the open
 Sndfile.
 
+Installation
+------------
+
+pysndfile requires availability of libsndfile
+http://www.mega-nerd.com/libsndfile/.
+
+If the libsndfile (header and library) is not installed in the default
+compiler search path you have to specify the library and include
+directories to be added to this search paths. For this you can use
+either the command line options --sndfile-libdir and --sndfile-incdir
+that are available for the build\_ext command or specify these two
+parameters in the setup.cfg file.
+
+Besides this the setup is pretty standard. Note, that the cython source
+\_pysndfile.pyx will be compiled with cython only if cython is
+installed.
+
 Documentation
 -------------
 
