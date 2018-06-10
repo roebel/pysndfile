@@ -167,7 +167,7 @@ setup(
     description = "pysndfile provides PySndfile, a Cython wrapper class for reading/writing soundfiles using libsndfile",
     long_description = update_long_descr(),
     license = "LGPL",
-    url = "http://forge.ircam.fr/p/pysndfile",
+    url = "http://forge-2.ircam.fr/roebel/pysndfile",
     keywords = "soundfile,audiofile",
     cmdclass = {
         'build_ext': build_ext_subclass,
