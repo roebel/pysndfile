@@ -54,3 +54,9 @@ sndfile.hh that is distributed with libsndfile. The only modification is
 the addition of a methode querying the seekable state of the open
 Sndfile.
 
+Documentation
+-------------
+
+Please see full documentation
+`here <https://pysndfile.readthedocs.io/>`__
+

@@ -54,8 +54,23 @@ sndfile.hh that is distributed with libsndfile. The only modification is
 the addition of a methode querying the seekable state of the open
 Sndfile.
 
+Documentation
+-------------
+
+Please see full documentation
+`here <https://pysndfile.readthedocs.io/>`__
+
 Changes
 -------
+
+Version\_1.1.1 (2018-06-10)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+this update is purely administrative, no code changes
+
+-  moved project to IRCAM GitLab
+-  moved doc to ReadTheDoc
+-  fixed documentation.
 
 Version\_1.1.0 (2018-02-13)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
