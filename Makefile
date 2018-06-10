@@ -8,10 +8,10 @@ _pysndfile.cpp: _pysndfile.pyx pysndfile.hh
 	cython --cplus $<
 
 install:
-	python setup.py install
+	pip install .
 
 install-user:
-	python setup.py install --user
+	pip install . --user
 
 clean:
 	python setup.py clean -a

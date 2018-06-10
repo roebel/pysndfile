@@ -84,16 +84,14 @@ The implementation is based on a slightly modified version of the header sndfile
 
 ## Copyright
 
-Copyright (C) 2014 IRCAM
+Copyright (C) 2014-2018 IRCAM
 
 ## Author
 
 Axel Roebel
 
-## Credits:
+## Credits
 
-Erik de Castro Lopo: for [libsndfile](http://www.mega-nerd.com/libsndfile/)
-
-David Cournapeau: for a few ideas I gathered from [scikits.audiolab](http://cournape.github.io/audiolab/).
-
-The [Cython](http://cython.org) maintainers for the efficient means to write interface definitions in Cython.
+ * Erik de Castro Lopo: for [libsndfile](http://www.mega-nerd.com/libsndfile/)
+ * David Cournapeau: for a few ideas I gathered from [scikits.audiolab](http://cournape.github.io/audiolab/).
+ * The [Cython](http://cython.org) maintainers for the efficient means to write interface definitions in Cython.

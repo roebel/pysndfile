@@ -1,4 +1,4 @@
-pysndfile
+Modules
 =========
 
 .. toctree::

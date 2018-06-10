@@ -15,6 +15,15 @@ from distutils.core import Extension
 from distutils.command.build_ext import build_ext
 from distutils.command.sdist import sdist 
 
+import os
+import sys
+
+try : 
+    pp=[pd for pd in sys.path if not os.path.exists(pd) or not os.path.samefile(pd , ".")]
+    sys.path=pp
+except Exception:
+    pass
+
 ext_modules = [Extension("_pysndfile", ["_pysndfile.pyx"],
                             libraries = ["sndfile"],
                             include_dirs = [np.get_include()],
@@ -111,8 +120,33 @@ def update_long_descr():
             or os.path.getmtime(README_path) > os.path.getmtime(LONG_DESCR_path)):
         try :
             subprocess.check_call(["pandoc", "-f", "markdown", '-t', 'rst', '-o', LONG_DESCR_path, README_path], shell=False)
-        except (OSError, subprocess.CalledProcessError) :
-            print("setup.py::error:: pandoc command failed. Cannot update LONG_DESCR.txt from modified README.md")
+        except (OSError, subprocess.CalledProcessError) as ex:
+            print("setup.py::error:: pandoc command failed. Cannot update LONG_DESCR.txt from modified README.md" + str(
+                ex))
+
+        # prepare inpiut for documentation
+        with open(LONG_DESCR_path) as infile:
+            with open(os.path.join("doc", "source", "LONG_DESCR.rst"), "w") as outfile:
+                for ind, line in enumerate(infile):
+                    if ind == 0:
+                        # extend title and prepare underline
+                        outfile.write("pysndfile intro\n==========")
+                    elif line.startswith("Changes"):
+                        break
+                    else:
+                        outfile.write(line)
+            with open(os.path.join("doc", "source", "Changes.rst"), "w") as outfile:
+                outfile.write(line)
+                for ind, line in enumerate(infile):
+                    if line.startswith("Copyright"):
+                        break
+                    outfile.write(line)
+
+            with open(os.path.join("doc", "source", "GeneralInfo.rst"), "w") as outfile:
+                outfile.write(line)
+                for line in infile:
+                    outfile.write(line)
+
     return open(LONG_DESCR_path).read()
 
 # read should not be used because it does update LONG_DESCR if required.
