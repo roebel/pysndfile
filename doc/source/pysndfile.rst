@@ -1,6 +1,11 @@
 pysndfile package
 =================
 
+.. automodule:: pysndfile
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -21,10 +26,3 @@ pysndfile.sndio module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: pysndfile
-    :members:
-    :undoc-members:
-    :show-inheritance:
