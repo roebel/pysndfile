@@ -1,3 +1,13 @@
+"""
+sndio is a simple interface for reading and writing arbitrary sound files.
+The module contains 3 functions.
+
+|  **functions:**
+|     :meth:`pysndfile.sndio.get_info`:: retrieve information from a sound file.
+|     :meth:`pysndfile.sndio.read`:: read data and meta data from sound file.
+|     :meth:`pysndfile.sndio.write`:: create a sound file from a given numpy array.
+"""
+
 #
 # Copyright (C) 2014 IRCAM
 #
@@ -18,16 +28,23 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with pysndfile.  If not, see <http://www.gnu.org/licenses/>.
 #
+
+
+
 from pysndfile import PySndfile, construct_format
 import numpy as np
 
 def get_info(name, extended_info=False) :
     """
-    return samplerate, encoding (str), format information, for sound file
-    in case extended_info is set then also the number of frames and number of channels in the sound file
-    are returned
-    
-    return samplerate, encoding (str), format information(, number of frames, and number of channels)
+    retrieve information from a sound file
+
+    :param name: sndfile name
+    :param extended_info: bool
+
+    :return: 3 or 5 tuple with meta information read from the soundfile
+       in case extended_info is False a 3-tuple comprising samplerate, encoding (str), major format  is returned
+       in case extended_info is True a 5-tuple comprising additionally the number of frames and the nuimber of channels
+            is returned.
     """
     sf  = PySndfile(name)
     if extended_info:
@@ -40,6 +57,15 @@ def write(name, data, rate=44100, format="aiff", enc='pcm16') :
     valid format strings are all the keys in the dict pysndfile.fileformat_name_to_id
     valid encodings are those that are supported by the selected format
     from the list of keys in pysndfile.encoding_name_to_id.
+
+    :param name: sndfile name
+    :param data: array containing sound data. For mono files an 1d array can be given, for multi channel sound files
+                sound frames are in the rows and data channels in the columns.
+    :param rate: sample rate (int) default s to 44100
+    :param format: sndfile major format (str) default=aiff
+    :param enc: sndfile encoding (str) default=pcm16
+
+    :return:  number of sample frames written (int)
     """
     nchans = len(data.shape)
     if nchans == 2 :
@@ -65,11 +91,20 @@ enc_norm_map = {
     }
     
 def read(name, end=None, start=0, dtype=np.float64, return_format=False) :
-    """read samples from arbitrary sound files.
-    return data, samplerate and encoding string
-
-    returns subset of samples as specified by start and end arguments (Def all samples)
+    """
+    read samples from arbitrary sound files. May return subsets of samples as specified by start and end arguments (Def all samples)
     normalizes samples to [-1,1] if the datatype is a floating point type
+
+    :param name: (str) sndfile name
+    :param end: (int) last sample frame to read default=None -> read all samples
+    :param start: (int) first sample frame to read default=0
+    :param dtype: (numpy.dtype) data type of the numpy array that will be returned.
+    :param return_format: (bool) if set then the return tuple will contain an additional element containing the sound file major format
+
+    :return: 3 or 4-tuple containing data (1d for mon sounds 2d for multi channel sounds, where channels are in the columns),
+                   samplerate and encoding string, in case reutrn_format is True then the 4th element contains the major
+                   format of the sound file, which can be used to recreate a sound file with an identical format.
+
     """
     sf  = PySndfile(name)
     enc = sf.encoding_str()

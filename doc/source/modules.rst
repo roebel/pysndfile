@@ -1,7 +1,7 @@
-pysndfile
-=========
+pysndfile package content
+==========================
 
 .. toctree::
    :maxdepth: 4
 
-   pysndfile
+   pysndfile-package
