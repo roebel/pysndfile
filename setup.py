@@ -27,9 +27,9 @@ except Exception:
 
 compile_for_RTD =  "READTHEDOCS" in os.environ
 
-if not compile_for_RTD:
+if compile_for_RTD:
     ext_modules = [Extension("_pysndfile", ["_pysndfile.pyx"],
-                            libraries = ["sndfile"],
+                             define_macros=[('READTHEDOCS_ENV', '1')],
                             include_dirs = [np.get_include()],
                             language="c++")]
 else:
@@ -40,7 +40,7 @@ else:
 
 try :
     from Cython.Build import cythonize
-    ext_modules = cythonize(ext_modules )
+    ext_modules = cythonize(ext_modules, force=compile_for_RTD )
 except ImportError  :
     print("cythonize not available use pre_cythonized source")
     shutil.copy2("_pysndfile_precythonized.cpp", "_pysndfile.cpp")
