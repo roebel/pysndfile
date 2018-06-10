@@ -24,7 +24,16 @@ try :
 except Exception:
     pass
 
-ext_modules = [Extension("_pysndfile", ["_pysndfile.pyx"],
+
+compile_for_RTD =  "READTHEDOCS" in os.environ
+
+if not compile_for_RTD:
+    ext_modules = [Extension("_pysndfile", ["_pysndfile.pyx"],
+                            libraries = ["sndfile"],
+                            include_dirs = [np.get_include()],
+                            language="c++")]
+else:
+    ext_modules = [Extension("_pysndfile", ["_pysndfile.pyx"],
                             libraries = ["sndfile"],
                             include_dirs = [np.get_include()],
                             language="c++")]
@@ -82,11 +91,12 @@ class build_ext_subclass( build_ext ):
 
     def finalize_options(self) :
         build_ext.finalize_options(self)
-        if self.sndfile_libdir  is not None :
-            self.library_dirs.append(self.sndfile_libdir)
-            self.rpath.append(self.sndfile_libdir)
-        if self.sndfile_incdir  is not None :
-            self.include_dirs.append(self.sndfile_incdir)
+        if not compile_for_RTD:
+            if self.sndfile_libdir  is not None :
+                self.library_dirs.append(self.sndfile_libdir)
+                self.rpath.append(self.sndfile_libdir)
+            if self.sndfile_incdir  is not None :
+                    self.include_dirs.append(self.sndfile_incdir)
                 
     def build_extensions(self):
         #c = self.compiler.compiler_type
