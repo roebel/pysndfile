@@ -160,7 +160,7 @@ def update_long_descr():
 
     return open(LONG_DESCR_path).read()
 
-# read should not be used because it does update LONG_DESCR if required.
+# read should not be used because it does not update LONG_DESCR if required.
 def read_long_descr():
     LONG_DESCR_path = os.path.join(os.path.dirname(__file__), 'LONG_DESCR')
     return open(LONG_DESCR_path).read()
@@ -177,6 +177,7 @@ setup(
     author_email = "axel.dot.roebel@ircam.dot.fr",
     description = "pysndfile provides PySndfile, a Cython wrapper class for reading/writing soundfiles using libsndfile",
     long_description = update_long_descr(),
+    long_description_content_type='text/x-rstrst',
     license = "LGPL",
     url = " https://forge-2.ircam.fr/roebel/pysndfile.git",
     keywords = "soundfile,audiofile",

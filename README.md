@@ -41,7 +41,7 @@ Windows.
 
 ### compile with conda build recipe
 
-You can use the conda recipe [here]()https://github.com/roebel/conda_packages).
+You can use the conda recipe [here](https://github.com/roebel/conda_packages).
 This build recipe wil automatically download and compile libsndfile building pysndfile. 
 
 ### compile from sources
@@ -63,6 +63,11 @@ Please see full documentation [here](https://pysndfile.readthedocs.io/)
 
 ## Changes
 
+### Version_1.2.1 (2018-06-11)
+
+ * fixed formatting error in long description and README.
+ * setup.py to explicitly select formatting of the long description.
+ 
 ### Version_1.2.0 (2018-06-11)
 
  * support reading and writing sound file strings in sndio module

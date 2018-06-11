@@ -1,6 +1,21 @@
 Changes
 -------
 
+Version\_1.2.1 (2018-06-11)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  fixed formatting error in long description and README.
+-  setup.py to explicitly select formatting of the long description.
+
+Version\_1.2.0 (2018-06-11)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  support reading and writing sound file strings in sndio module
+-  Improved documentation of module constant mappings and PySndfile
+   methods.
+-  Added a new method supporting to write all strings in a dictionary to
+   the sound file.
+
 Version\_1.1.1 (2018-06-10)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

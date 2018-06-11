@@ -31,7 +31,7 @@ import os
 cimport numpy as cnp
 from libcpp.string cimport string
 
-_pysndfile_version=(1,2,0)
+_pysndfile_version=(1,2,1)
 def get_pysndfile_version():
     """
     return tuple describing the version opf pysndfile

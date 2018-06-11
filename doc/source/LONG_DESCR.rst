@@ -76,9 +76,8 @@ compile with conda build recipe
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can use the conda recipe
-`here <>`__\ https://github.com/roebel/conda\_packages). This build
-recipe wil automatically download and compile libsndfile building
-pysndfile.
+`here <https://github.com/roebel/conda_packages>`__. This build recipe
+wil automatically download and compile libsndfile building pysndfile.
 
 compile from sources
 ~~~~~~~~~~~~~~~~~~~~
