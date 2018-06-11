@@ -31,7 +31,7 @@ import os
 cimport numpy as cnp
 from libcpp.string cimport string
 
-_pysndfile_version=(1,1,1)
+_pysndfile_version=(1,2,0)
 def get_pysndfile_version():
     """
     return tuple describing the version opf pysndfile
@@ -250,8 +250,16 @@ cdef int C_SF_STR_GENRE = 0x10
 
 
 SF_FORMAT_SUBMASK  = C_SF_FORMAT_SUBMASK
+"""int: format submask to retrieve encoding from format integer.
+"""
+
 SF_FORMAT_TYPEMASK = C_SF_FORMAT_TYPEMASK
+"""int: format typemask to retrieve major file format from format integer.
+"""
+
 SF_FORMAT_ENDMASK  = C_SF_FORMAT_ENDMASK
+"""int: endienness mask to retrieve endienness from format integer.
+"""
 
 _encoding_id_tuple = (
     ('pcms8' , C_SF_FORMAT_PCM_S8),
@@ -284,9 +292,12 @@ _encoding_id_tuple = (
     ('dpcm16', C_SF_FORMAT_DPCM_16)
     )
 
-
 encoding_name_to_id = dict(_encoding_id_tuple)
+"""dict: mapping of pysndfile's encoding names to libsndfile's encoding ids.
+"""
 encoding_id_to_name = dict([(id, enc) for enc, id in _encoding_id_tuple])
+"""dict: mapping of libsndfile's encoding ids to pysndfile's encoding names.
+"""
 
 _fileformat_id_tuple = (
     ('wav' , C_SF_FORMAT_WAV),
@@ -312,11 +323,13 @@ _fileformat_id_tuple = (
     ('caf'  , C_SF_FORMAT_CAF),
     )
 
-"""
-dict containing major file format names as keys and the related ids as values
-"""
+
+#: mapping of pysndfile's major fileformat names to libsndfile's major fileformat ids.
 fileformat_name_to_id = dict (_fileformat_id_tuple)
+
+#: mapping of libsndfile's major fileformat ids to pysndfile's major fileformat names.
 fileformat_id_to_name = dict ([(id, format) for format, id in _fileformat_id_tuple])
+
 
 _endian_to_id_tuple = (
     ('file'   , C_SF_ENDIAN_FILE),
@@ -325,7 +338,9 @@ _endian_to_id_tuple = (
     ('cpu'    , C_SF_ENDIAN_CPU)
     )
 
+#: dict mapping of pysndfile's endian names to libsndfile's endian ids.
 endian_name_to_id = dict(_endian_to_id_tuple)
+#: dict mapping of libsndfile's endian ids to pysndfile's endian names.
 endian_id_to_name = dict([(id, endname) for endname, id in _endian_to_id_tuple])
 
 _commands_to_id_tuple = (
@@ -385,7 +400,9 @@ _commands_to_id_tuple = (
     )
     
 
+#:dict mapping of pysndfile's commandtype names to libsndfile's commandtype ids.
 commands_name_to_id = dict(_commands_to_id_tuple)
+#: dict mapping of libsndfile's commandtype ids to pysndfile's commandtype names.
 commands_id_to_name = dict([(id, com) for com, id in _commands_to_id_tuple])
 
 # define these by hand so we can use here all string types known for the
@@ -404,7 +421,10 @@ _stringtype_to_id_tuple = (
     ("SF_STR_GENRE", C_SF_STR_GENRE),
     )
 
+#: dict mapping of pysndfile's stringtype nams to libsndfile's stringtype ids.
 stringtype_name_to_id = dict(_stringtype_to_id_tuple[:C_SF_STR_LAST+1])
+
+#: dict mapping of libsndfile's stringtype ids to pysndfile's stringtype names.
 stringtype_id_to_name = dict([(id, com) for com, id in _stringtype_to_id_tuple[:C_SF_STR_LAST+1]])
 
 
@@ -438,9 +458,9 @@ def get_sndfile_encodings(major):
 
     *Parameters*
     
-       major sndfile format for that the list of available fomramst should
+    :param major: (str) sndfile format for that the list of available encodings should
              be returned. format should be specified as a string, using
-             one of the straings returned by :py:func:`get_sndfile_formats`
+             one of the strings returned by :py:func:`get_sndfile_formats`
     """
 
     # make major an id
@@ -455,7 +475,7 @@ def get_sndfile_encodings(major):
         raise ValueError("PySndfile::File format {0}:{1:x} not supported by libsndfile".format(fileformat_id_to_name[major], major))
 
     enc = []
-    for i in get_sub_formats_for_major(major):
+    for i in _get_sub_formats_for_major(major):
         # Handle the case where libsndfile supports an encoding we don't
         if i not in encoding_id_to_name:
             warnings.warn("Encoding {0:x} supported by libsndfile but not by PySndfile"
@@ -464,10 +484,17 @@ def get_sndfile_encodings(major):
             enc.append(encoding_id_to_name[i & C_SF_FORMAT_SUBMASK])
     return enc
 
-cdef get_sub_formats_for_major(int major):
+cdef _get_sub_formats_for_major(int major):
     """
-    Retrieve list of subtype formats given the major format specified as int.
+    Retrieve list of subtype formats or encodings given the major format specified as int.
 
+    internal function
+
+    :param major: (int) major format specified as integer, the mapping from format strings to integers
+                   can be retrieved from :py:data:`fileformat_name_to_id`
+
+    :return: list of sub formats or encodings in form of integers, these integers can be converted to strings
+                  by means of :py:data:`encoding_id_to_name`
     """
     cdef int nsub
     cdef int i
@@ -491,7 +518,10 @@ cdef get_sub_formats_for_major(int major):
 
 cdef get_sndfile_formats_from_libsndfile():
     """
-        retrieve list of major format ids
+    retrieve list of major format ids
+
+    :return: list of strings representing all major sound formats that can be handled by the libsndfile
+             library that is used by pysndfile.
     """
     cdef int nmajor
     cdef int i
@@ -510,13 +540,20 @@ cdef get_sndfile_formats_from_libsndfile():
 def get_sf_log():
     """
     retrieve internal log from libsndfile, notably useful in case of errors.
+
+    :return: string representing the internal error log managed by libsndfile
     """
     cdef char buf[2048]
     sf_command (NULL, C_SFC_GET_LOG_INFO, &buf, sizeof (buf))
     return str(buf)
     
 def get_sndfile_formats():
-    """Return lists of available file formats supported by libsndfile and pysndfile."""
+    """
+    Return lists of available file formats supported by libsndfile and pysndfile.
+
+    :return: list of strings representing all major sound formats that can be handled by the libsndfile
+             library and the pysndfile interface.
+    """
     fmt = []
     for i in get_sndfile_formats_from_libsndfile():
         # Handle the case where libsndfile supports a format we don't
@@ -529,36 +566,22 @@ def get_sndfile_formats():
 
 cdef class PySndfile:
     """\
-    PySndfile is a python class for reading/writeing audio files.
+    PySndfile is a python class for reading/writing audio files.
+
     PySndfile is proxy for the SndfileHandle class in sndfile.hh
     Once an instance is created, it can be used to read and/or write
     data from/to numpy arrays, query the audio file meta-data, etc...
 
-    *Parameters*
-   
-        filename: <string or int>
-            name of the file to open (string), or file descriptor (integer)
-            
-        mode: <string>
-            'r' for read, 'w' for write, or 'rw' for read and
-            write.
-            
-        format: <int>
-            Required when opening a new file for writing, or to read raw audio
-            files (without header). See function construct_format.
+    :param filename: <string or int> name of the file to open (string), or file descriptor (integer)
+    :param mode: <string> 'r' for read, 'w' for write, or 'rw' for read and write.
+    :param format: <int> Required when opening a new file for writing, or to read raw audio files (without header).
+                   See function :py:meth:`construct_format`.
+    :param channels: <int> number of channels.
+    :param samplerate: <int> sampling rate.
 
-        channels: <int>
-            number of channels.
-            
-        samplerate: <int>
-            sampling rate.
-
-    *Returns*
-   
-        valid PySndfile instance. An IOError exception is thrown if any error is
+    :return: valid PySndfile instance. An IOError exception is thrown if any error is
         encountered in libsndfile. A ValueError exception is raised if the arguments are invalid. 
-            
-           
+
     *Notes*
 
       * the files will be opened with auto clipping set to True
@@ -616,6 +639,9 @@ cdef class PySndfile:
         self.set_auto_clipping(True)
 
     def get_name(self):
+        """
+        :return: <str> filename that was used to open the underlying sndfile
+        """
         return self.filename
 
     def __dealloc__(self):
@@ -626,9 +652,7 @@ cdef class PySndfile:
         interface for passing commands via sf_command to underlying soundfile
         using sf_command(this_sndfile, command_id, NULL, arg)        
 
-        *Parameters*
-
-            command: <string or int>
+        :param command: <string or int>
               libsndfile command macro to be used. They can be specified either as string using the command macros name, or the command id.
 
               Supported commands are:
@@ -647,6 +671,10 @@ cdef class PySndfile:
 |                 SFC_WAVEX_GET_AMBISONIC
 |                 SFC_WAVEX_SET_AMBISONIC
 |                 SFC_RAW_NEEDS_ENDSWAP
+
+        :param arg: <int> addtional argument of the command
+
+        :return: <int> 1 for success or True, 0 for failure or False
         """
         if isinstance(command, str) :
             return self.thisPtr.command(commands_name_to_id[command], NULL, arg)
@@ -663,17 +691,22 @@ cdef class PySndfile:
         When auto clipping is set to on reading pcm data into a float vector and writing it back with libsndfile will reproduce 
         the original samples. If auto clipping is off, samples will be changed slightly as soon as the amplitude is close to the
         sample range because libsndfile applies slightly different scaling factors during read and write.
+
+        :param arg: <bool> indicator of the desired clipping state
+
+        :return: <int> 1 for success, 0 for failure
         """
         if self.thisPtr == NULL or not self.thisPtr:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
         return self.thisPtr.command(C_SFC_SET_CLIPPING, NULL, arg);
              
     def writeSync(self):
-        """\
+        """
         call the operating system's function to force the writing of all
         file cache buffers to disk the file.
 
-        No effect if file is open as read"""
+        No effect if file is open as read
+        """
         if self.thisPtr == NULL or not self.thisPtr:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
         self.thisPtr.writeSync()
@@ -700,15 +733,14 @@ cdef class PySndfile:
         return "\n".join(repstr)
 
     def read_frames(self, sf_count_t nframes=-1, dtype=np.float64):
-        """\
+        """
         Read the given number of frames and put the data into a numpy array of
         the requested dtype.
 
-        *Parameters*
-          nframes: <int>
-             number of frames to read (default = -1 -> read all).
-          dtype: <numpy dtype>
-             dtype of the returned array containing read data (see note).
+        :param nframes: <int> number of frames to read (default = -1 -> read all).
+        :param dtype: <numpy dtype> dtype of the returned array containing read data (see note).
+
+        :return: np.array<dtype> with sound data
 
         *Notes*
         
@@ -779,12 +811,13 @@ cdef class PySndfile:
         return ty
 
     def write_frames(self, cnp.ndarray input):
-        """\
+        """
         write 1 or 2 dimensional array into sndfile.
 
-        *Parameters*
-           input: <numpy array>
+        :param input: <numpy array>
                containing data to write.
+
+        :return: int representing the number of frames that have been written
 
         *Notes*
           * One column per channel.
@@ -842,7 +875,7 @@ cdef class PySndfile:
     
     def format(self) :
         """
-        return raw format specification from sndfile 
+        :return: <int> raw format specification that was used to create the present PySndfile instance.
         """
         if self.thisPtr == NULL or not self.thisPtr:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
@@ -850,7 +883,9 @@ cdef class PySndfile:
 
     def major_format_str(self) :
         """
-        return short string representation of major format (e.g. aiff)
+
+        :return: short string representation of major format (e.g. aiff)
+
         see :py:func:`pysndfile.get_sndfile_formats` for a complete lst of fileformats
 
         """
@@ -860,7 +895,8 @@ cdef class PySndfile:
 
     def encoding_str(self) :
         """
-        return string representation of encoding (e.g. pcm16)
+        :return:  string representation of encoding (e.g. pcm16)
+
         see :py:func:`pysndfile.get_sndfile_encodings` for a list of
         available encoding strings that are supported by a given sndfile format
         """
@@ -870,7 +906,7 @@ cdef class PySndfile:
 
     def channels(self) :
         """
-        return number of channels of sndfile
+        :return: <int> number of channels of sndfile
         """
         if self.thisPtr == NULL or not self.thisPtr:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
@@ -878,7 +914,7 @@ cdef class PySndfile:
 
     def frames(self) :
         """
-        return number for frames (number of samples per channel)
+        :return: <int> number for frames (number of samples per channel)
         """
         if self.thisPtr == NULL or not self.thisPtr:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
@@ -886,7 +922,7 @@ cdef class PySndfile:
 
     def samplerate(self) :
         """
-        return samplerate
+        :return: <int> samplerate
         """
         if self.thisPtr == NULL or not self.thisPtr:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
@@ -894,7 +930,7 @@ cdef class PySndfile:
 
     def seekable(self) :
         """
-        return true for soundfiles that support seeking
+        :return: <bool> true for soundfiles that support seeking
         """
         if self.thisPtr == NULL or not self.thisPtr:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
@@ -904,7 +940,7 @@ cdef class PySndfile:
         """
         get all stringtypes from the sound file.
         
-        see stringtype_name_top_id.keys() for the list of strings that are supported
+        see :py:data:`stringtype_name_to_id` for the list of strings that are supported
         by the libsndfile version you use.  
         
         """
@@ -916,15 +952,14 @@ cdef class PySndfile:
         for ii  in xrange(C_SF_STR_FIRST, C_SF_STR_LAST):
             string_value = self.thisPtr.getString(ii)
             if string_value != NULL:
-                str_dict [stringtype_id_to_name[ii]] = string_value
+                str_dict[stringtype_id_to_name[ii]] = string_value
                 
         return str_dict 
 
-
     def set_string(self, stringtype_name, string) :
         """
-        set one of the stringtypes to the strig given as argument.
-        If you try to write a stringtype that is not  supported byty the library
+        set one of the stringtype to the string given as argument.
+        If you try to write a stringtype that is not  supported by the library
         a RuntimeError will be raised
         """
         cdef int res = 0
@@ -937,6 +972,15 @@ cdef class PySndfile:
         res = self.thisPtr.setString(stringtype_name_to_id[stringtype_name], string)
         if res :
             raise RuntimeError("PySndfile::error::setting string of type {0}\nerror messge is:{1}".format(stringtype_name, sf_error_number(res)))
+
+    def set_strings(self, sf_strings_dict) :
+        """
+        set all strings provided as key value pairs in sf_strings_dict.
+        If you try to write a stringtype that is not  supported by the library
+        a RuntimeError will be raised
+        """
+        for kk in sf_strings_dict:
+            self.set_string(kk, sf_strings_dict[kk])
 
     def error(self) :
         """
@@ -954,28 +998,23 @@ cdef class PySndfile:
         return self.thisPtr.error()
 
     def seek(self, sf_count_t offset, int whence=C_SEEK_SET, mode='rw'):
-        """\
+        """
         Seek into audio file: similar to python seek function, taking only in
         account audio data.
 
-        *Parameters*
-
-            offset: <int>
+        :param offset: <int>
                 the number of frames (eg two samples for stereo files) to move
                 relatively to position set by whence.
-            whence: <int>
+        :param whence: <int>
                 only 0 (beginning), 1 (current) and 2 (end of the file) are
                 valid.
-            mode:  <string>
+        :param mode:  <string>
                 If set to 'rw', both read and write pointers are updated. If
                 'r' is given, only read pointer is updated, if 'w', only the
                 write one is (this may of course make sense only if you open
                 the file in a certain mode).
 
-        *Returns*
-
-            :offset: int
-                the number of frames from the beginning of the file
+        :return: <int>  the number of frames from the beginning of the file
 
         *Notes*
 

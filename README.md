@@ -63,6 +63,12 @@ Please see full documentation [here](https://pysndfile.readthedocs.io/)
 
 ## Changes
 
+### Version_1.2.0 (2018-06-11)
+
+ * support reading and writing sound file strings in sndio module
+ * Improved documentation of module constant mappings and PySndfile methods.
+ * Added a new method supporting to write all strings in a dictionary to the sound file.
+
 ### Version_1.1.1 (2018-06-10)
 
 this update is purely administrative, no code changes

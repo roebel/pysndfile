@@ -106,7 +106,8 @@ class build_ext_subclass( build_ext ):
         try :
             if compiler_is_clang(self.compiler.compiler):
                 for e in self.extensions:
-                    #e.extra_compile_args.append('-stdlib=libstdc++')
+                    #e.extra_compile_args.append('-stdlib=libc++')
+                    #e.extra_compile_args.append('-mmacosx-version-min=10.9')
                     e.extra_compile_args.append('-Wno-unused-function')
         except AttributeError :
             pass

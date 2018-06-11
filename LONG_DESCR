@@ -57,8 +57,34 @@ Sndfile.
 Installation
 ------------
 
-pysndfile requires availability of libsndfile
-http://www.mega-nerd.com/libsndfile/.
+via Anaconda channel roebel
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Precompiled packages are available for `Anaconda
+python3 <https://anaconda.org/roebel/pysndfile>`__ under Linux (x86\_64)
+and Mac OS X (> 10.9). For these systems you can install pysndfile
+simply by means of
+
+.. code:: bash
+
+    conda install -c roebel pysndfile
+
+Unfortunately, I don't have a windows machine and therefore I cannot
+provide any packages for Windows.
+
+compile with conda build recipe
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can use the conda recipe
+`here <>`__\ https://github.com/roebel/conda\_packages). This build
+recipe wil automatically download and compile libsndfile building
+pysndfile.
+
+compile from sources
+~~~~~~~~~~~~~~~~~~~~
+
+In case you want to manually compile pysndfile requires availability of
+libsndfile http://www.mega-nerd.com/libsndfile/.
 
 If the libsndfile (header and library) is not installed in the default
 compiler search path you have to specify the library and include

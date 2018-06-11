@@ -1,4 +1,4 @@
-/*
+dd/*
 ** Copyright (C) 2005-2011 Erik de Castro Lopo <erikd@mega-nerd.com>
 **
 ** All rights reserved.
