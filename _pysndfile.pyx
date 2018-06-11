@@ -31,7 +31,7 @@ import os
 cimport numpy as cnp
 from libcpp.string cimport string
 
-_pysndfile_version=(1,2,1)
+_pysndfile_version=(1,2,2)
 def get_pysndfile_version():
     """
     return tuple describing the version opf pysndfile
@@ -968,7 +968,7 @@ cdef class PySndfile:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
         if stringtype_name not in stringtype_name_to_id :
             raise RuntimeError("PySndfile::error::set_string called with an unsupported stringtype:{0}".format(stringtype_name))
-            
+
         res = self.thisPtr.setString(stringtype_name_to_id[stringtype_name], string)
         if res :
             raise RuntimeError("PySndfile::error::setting string of type {0}\nerror messge is:{1}".format(stringtype_name, sf_error_number(res)))

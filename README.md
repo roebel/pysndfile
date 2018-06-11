@@ -63,6 +63,10 @@ Please see full documentation [here](https://pysndfile.readthedocs.io/)
 
 ## Changes
 
+### Version_1.2.2 (2018-06-11)
+
+ * fixed c++-include file that was inadvertently scrambled.
+
 ### Version_1.2.1 (2018-06-11)
 
  * fixed formatting error in long description and README.

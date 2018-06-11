@@ -105,6 +105,11 @@ Please see full documentation
 Changes
 -------
 
+Version\_1.2.2 (2018-06-11)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  fixed c++-include file that was inadvertently scrambled.
+
 Version\_1.2.1 (2018-06-11)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
