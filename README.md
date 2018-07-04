@@ -63,6 +63,10 @@ Please see full documentation [here](https://pysndfile.readthedocs.io/)
 
 ## Changes
 
+### Version_1.3.0 (2018-07-04)
+
+ * Added support for retrieving cue points from aiff and wav files.
+
 ### Version_1.2.2 (2018-06-11)
 
  * fixed c++-include file that was inadvertently scrambled.

@@ -408,6 +408,15 @@ class SndfileHandle
 		sf_count_t	readRaw		(void *ptr, sf_count_t bytes) ;
 		sf_count_t	writeRaw	(const void *ptr, sf_count_t bytes) ;
 
+        int get_cue_count(void) {
+           int num_cues = 0;
+           int ret =sf_command (p->sf, SFC_GET_CUE_COUNT, &num_cues, sizeof(num_cues));
+
+           if (ret == 0)
+              return 0;
+           return num_cues;
+        }
+
 		/**< Raw access to the handle. SndfileHandle keeps ownership. */
 		SNDFILE * rawHandle (void) ;
 

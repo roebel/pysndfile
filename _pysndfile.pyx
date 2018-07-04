@@ -31,7 +31,7 @@ import os
 cimport numpy as cnp
 from libcpp.string cimport string
 
-_pysndfile_version=(1,2,2)
+_pysndfile_version=(1,3,0)
 def get_pysndfile_version():
     """
     return tuple describing the version opf pysndfile
@@ -60,8 +60,20 @@ cdef extern from "pysndfile.hh":
 
     cdef struct SNDFILE :
         pass
-         
-    
+
+    ctypedef struct SF_CUE_POINT:
+        int  indx
+        unsigned int position
+        int fcc_chunk
+        int chunk_start
+        int block_start
+        unsigned int sample_offset
+        char name[256]
+
+    ctypedef struct SF_CUES:
+        unsigned int cue_count
+        SF_CUE_POINT cue_points[100]
+
     ctypedef SF_FORMAT_INFO SF_FORMAT_INFO
     cdef int sf_command(SNDFILE *sndfile, int command, void *data, int datasize)
     cdef int sf_format_check (const SF_INFO *info)
@@ -77,6 +89,7 @@ cdef extern from "pysndfile.hh":
         int error()
         char* strError()
         int command (int cmd, void *data, int datasize)
+        int get_cue_count()
         sf_count_t seek (sf_count_t frames, int whence)
         void writeSync () 
         sf_count_t readf (short *ptr, sf_count_t items) 
@@ -199,6 +212,9 @@ cdef extern from "pysndfile.hh":
 
     cdef int C_SFC_SET_CLIPPING "SFC_SET_CLIPPING"  
     cdef int C_SFC_GET_CLIPPING "SFC_GET_CLIPPING"  
+
+    cdef int C_SFC_GET_CUE_COUNT "SFC_GET_CUE_COUNT"
+    cdef int C_SFC_GET_CUE "SFC_GET_CUE"
 
     cdef int C_SFC_GET_INSTRUMENT "SFC_GET_INSTRUMENT"  
     cdef int C_SFC_SET_INSTRUMENT "SFC_SET_INSTRUMENT"  
@@ -672,7 +688,7 @@ cdef class PySndfile:
 |                 SFC_WAVEX_SET_AMBISONIC
 |                 SFC_RAW_NEEDS_ENDSWAP
 
-        :param arg: <int> addtional argument of the command
+        :param arg: <int> additional argument of the command
 
         :return: <int> 1 for success or True, 0 for failure or False
         """
@@ -954,7 +970,7 @@ cdef class PySndfile:
             if string_value != NULL:
                 str_dict[stringtype_id_to_name[ii]] = string_value
                 
-        return str_dict 
+        return str_dict
 
     def set_string(self, stringtype_name, string) :
         """
@@ -982,6 +998,41 @@ cdef class PySndfile:
         for kk in sf_strings_dict:
             self.set_string(kk, sf_strings_dict[kk])
 
+    def get_cue_count(self):
+        """
+        get number of cue markers.
+
+
+        """
+        # get number of cue mrks that are present in the file
+
+        res = self.thisPtr.get_cue_count()
+        return res
+
+    def get_cue_mrks(self) :
+        """
+        get all cue markers.
+
+        Gets list of tuple of positions and related names of embedded markers for aiff and wav files,
+        due to a limited support of cue names in libsndfile cue names are not retrieved for wav files.
+
+        """
+        # get number of cue mrks that are present in the file
+        cdef SF_CUES sf_cues
+
+        res = self.thisPtr.command(C_SFC_GET_CUE, &sf_cues, sizeof(sf_cues))
+
+        print("getcue returned:",res)
+        if res == 0:
+            return []
+
+        mrks = []
+        for ii in range(sf_cues.cue_count):
+            mrks.append((sf_cues.cue_points[ii].sample_offset, sf_cues.cue_points[ii].name.decode("ASCII")))
+
+        return mrks
+
+
     def error(self) :
         """
         report error numbers related to the current sound file
@@ -995,7 +1046,7 @@ cdef class PySndfile:
         """
         if self.thisPtr == NULL or not self.thisPtr:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
-        return self.thisPtr.error()
+        return self.thisPtr.strError()
 
     def seek(self, sf_count_t offset, int whence=C_SEEK_SET, mode='rw'):
         """

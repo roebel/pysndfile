@@ -1,6 +1,11 @@
 Changes
 -------
 
+Version\_1.3.0 (2018-07-04)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  Added support for retrieving cue points from aiff and wav files.
+
 Version\_1.2.2 (2018-06-11)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
