@@ -15,3 +15,8 @@ install-user:
 
 clean:
 	python setup.py clean -a
+
+sdist:
+	python setup.py sdist
+        @echo twine upload -r test dist/pysndfile-1.3.0.tar.gz 
+        @echo twine upload -r pypi dist/pysndfile-1.3.0.tar.gz 
