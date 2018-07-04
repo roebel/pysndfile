@@ -2230,7 +2230,7 @@ static PyObject *__pyx_codeobj__58;
 
 /* "_pysndfile.pyx":35
  * 
- * _pysndfile_version=(1,3,1)
+ * _pysndfile_version=(1,3,2)
  * def get_pysndfile_version():             # <<<<<<<<<<<<<<
  *     """
  *     return tuple describing the version opf pysndfile
@@ -2273,7 +2273,7 @@ static PyObject *__pyx_pf_10_pysndfile_get_pysndfile_version(CYTHON_UNUSED PyObj
 
   /* "_pysndfile.pyx":35
  * 
- * _pysndfile_version=(1,3,1)
+ * _pysndfile_version=(1,3,2)
  * def get_pysndfile_version():             # <<<<<<<<<<<<<<
  *     """
  *     return tuple describing the version opf pysndfile
@@ -14603,17 +14603,17 @@ static int __Pyx_InitCachedConstants(void) {
   /* "_pysndfile.pyx":34
  * from libcpp.string cimport string
  * 
- * _pysndfile_version=(1,3,1)             # <<<<<<<<<<<<<<
+ * _pysndfile_version=(1,3,2)             # <<<<<<<<<<<<<<
  * def get_pysndfile_version():
  *     """
  */
-  __pyx_tuple__47 = PyTuple_Pack(3, __pyx_int_1, __pyx_int_3, __pyx_int_1); if (unlikely(!__pyx_tuple__47)) __PYX_ERR(0, 34, __pyx_L1_error)
+  __pyx_tuple__47 = PyTuple_Pack(3, __pyx_int_1, __pyx_int_3, __pyx_int_2); if (unlikely(!__pyx_tuple__47)) __PYX_ERR(0, 34, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__47);
   __Pyx_GIVEREF(__pyx_tuple__47);
 
   /* "_pysndfile.pyx":35
  * 
- * _pysndfile_version=(1,3,1)
+ * _pysndfile_version=(1,3,2)
  * def get_pysndfile_version():             # <<<<<<<<<<<<<<
  *     """
  *     return tuple describing the version opf pysndfile
@@ -14891,7 +14891,7 @@ PyMODINIT_FUNC PyInit__pysndfile(void)
   /* "_pysndfile.pyx":34
  * from libcpp.string cimport string
  * 
- * _pysndfile_version=(1,3,1)             # <<<<<<<<<<<<<<
+ * _pysndfile_version=(1,3,2)             # <<<<<<<<<<<<<<
  * def get_pysndfile_version():
  *     """
  */
@@ -14899,7 +14899,7 @@ PyMODINIT_FUNC PyInit__pysndfile(void)
 
   /* "_pysndfile.pyx":35
  * 
- * _pysndfile_version=(1,3,1)
+ * _pysndfile_version=(1,3,2)
  * def get_pysndfile_version():             # <<<<<<<<<<<<<<
  *     """
  *     return tuple describing the version opf pysndfile

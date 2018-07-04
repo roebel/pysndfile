@@ -63,6 +63,10 @@ Please see the developer documentation [here](https://pysndfile.readthedocs.io/e
 
 ## Changes
 
+### Version_1.3.2 (2018-07-04)
+
+ * fixed documentation of sndio module.
+
 ### Version_1.3.1 (2018-07-04)
 
  * Extended sndio by means of adding a enw function that allows retrieving embed markers

@@ -1,6 +1,11 @@
 Changes
 -------
 
+Version\_1.3.2 (2018-07-04)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  fixed documentation of sndio module.
+
 Version\_1.3.1 (2018-07-04)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

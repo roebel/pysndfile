@@ -4,6 +4,7 @@ The module contains 3 functions.
 
 |  **functions:**
 |     :meth:`pysndfile.sndio.get_info`:: retrieve information from a sound file.
+|     :meth:`pysndfile.sndio.get_markers`:: retrieve markers from aiff/ or wav files.
 |     :meth:`pysndfile.sndio.read`:: read data and meta data from sound file.
 |     :meth:`pysndfile.sndio.write`:: create a sound file from a given numpy array.
 """
