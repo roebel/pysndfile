@@ -50,6 +50,21 @@ def get_info(name, extended_info=False) :
         return sf.samplerate(), sf.encoding_str(), sf.major_format_str(), sf.frames(), sf.channels()
     return sf.samplerate(), sf.encoding_str(), sf.major_format_str()
 
+def get_markers(name) :
+    """
+    retrieve markers from sound file
+
+    :param name: <str> sndfile name
+
+    :return: list of marker tuples containing the marker time
+       and marker label.
+
+    Note: following the implementation of libsndfile marker labels will be empty strings for all but aiff files.
+    """
+    sf  = PySndfile(name)
+    return sf.get_cue_mrks()
+
+
 def write(name, data, rate=44100, format="aiff", enc='pcm16', sf_strings=None) :
     """
     Write datavector to sndfile using samplerate, format and encoding as specified

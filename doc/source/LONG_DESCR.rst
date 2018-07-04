@@ -99,6 +99,6 @@ installed.
 Documentation
 -------------
 
-Please see full documentation
-`here <https://pysndfile.readthedocs.io/>`__
+Please see the developer documentation
+`here <https://pysndfile.readthedocs.io/en/latest/modules.html>`__.
 

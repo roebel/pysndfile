@@ -59,9 +59,16 @@ Besides this the setup is pretty standard. Note, that the cython source _pysndfi
 
 ## Documentation
 
-Please see full documentation [here](https://pysndfile.readthedocs.io/)
+Please see the developer documentation [here](https://pysndfile.readthedocs.io/en/latest/modules.html).
 
 ## Changes
+
+### Version_1.3.1 (2018-07-04)
+
+ * Extended sndio by means of adding a enw function that allows retrieving embed markers
+   from sound files. Names marker labels will be retrieved only for aiff files.
+ * removed print out in pysndfile.get_cue_mrks(self) function.
+ * fixed version number in documentation.
 
 ### Version_1.3.0 (2018-07-04)
 

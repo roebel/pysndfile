@@ -277,6 +277,18 @@ typedef struct
   const char      *extension ;
 } SF_FORMAT_INFO;
 
+typedef struct
+{
+  unsigned int sample_offset ;
+  char name [256] ;
+} SF_CUE_POINT;
+
+typedef struct
+{
+  int             cue_count ;
+  SF_CUE_POINT cue_points [100] ;
+} SF_CUES;
+
 #define SF_STR_FIRST    SF_STR_TITLE
 #define SF_STR_LAST     SF_STR_GENRE
 

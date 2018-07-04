@@ -1,6 +1,15 @@
 Changes
 -------
 
+Version\_1.3.1 (2018-07-04)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  Extended sndio by means of adding a enw function that allows
+   retrieving embed markers from sound files. Names marker labels will
+   be retrieved only for aiff files.
+-  removed print out in pysndfile.get\_cue\_mrks(self) function.
+-  fixed version number in documentation.
+
 Version\_1.3.0 (2018-07-04)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

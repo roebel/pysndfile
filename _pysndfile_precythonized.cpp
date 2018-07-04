@@ -1463,13 +1463,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_npy_int64(npy_int64 value);
 
-/* Print.proto */
-static int __Pyx_Print(PyObject*, PyObject *, int);
-#if CYTHON_COMPILING_IN_PYPY || PY_MAJOR_VERSION >= 3
-static PyObject* __pyx_print = 0;
-static PyObject* __pyx_print_kwargs = 0;
-#endif
-
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_unsigned_int(unsigned int value);
 
@@ -1582,9 +1575,6 @@ static CYTHON_INLINE npy_int64 __Pyx_PyInt_As_npy_int64(PyObject *);
 
 /* CIntFromPy.proto */
 static CYTHON_INLINE unsigned int __Pyx_PyInt_As_unsigned_int(PyObject *);
-
-/* PrintOne.proto */
-static int __Pyx_PrintOne(PyObject* stream, PyObject *o);
 
 /* CIntFromPy.proto */
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *);
@@ -1703,7 +1693,6 @@ static const char __pyx_k_caf[] = "caf";
 static const char __pyx_k_com[] = "com";
 static const char __pyx_k_cpu[] = "cpu";
 static const char __pyx_k_enc[] = "enc";
-static const char __pyx_k_end[] = "end";
 static const char __pyx_k_fmt[] = "fmt";
 static const char __pyx_k_htk[] = "htk";
 static const char __pyx_k_max[] = "max";
@@ -1754,7 +1743,6 @@ static const char __pyx_k_pcm24[] = "pcm24";
 static const char __pyx_k_pcm32[] = "pcm32";
 static const char __pyx_k_pcms8[] = "pcms8";
 static const char __pyx_k_pcmu8[] = "pcmu8";
-static const char __pyx_k_print[] = "print";
 static const char __pyx_k_range[] = "range";
 static const char __pyx_k_shape[] = "shape";
 static const char __pyx_k_short[] = "short";
@@ -1817,7 +1805,6 @@ static const char __pyx_k_SF_STR_COMMENT[] = "SF_STR_COMMENT";
 static const char __pyx_k_SF_STR_LICENSE[] = "SF_STR_LICENSE";
 static const char __pyx_k_Raw_Format_010x[] = "Raw Format  : %#010x";
 static const char __pyx_k_SF_STR_SOFTWARE[] = "SF_STR_SOFTWARE";
-static const char __pyx_k_getcue_returned[] = "getcue returned:";
 static const char __pyx_k_invalid_sndfile[] = "invalid sndfile";
 static const char __pyx_k_stringtype_name[] = "stringtype_name";
 static const char __pyx_k_SFC_GET_CLIPPING[] = "SFC_GET_CLIPPING";
@@ -2037,7 +2024,6 @@ static PyObject *__pyx_n_s_encoding;
 static PyObject *__pyx_n_s_encoding_id_to_name;
 static PyObject *__pyx_n_s_encoding_id_tuple;
 static PyObject *__pyx_n_s_encoding_name_to_id;
-static PyObject *__pyx_n_s_end;
 static PyObject *__pyx_n_s_endian_id_to_name;
 static PyObject *__pyx_n_s_endian_name_to_id;
 static PyObject *__pyx_n_s_endian_to_id_tuple;
@@ -2062,7 +2048,6 @@ static PyObject *__pyx_n_s_get_sf_log;
 static PyObject *__pyx_n_s_get_sndfile_encodings;
 static PyObject *__pyx_n_s_get_sndfile_formats;
 static PyObject *__pyx_n_s_get_sndfile_version;
-static PyObject *__pyx_kp_s_getcue_returned;
 static PyObject *__pyx_n_s_gsm610;
 static PyObject *__pyx_n_s_htk;
 static PyObject *__pyx_n_s_i;
@@ -2107,7 +2092,6 @@ static PyObject *__pyx_n_s_pcms8;
 static PyObject *__pyx_n_s_pcmu8;
 static PyObject *__pyx_n_s_pre;
 static PyObject *__pyx_n_s_prerelease;
-static PyObject *__pyx_n_s_print;
 static PyObject *__pyx_n_s_pvf;
 static PyObject *__pyx_n_s_pysndfile;
 static PyObject *__pyx_n_s_pysndfile_version;
@@ -2246,7 +2230,7 @@ static PyObject *__pyx_codeobj__58;
 
 /* "_pysndfile.pyx":35
  * 
- * _pysndfile_version=(1,3,0)
+ * _pysndfile_version=(1,3,1)
  * def get_pysndfile_version():             # <<<<<<<<<<<<<<
  *     """
  *     return tuple describing the version opf pysndfile
@@ -2289,7 +2273,7 @@ static PyObject *__pyx_pf_10_pysndfile_get_pysndfile_version(CYTHON_UNUSED PyObj
 
   /* "_pysndfile.pyx":35
  * 
- * _pysndfile_version=(1,3,0)
+ * _pysndfile_version=(1,3,1)
  * def get_pysndfile_version():             # <<<<<<<<<<<<<<
  *     """
  *     return tuple describing the version opf pysndfile
@@ -9707,12 +9691,12 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_40get_cue_mrks(struct __pyx_ob
   unsigned int __pyx_v_ii;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_1;
   PyObject *__pyx_t_2 = NULL;
-  int __pyx_t_3;
+  unsigned int __pyx_t_3;
   unsigned int __pyx_t_4;
-  unsigned int __pyx_t_5;
-  char *__pyx_t_6;
+  char *__pyx_t_5;
+  PyObject *__pyx_t_6 = NULL;
   PyObject *__pyx_t_7 = NULL;
   int __pyx_t_8;
   __Pyx_RefNannySetupContext("get_cue_mrks", 0);
@@ -9721,113 +9705,93 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_40get_cue_mrks(struct __pyx_ob
  *         cdef SF_CUES sf_cues
  * 
  *         res = self.thisPtr.command(C_SFC_GET_CUE, &sf_cues, sizeof(sf_cues))             # <<<<<<<<<<<<<<
- * 
- *         print("getcue returned:",res)
- */
-  __pyx_v_res = __pyx_v_self->thisPtr->command(SFC_GET_CUE, (&__pyx_v_sf_cues), (sizeof(__pyx_v_sf_cues)));
-
-  /* "_pysndfile.pyx":1025
- *         res = self.thisPtr.command(C_SFC_GET_CUE, &sf_cues, sizeof(sf_cues))
- * 
- *         print("getcue returned:",res)             # <<<<<<<<<<<<<<
  *         if res == 0:
  *             return []
  */
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_res); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1025, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1025, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_INCREF(__pyx_kp_s_getcue_returned);
-  __Pyx_GIVEREF(__pyx_kp_s_getcue_returned);
-  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_kp_s_getcue_returned);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_1);
-  __pyx_t_1 = 0;
-  if (__Pyx_PrintOne(0, __pyx_t_2) < 0) __PYX_ERR(0, 1025, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_res = __pyx_v_self->thisPtr->command(SFC_GET_CUE, (&__pyx_v_sf_cues), (sizeof(__pyx_v_sf_cues)));
 
-  /* "_pysndfile.pyx":1026
+  /* "_pysndfile.pyx":1024
  * 
- *         print("getcue returned:",res)
+ *         res = self.thisPtr.command(C_SFC_GET_CUE, &sf_cues, sizeof(sf_cues))
  *         if res == 0:             # <<<<<<<<<<<<<<
  *             return []
  * 
  */
-  __pyx_t_3 = ((__pyx_v_res == 0) != 0);
-  if (__pyx_t_3) {
+  __pyx_t_1 = ((__pyx_v_res == 0) != 0);
+  if (__pyx_t_1) {
 
-    /* "_pysndfile.pyx":1027
- *         print("getcue returned:",res)
+    /* "_pysndfile.pyx":1025
+ *         res = self.thisPtr.command(C_SFC_GET_CUE, &sf_cues, sizeof(sf_cues))
  *         if res == 0:
  *             return []             # <<<<<<<<<<<<<<
  * 
  *         mrks = []
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1027, __pyx_L1_error)
+    __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1025, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_r = __pyx_t_2;
     __pyx_t_2 = 0;
     goto __pyx_L0;
 
-    /* "_pysndfile.pyx":1026
+    /* "_pysndfile.pyx":1024
  * 
- *         print("getcue returned:",res)
+ *         res = self.thisPtr.command(C_SFC_GET_CUE, &sf_cues, sizeof(sf_cues))
  *         if res == 0:             # <<<<<<<<<<<<<<
  *             return []
  * 
  */
   }
 
-  /* "_pysndfile.pyx":1029
+  /* "_pysndfile.pyx":1027
  *             return []
  * 
  *         mrks = []             # <<<<<<<<<<<<<<
  *         for ii in range(sf_cues.cue_count):
  *             mrks.append((sf_cues.cue_points[ii].sample_offset, sf_cues.cue_points[ii].name.decode("ASCII")))
  */
-  __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1029, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1027, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_v_mrks = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "_pysndfile.pyx":1030
+  /* "_pysndfile.pyx":1028
  * 
  *         mrks = []
  *         for ii in range(sf_cues.cue_count):             # <<<<<<<<<<<<<<
  *             mrks.append((sf_cues.cue_points[ii].sample_offset, sf_cues.cue_points[ii].name.decode("ASCII")))
  * 
  */
-  __pyx_t_4 = __pyx_v_sf_cues.cue_count;
-  for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
-    __pyx_v_ii = __pyx_t_5;
+  __pyx_t_3 = __pyx_v_sf_cues.cue_count;
+  for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
+    __pyx_v_ii = __pyx_t_4;
 
-    /* "_pysndfile.pyx":1031
+    /* "_pysndfile.pyx":1029
  *         mrks = []
  *         for ii in range(sf_cues.cue_count):
  *             mrks.append((sf_cues.cue_points[ii].sample_offset, sf_cues.cue_points[ii].name.decode("ASCII")))             # <<<<<<<<<<<<<<
  * 
  *         return mrks
  */
-    __pyx_t_2 = __Pyx_PyInt_From_unsigned_int((__pyx_v_sf_cues.cue_points[__pyx_v_ii]).sample_offset); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1031, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_From_unsigned_int((__pyx_v_sf_cues.cue_points[__pyx_v_ii]).sample_offset); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1029, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_6 = (__pyx_v_sf_cues.cue_points[__pyx_v_ii]).name;
-    __pyx_t_1 = __Pyx_decode_c_string(__pyx_t_6, 0, strlen(__pyx_t_6), NULL, NULL, PyUnicode_DecodeASCII); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1031, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1031, __pyx_L1_error)
+    __pyx_t_5 = (__pyx_v_sf_cues.cue_points[__pyx_v_ii]).name;
+    __pyx_t_6 = __Pyx_decode_c_string(__pyx_t_5, 0, strlen(__pyx_t_5), NULL, NULL, PyUnicode_DecodeASCII); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1029, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1029, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_GIVEREF(__pyx_t_2);
     PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_2);
-    __Pyx_INCREF(__pyx_t_1);
-    __Pyx_GIVEREF(__pyx_t_1);
-    PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_t_1);
+    __Pyx_INCREF(__pyx_t_6);
+    __Pyx_GIVEREF(__pyx_t_6);
+    PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_t_6);
     __pyx_t_2 = 0;
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_mrks, __pyx_t_7); if (unlikely(__pyx_t_8 == -1)) __PYX_ERR(0, 1031, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_mrks, __pyx_t_7); if (unlikely(__pyx_t_8 == -1)) __PYX_ERR(0, 1029, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   }
 
-  /* "_pysndfile.pyx":1033
+  /* "_pysndfile.pyx":1031
  *             mrks.append((sf_cues.cue_points[ii].sample_offset, sf_cues.cue_points[ii].name.decode("ASCII")))
  * 
  *         return mrks             # <<<<<<<<<<<<<<
@@ -9849,8 +9813,8 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_40get_cue_mrks(struct __pyx_ob
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_AddTraceback("_pysndfile.PySndfile.get_cue_mrks", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
@@ -9861,7 +9825,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_40get_cue_mrks(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "_pysndfile.pyx":1036
+/* "_pysndfile.pyx":1034
  * 
  * 
  *     def error(self) :             # <<<<<<<<<<<<<<
@@ -9891,7 +9855,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_42error(struct __pyx_obj_10_py
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("error", 0);
 
-  /* "_pysndfile.pyx":1040
+  /* "_pysndfile.pyx":1038
  *         report error numbers related to the current sound file
  *         """
  *         if self.thisPtr == NULL or not self.thisPtr:             # <<<<<<<<<<<<<<
@@ -9909,20 +9873,20 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_42error(struct __pyx_obj_10_py
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "_pysndfile.pyx":1041
+    /* "_pysndfile.pyx":1039
  *         """
  *         if self.thisPtr == NULL or not self.thisPtr:
  *             raise RuntimeError("PySndfile::error::no valid soundfilehandle")             # <<<<<<<<<<<<<<
  *         return self.thisPtr.error()
  *     def strError(self) :
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__31, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1041, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__31, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1039, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 1041, __pyx_L1_error)
+    __PYX_ERR(0, 1039, __pyx_L1_error)
 
-    /* "_pysndfile.pyx":1040
+    /* "_pysndfile.pyx":1038
  *         report error numbers related to the current sound file
  *         """
  *         if self.thisPtr == NULL or not self.thisPtr:             # <<<<<<<<<<<<<<
@@ -9931,7 +9895,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_42error(struct __pyx_obj_10_py
  */
   }
 
-  /* "_pysndfile.pyx":1042
+  /* "_pysndfile.pyx":1040
  *         if self.thisPtr == NULL or not self.thisPtr:
  *             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
  *         return self.thisPtr.error()             # <<<<<<<<<<<<<<
@@ -9939,13 +9903,13 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_42error(struct __pyx_obj_10_py
  *         """
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_self->thisPtr->error()); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1042, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_self->thisPtr->error()); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1040, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "_pysndfile.pyx":1036
+  /* "_pysndfile.pyx":1034
  * 
  * 
  *     def error(self) :             # <<<<<<<<<<<<<<
@@ -9964,7 +9928,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_42error(struct __pyx_obj_10_py
   return __pyx_r;
 }
 
-/* "_pysndfile.pyx":1043
+/* "_pysndfile.pyx":1041
  *             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
  *         return self.thisPtr.error()
  *     def strError(self) :             # <<<<<<<<<<<<<<
@@ -9994,7 +9958,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_44strError(struct __pyx_obj_10
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("strError", 0);
 
-  /* "_pysndfile.pyx":1047
+  /* "_pysndfile.pyx":1045
  *         report error strings related  to the current sound file
  *         """
  *         if self.thisPtr == NULL or not self.thisPtr:             # <<<<<<<<<<<<<<
@@ -10012,20 +9976,20 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_44strError(struct __pyx_obj_10
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "_pysndfile.pyx":1048
+    /* "_pysndfile.pyx":1046
  *         """
  *         if self.thisPtr == NULL or not self.thisPtr:
  *             raise RuntimeError("PySndfile::error::no valid soundfilehandle")             # <<<<<<<<<<<<<<
  *         return self.thisPtr.strError()
  * 
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__32, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1048, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__32, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1046, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 1048, __pyx_L1_error)
+    __PYX_ERR(0, 1046, __pyx_L1_error)
 
-    /* "_pysndfile.pyx":1047
+    /* "_pysndfile.pyx":1045
  *         report error strings related  to the current sound file
  *         """
  *         if self.thisPtr == NULL or not self.thisPtr:             # <<<<<<<<<<<<<<
@@ -10034,7 +9998,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_44strError(struct __pyx_obj_10
  */
   }
 
-  /* "_pysndfile.pyx":1049
+  /* "_pysndfile.pyx":1047
  *         if self.thisPtr == NULL or not self.thisPtr:
  *             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
  *         return self.thisPtr.strError()             # <<<<<<<<<<<<<<
@@ -10042,13 +10006,13 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_44strError(struct __pyx_obj_10
  *     def seek(self, sf_count_t offset, int whence=C_SEEK_SET, mode='rw'):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyBytes_FromString(__pyx_v_self->thisPtr->strError()); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1049, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyBytes_FromString(__pyx_v_self->thisPtr->strError()); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1047, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "_pysndfile.pyx":1043
+  /* "_pysndfile.pyx":1041
  *             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
  *         return self.thisPtr.error()
  *     def strError(self) :             # <<<<<<<<<<<<<<
@@ -10067,7 +10031,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_44strError(struct __pyx_obj_10
   return __pyx_r;
 }
 
-/* "_pysndfile.pyx":1051
+/* "_pysndfile.pyx":1049
  *         return self.thisPtr.strError()
  * 
  *     def seek(self, sf_count_t offset, int whence=C_SEEK_SET, mode='rw'):             # <<<<<<<<<<<<<<
@@ -10116,7 +10080,7 @@ static PyObject *__pyx_pw_10_pysndfile_9PySndfile_47seek(PyObject *__pyx_v_self,
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "seek") < 0)) __PYX_ERR(0, 1051, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "seek") < 0)) __PYX_ERR(0, 1049, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -10127,9 +10091,9 @@ static PyObject *__pyx_pw_10_pysndfile_9PySndfile_47seek(PyObject *__pyx_v_self,
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_offset = __Pyx_PyInt_As_npy_int64(values[0]); if (unlikely((__pyx_v_offset == ((sf_count_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 1051, __pyx_L3_error)
+    __pyx_v_offset = __Pyx_PyInt_As_npy_int64(values[0]); if (unlikely((__pyx_v_offset == ((sf_count_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 1049, __pyx_L3_error)
     if (values[1]) {
-      __pyx_v_whence = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_whence == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1051, __pyx_L3_error)
+      __pyx_v_whence = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_whence == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1049, __pyx_L3_error)
     } else {
       __pyx_v_whence = __pyx_k__33;
     }
@@ -10137,7 +10101,7 @@ static PyObject *__pyx_pw_10_pysndfile_9PySndfile_47seek(PyObject *__pyx_v_self,
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("seek", 0, 1, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1051, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("seek", 0, 1, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1049, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("_pysndfile.PySndfile.seek", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -10164,7 +10128,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_46seek(struct __pyx_obj_10_pys
   PyObject *__pyx_t_7 = NULL;
   __Pyx_RefNannySetupContext("seek", 0);
 
-  /* "_pysndfile.pyx":1079
+  /* "_pysndfile.pyx":1077
  *         """
  * 
  *         if self.thisPtr == NULL or not self.thisPtr:             # <<<<<<<<<<<<<<
@@ -10182,20 +10146,20 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_46seek(struct __pyx_obj_10_pys
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "_pysndfile.pyx":1080
+    /* "_pysndfile.pyx":1078
  * 
  *         if self.thisPtr == NULL or not self.thisPtr:
  *             raise RuntimeError("PySndfile::error::no valid soundfilehandle")             # <<<<<<<<<<<<<<
  * 
  *         cdef sf_count_t pos
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__34, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1080, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__34, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1078, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 1080, __pyx_L1_error)
+    __PYX_ERR(0, 1078, __pyx_L1_error)
 
-    /* "_pysndfile.pyx":1079
+    /* "_pysndfile.pyx":1077
  *         """
  * 
  *         if self.thisPtr == NULL or not self.thisPtr:             # <<<<<<<<<<<<<<
@@ -10204,17 +10168,17 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_46seek(struct __pyx_obj_10_pys
  */
   }
 
-  /* "_pysndfile.pyx":1083
+  /* "_pysndfile.pyx":1081
  * 
  *         cdef sf_count_t pos
  *         if mode == 'rw':             # <<<<<<<<<<<<<<
  *             # Update both read and write pointers
  *             pos = self.thisPtr.seek(offset, whence)
  */
-  __pyx_t_1 = (__Pyx_PyString_Equals(__pyx_v_mode, __pyx_n_s_rw, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 1083, __pyx_L1_error)
+  __pyx_t_1 = (__Pyx_PyString_Equals(__pyx_v_mode, __pyx_n_s_rw, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 1081, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "_pysndfile.pyx":1085
+    /* "_pysndfile.pyx":1083
  *         if mode == 'rw':
  *             # Update both read and write pointers
  *             pos = self.thisPtr.seek(offset, whence)             # <<<<<<<<<<<<<<
@@ -10223,7 +10187,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_46seek(struct __pyx_obj_10_pys
  */
     __pyx_v_pos = __pyx_v_self->thisPtr->seek(__pyx_v_offset, __pyx_v_whence);
 
-    /* "_pysndfile.pyx":1083
+    /* "_pysndfile.pyx":1081
  * 
  *         cdef sf_count_t pos
  *         if mode == 'rw':             # <<<<<<<<<<<<<<
@@ -10233,17 +10197,17 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_46seek(struct __pyx_obj_10_pys
     goto __pyx_L6;
   }
 
-  /* "_pysndfile.pyx":1086
+  /* "_pysndfile.pyx":1084
  *             # Update both read and write pointers
  *             pos = self.thisPtr.seek(offset, whence)
  *         elif mode == 'r':             # <<<<<<<<<<<<<<
  *             whence = whence | C_SFM_READ
  *             pos = self.thisPtr.seek(offset, whence)
  */
-  __pyx_t_1 = (__Pyx_PyString_Equals(__pyx_v_mode, __pyx_n_s_r, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 1086, __pyx_L1_error)
+  __pyx_t_1 = (__Pyx_PyString_Equals(__pyx_v_mode, __pyx_n_s_r, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 1084, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "_pysndfile.pyx":1087
+    /* "_pysndfile.pyx":1085
  *             pos = self.thisPtr.seek(offset, whence)
  *         elif mode == 'r':
  *             whence = whence | C_SFM_READ             # <<<<<<<<<<<<<<
@@ -10252,7 +10216,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_46seek(struct __pyx_obj_10_pys
  */
     __pyx_v_whence = (__pyx_v_whence | SFM_READ);
 
-    /* "_pysndfile.pyx":1088
+    /* "_pysndfile.pyx":1086
  *         elif mode == 'r':
  *             whence = whence | C_SFM_READ
  *             pos = self.thisPtr.seek(offset, whence)             # <<<<<<<<<<<<<<
@@ -10261,7 +10225,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_46seek(struct __pyx_obj_10_pys
  */
     __pyx_v_pos = __pyx_v_self->thisPtr->seek(__pyx_v_offset, __pyx_v_whence);
 
-    /* "_pysndfile.pyx":1086
+    /* "_pysndfile.pyx":1084
  *             # Update both read and write pointers
  *             pos = self.thisPtr.seek(offset, whence)
  *         elif mode == 'r':             # <<<<<<<<<<<<<<
@@ -10271,17 +10235,17 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_46seek(struct __pyx_obj_10_pys
     goto __pyx_L6;
   }
 
-  /* "_pysndfile.pyx":1089
+  /* "_pysndfile.pyx":1087
  *             whence = whence | C_SFM_READ
  *             pos = self.thisPtr.seek(offset, whence)
  *         elif mode == 'w':             # <<<<<<<<<<<<<<
  *             whence = whence | C_SFM_WRITE
  *             pos = self.thisPtr.seek(offset, whence)
  */
-  __pyx_t_1 = (__Pyx_PyString_Equals(__pyx_v_mode, __pyx_n_s_w, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 1089, __pyx_L1_error)
+  __pyx_t_1 = (__Pyx_PyString_Equals(__pyx_v_mode, __pyx_n_s_w, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 1087, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "_pysndfile.pyx":1090
+    /* "_pysndfile.pyx":1088
  *             pos = self.thisPtr.seek(offset, whence)
  *         elif mode == 'w':
  *             whence = whence | C_SFM_WRITE             # <<<<<<<<<<<<<<
@@ -10290,7 +10254,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_46seek(struct __pyx_obj_10_pys
  */
     __pyx_v_whence = (__pyx_v_whence | SFM_WRITE);
 
-    /* "_pysndfile.pyx":1091
+    /* "_pysndfile.pyx":1089
  *         elif mode == 'w':
  *             whence = whence | C_SFM_WRITE
  *             pos = self.thisPtr.seek(offset, whence)             # <<<<<<<<<<<<<<
@@ -10299,7 +10263,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_46seek(struct __pyx_obj_10_pys
  */
     __pyx_v_pos = __pyx_v_self->thisPtr->seek(__pyx_v_offset, __pyx_v_whence);
 
-    /* "_pysndfile.pyx":1089
+    /* "_pysndfile.pyx":1087
  *             whence = whence | C_SFM_READ
  *             pos = self.thisPtr.seek(offset, whence)
  *         elif mode == 'w':             # <<<<<<<<<<<<<<
@@ -10309,7 +10273,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_46seek(struct __pyx_obj_10_pys
     goto __pyx_L6;
   }
 
-  /* "_pysndfile.pyx":1093
+  /* "_pysndfile.pyx":1091
  *             pos = self.thisPtr.seek(offset, whence)
  *         else:
  *             raise ValueError("mode should be one of 'r', 'w' or 'rw' only")             # <<<<<<<<<<<<<<
@@ -10317,15 +10281,15 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_46seek(struct __pyx_obj_10_pys
  *         if pos == -1:
  */
   /*else*/ {
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__35, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1093, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__35, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1091, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 1093, __pyx_L1_error)
+    __PYX_ERR(0, 1091, __pyx_L1_error)
   }
   __pyx_L6:;
 
-  /* "_pysndfile.pyx":1095
+  /* "_pysndfile.pyx":1093
  *             raise ValueError("mode should be one of 'r', 'w' or 'rw' only")
  * 
  *         if pos == -1:             # <<<<<<<<<<<<<<
@@ -10335,16 +10299,16 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_46seek(struct __pyx_obj_10_pys
   __pyx_t_1 = ((__pyx_v_pos == -1LL) != 0);
   if (__pyx_t_1) {
 
-    /* "_pysndfile.pyx":1096
+    /* "_pysndfile.pyx":1094
  * 
  *         if pos == -1:
  *             msg = "libsndfile error during seek:: {0}".format(self.thisPtr.strError())             # <<<<<<<<<<<<<<
  *             raise IOError(msg)
  *         return pos
  */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_libsndfile_error_during_seek_0, __pyx_n_s_format); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1096, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_libsndfile_error_during_seek_0, __pyx_n_s_format); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1094, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyBytes_FromString(__pyx_v_self->thisPtr->strError()); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1096, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyBytes_FromString(__pyx_v_self->thisPtr->strError()); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1094, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -10357,14 +10321,14 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_46seek(struct __pyx_obj_10_pys
       }
     }
     if (!__pyx_t_6) {
-      __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1096, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1094, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_GOTREF(__pyx_t_3);
     } else {
       #if CYTHON_FAST_PYCALL
       if (PyFunction_Check(__pyx_t_4)) {
         PyObject *__pyx_temp[2] = {__pyx_t_6, __pyx_t_5};
-        __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1096, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1094, __pyx_L1_error)
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -10373,20 +10337,20 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_46seek(struct __pyx_obj_10_pys
       #if CYTHON_FAST_PYCCALL
       if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
         PyObject *__pyx_temp[2] = {__pyx_t_6, __pyx_t_5};
-        __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1096, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1094, __pyx_L1_error)
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       } else
       #endif
       {
-        __pyx_t_7 = PyTuple_New(1+1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1096, __pyx_L1_error)
+        __pyx_t_7 = PyTuple_New(1+1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1094, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_6); __pyx_t_6 = NULL;
         __Pyx_GIVEREF(__pyx_t_5);
         PyTuple_SET_ITEM(__pyx_t_7, 0+1, __pyx_t_5);
         __pyx_t_5 = 0;
-        __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1096, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1094, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       }
@@ -10395,26 +10359,26 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_46seek(struct __pyx_obj_10_pys
     __pyx_v_msg = __pyx_t_3;
     __pyx_t_3 = 0;
 
-    /* "_pysndfile.pyx":1097
+    /* "_pysndfile.pyx":1095
  *         if pos == -1:
  *             msg = "libsndfile error during seek:: {0}".format(self.thisPtr.strError())
  *             raise IOError(msg)             # <<<<<<<<<<<<<<
  *         return pos
  * 
  */
-    __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1097, __pyx_L1_error)
+    __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1095, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_INCREF(__pyx_v_msg);
     __Pyx_GIVEREF(__pyx_v_msg);
     PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_v_msg);
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_IOError, __pyx_t_3, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1097, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_IOError, __pyx_t_3, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1095, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_Raise(__pyx_t_4, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __PYX_ERR(0, 1097, __pyx_L1_error)
+    __PYX_ERR(0, 1095, __pyx_L1_error)
 
-    /* "_pysndfile.pyx":1095
+    /* "_pysndfile.pyx":1093
  *             raise ValueError("mode should be one of 'r', 'w' or 'rw' only")
  * 
  *         if pos == -1:             # <<<<<<<<<<<<<<
@@ -10423,7 +10387,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_46seek(struct __pyx_obj_10_pys
  */
   }
 
-  /* "_pysndfile.pyx":1098
+  /* "_pysndfile.pyx":1096
  *             msg = "libsndfile error during seek:: {0}".format(self.thisPtr.strError())
  *             raise IOError(msg)
  *         return pos             # <<<<<<<<<<<<<<
@@ -10431,13 +10395,13 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_46seek(struct __pyx_obj_10_pys
  *     def rewind(self, mode="rw") :
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __Pyx_PyInt_From_npy_int64(__pyx_v_pos); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1098, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_npy_int64(__pyx_v_pos); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1096, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "_pysndfile.pyx":1051
+  /* "_pysndfile.pyx":1049
  *         return self.thisPtr.strError()
  * 
  *     def seek(self, sf_count_t offset, int whence=C_SEEK_SET, mode='rw'):             # <<<<<<<<<<<<<<
@@ -10461,7 +10425,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_46seek(struct __pyx_obj_10_pys
   return __pyx_r;
 }
 
-/* "_pysndfile.pyx":1100
+/* "_pysndfile.pyx":1098
  *         return pos
  * 
  *     def rewind(self, mode="rw") :             # <<<<<<<<<<<<<<
@@ -10498,7 +10462,7 @@ static PyObject *__pyx_pw_10_pysndfile_9PySndfile_49rewind(PyObject *__pyx_v_sel
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "rewind") < 0)) __PYX_ERR(0, 1100, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "rewind") < 0)) __PYX_ERR(0, 1098, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -10511,7 +10475,7 @@ static PyObject *__pyx_pw_10_pysndfile_9PySndfile_49rewind(PyObject *__pyx_v_sel
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("rewind", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1100, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("rewind", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1098, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("_pysndfile.PySndfile.rewind", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -10539,7 +10503,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_48rewind(struct __pyx_obj_10_p
   PyObject *__pyx_t_7 = NULL;
   __Pyx_RefNannySetupContext("rewind", 0);
 
-  /* "_pysndfile.pyx":1105
+  /* "_pysndfile.pyx":1103
  *         """
  *         cdef sf_count_t pos
  *         cdef int whence = C_SEEK_SET             # <<<<<<<<<<<<<<
@@ -10548,7 +10512,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_48rewind(struct __pyx_obj_10_p
  */
   __pyx_v_whence = SEEK_SET;
 
-  /* "_pysndfile.pyx":1107
+  /* "_pysndfile.pyx":1105
  *         cdef int whence = C_SEEK_SET
  * 
  *         if self.thisPtr == NULL or not self.thisPtr:             # <<<<<<<<<<<<<<
@@ -10566,20 +10530,20 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_48rewind(struct __pyx_obj_10_p
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "_pysndfile.pyx":1108
+    /* "_pysndfile.pyx":1106
  * 
  *         if self.thisPtr == NULL or not self.thisPtr:
  *             raise RuntimeError("PySndfile::error::no valid soundfilehandle")             # <<<<<<<<<<<<<<
  * 
  *         if mode == 'rw':
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__36, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1108, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__36, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1106, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 1108, __pyx_L1_error)
+    __PYX_ERR(0, 1106, __pyx_L1_error)
 
-    /* "_pysndfile.pyx":1107
+    /* "_pysndfile.pyx":1105
  *         cdef int whence = C_SEEK_SET
  * 
  *         if self.thisPtr == NULL or not self.thisPtr:             # <<<<<<<<<<<<<<
@@ -10588,17 +10552,17 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_48rewind(struct __pyx_obj_10_p
  */
   }
 
-  /* "_pysndfile.pyx":1110
+  /* "_pysndfile.pyx":1108
  *             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
  * 
  *         if mode == 'rw':             # <<<<<<<<<<<<<<
  *             # Update both read and write pointers
  *             pos = self.thisPtr.seek(0, whence)
  */
-  __pyx_t_1 = (__Pyx_PyString_Equals(__pyx_v_mode, __pyx_n_s_rw, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 1110, __pyx_L1_error)
+  __pyx_t_1 = (__Pyx_PyString_Equals(__pyx_v_mode, __pyx_n_s_rw, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 1108, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "_pysndfile.pyx":1112
+    /* "_pysndfile.pyx":1110
  *         if mode == 'rw':
  *             # Update both read and write pointers
  *             pos = self.thisPtr.seek(0, whence)             # <<<<<<<<<<<<<<
@@ -10607,7 +10571,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_48rewind(struct __pyx_obj_10_p
  */
     __pyx_v_pos = __pyx_v_self->thisPtr->seek(0, __pyx_v_whence);
 
-    /* "_pysndfile.pyx":1110
+    /* "_pysndfile.pyx":1108
  *             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
  * 
  *         if mode == 'rw':             # <<<<<<<<<<<<<<
@@ -10617,17 +10581,17 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_48rewind(struct __pyx_obj_10_p
     goto __pyx_L6;
   }
 
-  /* "_pysndfile.pyx":1113
+  /* "_pysndfile.pyx":1111
  *             # Update both read and write pointers
  *             pos = self.thisPtr.seek(0, whence)
  *         elif mode == 'r':             # <<<<<<<<<<<<<<
  *             whence = whence | C_SFM_READ
  *             pos = self.thisPtr.seek(0, whence)
  */
-  __pyx_t_1 = (__Pyx_PyString_Equals(__pyx_v_mode, __pyx_n_s_r, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 1113, __pyx_L1_error)
+  __pyx_t_1 = (__Pyx_PyString_Equals(__pyx_v_mode, __pyx_n_s_r, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 1111, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "_pysndfile.pyx":1114
+    /* "_pysndfile.pyx":1112
  *             pos = self.thisPtr.seek(0, whence)
  *         elif mode == 'r':
  *             whence = whence | C_SFM_READ             # <<<<<<<<<<<<<<
@@ -10636,7 +10600,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_48rewind(struct __pyx_obj_10_p
  */
     __pyx_v_whence = (__pyx_v_whence | SFM_READ);
 
-    /* "_pysndfile.pyx":1115
+    /* "_pysndfile.pyx":1113
  *         elif mode == 'r':
  *             whence = whence | C_SFM_READ
  *             pos = self.thisPtr.seek(0, whence)             # <<<<<<<<<<<<<<
@@ -10645,7 +10609,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_48rewind(struct __pyx_obj_10_p
  */
     __pyx_v_pos = __pyx_v_self->thisPtr->seek(0, __pyx_v_whence);
 
-    /* "_pysndfile.pyx":1113
+    /* "_pysndfile.pyx":1111
  *             # Update both read and write pointers
  *             pos = self.thisPtr.seek(0, whence)
  *         elif mode == 'r':             # <<<<<<<<<<<<<<
@@ -10655,17 +10619,17 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_48rewind(struct __pyx_obj_10_p
     goto __pyx_L6;
   }
 
-  /* "_pysndfile.pyx":1116
+  /* "_pysndfile.pyx":1114
  *             whence = whence | C_SFM_READ
  *             pos = self.thisPtr.seek(0, whence)
  *         elif mode == 'w':             # <<<<<<<<<<<<<<
  *             whence = whence | C_SFM_WRITE
  *             pos = self.thisPtr.seek(0, whence)
  */
-  __pyx_t_1 = (__Pyx_PyString_Equals(__pyx_v_mode, __pyx_n_s_w, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 1116, __pyx_L1_error)
+  __pyx_t_1 = (__Pyx_PyString_Equals(__pyx_v_mode, __pyx_n_s_w, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 1114, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "_pysndfile.pyx":1117
+    /* "_pysndfile.pyx":1115
  *             pos = self.thisPtr.seek(0, whence)
  *         elif mode == 'w':
  *             whence = whence | C_SFM_WRITE             # <<<<<<<<<<<<<<
@@ -10674,7 +10638,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_48rewind(struct __pyx_obj_10_p
  */
     __pyx_v_whence = (__pyx_v_whence | SFM_WRITE);
 
-    /* "_pysndfile.pyx":1118
+    /* "_pysndfile.pyx":1116
  *         elif mode == 'w':
  *             whence = whence | C_SFM_WRITE
  *             pos = self.thisPtr.seek(0, whence)             # <<<<<<<<<<<<<<
@@ -10683,7 +10647,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_48rewind(struct __pyx_obj_10_p
  */
     __pyx_v_pos = __pyx_v_self->thisPtr->seek(0, __pyx_v_whence);
 
-    /* "_pysndfile.pyx":1116
+    /* "_pysndfile.pyx":1114
  *             whence = whence | C_SFM_READ
  *             pos = self.thisPtr.seek(0, whence)
  *         elif mode == 'w':             # <<<<<<<<<<<<<<
@@ -10693,7 +10657,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_48rewind(struct __pyx_obj_10_p
     goto __pyx_L6;
   }
 
-  /* "_pysndfile.pyx":1120
+  /* "_pysndfile.pyx":1118
  *             pos = self.thisPtr.seek(0, whence)
  *         else:
  *             raise ValueError("mode should be one of 'r', 'w' or 'rw' only")             # <<<<<<<<<<<<<<
@@ -10701,15 +10665,15 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_48rewind(struct __pyx_obj_10_p
  *         if pos == -1:
  */
   /*else*/ {
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__37, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1120, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__37, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1118, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 1120, __pyx_L1_error)
+    __PYX_ERR(0, 1118, __pyx_L1_error)
   }
   __pyx_L6:;
 
-  /* "_pysndfile.pyx":1122
+  /* "_pysndfile.pyx":1120
  *             raise ValueError("mode should be one of 'r', 'w' or 'rw' only")
  * 
  *         if pos == -1:             # <<<<<<<<<<<<<<
@@ -10719,16 +10683,16 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_48rewind(struct __pyx_obj_10_p
   __pyx_t_1 = ((__pyx_v_pos == -1LL) != 0);
   if (__pyx_t_1) {
 
-    /* "_pysndfile.pyx":1123
+    /* "_pysndfile.pyx":1121
  * 
  *         if pos == -1:
  *             msg = "libsndfile error while rewinding:: {0}".format(self.thisPtr.strError())             # <<<<<<<<<<<<<<
  *             raise IOError(msg)
  *         return pos
  */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_libsndfile_error_while_rewinding, __pyx_n_s_format); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1123, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_libsndfile_error_while_rewinding, __pyx_n_s_format); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1121, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyBytes_FromString(__pyx_v_self->thisPtr->strError()); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1123, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyBytes_FromString(__pyx_v_self->thisPtr->strError()); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1121, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -10741,14 +10705,14 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_48rewind(struct __pyx_obj_10_p
       }
     }
     if (!__pyx_t_6) {
-      __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1123, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1121, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_GOTREF(__pyx_t_3);
     } else {
       #if CYTHON_FAST_PYCALL
       if (PyFunction_Check(__pyx_t_4)) {
         PyObject *__pyx_temp[2] = {__pyx_t_6, __pyx_t_5};
-        __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1123, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1121, __pyx_L1_error)
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -10757,20 +10721,20 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_48rewind(struct __pyx_obj_10_p
       #if CYTHON_FAST_PYCCALL
       if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
         PyObject *__pyx_temp[2] = {__pyx_t_6, __pyx_t_5};
-        __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1123, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1121, __pyx_L1_error)
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       } else
       #endif
       {
-        __pyx_t_7 = PyTuple_New(1+1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1123, __pyx_L1_error)
+        __pyx_t_7 = PyTuple_New(1+1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1121, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_6); __pyx_t_6 = NULL;
         __Pyx_GIVEREF(__pyx_t_5);
         PyTuple_SET_ITEM(__pyx_t_7, 0+1, __pyx_t_5);
         __pyx_t_5 = 0;
-        __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1123, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1121, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       }
@@ -10779,26 +10743,26 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_48rewind(struct __pyx_obj_10_p
     __pyx_v_msg = __pyx_t_3;
     __pyx_t_3 = 0;
 
-    /* "_pysndfile.pyx":1124
+    /* "_pysndfile.pyx":1122
  *         if pos == -1:
  *             msg = "libsndfile error while rewinding:: {0}".format(self.thisPtr.strError())
  *             raise IOError(msg)             # <<<<<<<<<<<<<<
  *         return pos
  * 
  */
-    __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1124, __pyx_L1_error)
+    __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1122, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_INCREF(__pyx_v_msg);
     __Pyx_GIVEREF(__pyx_v_msg);
     PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_v_msg);
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_IOError, __pyx_t_3, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1124, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_IOError, __pyx_t_3, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1122, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_Raise(__pyx_t_4, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __PYX_ERR(0, 1124, __pyx_L1_error)
+    __PYX_ERR(0, 1122, __pyx_L1_error)
 
-    /* "_pysndfile.pyx":1122
+    /* "_pysndfile.pyx":1120
  *             raise ValueError("mode should be one of 'r', 'w' or 'rw' only")
  * 
  *         if pos == -1:             # <<<<<<<<<<<<<<
@@ -10807,7 +10771,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_48rewind(struct __pyx_obj_10_p
  */
   }
 
-  /* "_pysndfile.pyx":1125
+  /* "_pysndfile.pyx":1123
  *             msg = "libsndfile error while rewinding:: {0}".format(self.thisPtr.strError())
  *             raise IOError(msg)
  *         return pos             # <<<<<<<<<<<<<<
@@ -10815,13 +10779,13 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_48rewind(struct __pyx_obj_10_p
  * cdef _construct_format(major, encoding) :
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __Pyx_PyInt_From_npy_int64(__pyx_v_pos); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1125, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_npy_int64(__pyx_v_pos); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1123, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "_pysndfile.pyx":1100
+  /* "_pysndfile.pyx":1098
  *         return pos
  * 
  *     def rewind(self, mode="rw") :             # <<<<<<<<<<<<<<
@@ -10845,7 +10809,7 @@ static PyObject *__pyx_pf_10_pysndfile_9PySndfile_48rewind(struct __pyx_obj_10_p
   return __pyx_r;
 }
 
-/* "_pysndfile.pyx":1127
+/* "_pysndfile.pyx":1125
  *         return pos
  * 
  * cdef _construct_format(major, encoding) :             # <<<<<<<<<<<<<<
@@ -10863,39 +10827,39 @@ static PyObject *__pyx_f_10_pysndfile__construct_format(PyObject *__pyx_v_major,
   int __pyx_t_3;
   __Pyx_RefNannySetupContext("_construct_format", 0);
 
-  /* "_pysndfile.pyx":1131
+  /* "_pysndfile.pyx":1129
  *     construct a format specification for libsndfile from major format string and encoding string
  *     """
  *     cdef int major_id = fileformat_name_to_id[major]             # <<<<<<<<<<<<<<
  *     cdef int enc_id   = encoding_name_to_id[encoding]
  *     return  major_id | enc_id
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_fileformat_name_to_id); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1131, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_fileformat_name_to_id); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1129, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyObject_GetItem(__pyx_t_1, __pyx_v_major); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1131, __pyx_L1_error)
+  __pyx_t_2 = PyObject_GetItem(__pyx_t_1, __pyx_v_major); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1129, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1131, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1129, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_major_id = __pyx_t_3;
 
-  /* "_pysndfile.pyx":1132
+  /* "_pysndfile.pyx":1130
  *     """
  *     cdef int major_id = fileformat_name_to_id[major]
  *     cdef int enc_id   = encoding_name_to_id[encoding]             # <<<<<<<<<<<<<<
  *     return  major_id | enc_id
  * 
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_encoding_name_to_id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1132, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_encoding_name_to_id); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1130, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = PyObject_GetItem(__pyx_t_2, __pyx_v_encoding); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1132, __pyx_L1_error)
+  __pyx_t_1 = PyObject_GetItem(__pyx_t_2, __pyx_v_encoding); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1130, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1132, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1130, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_enc_id = __pyx_t_3;
 
-  /* "_pysndfile.pyx":1133
+  /* "_pysndfile.pyx":1131
  *     cdef int major_id = fileformat_name_to_id[major]
  *     cdef int enc_id   = encoding_name_to_id[encoding]
  *     return  major_id | enc_id             # <<<<<<<<<<<<<<
@@ -10903,13 +10867,13 @@ static PyObject *__pyx_f_10_pysndfile__construct_format(PyObject *__pyx_v_major,
  * def construct_format(major, encoding) :
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int((__pyx_v_major_id | __pyx_v_enc_id)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1133, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int((__pyx_v_major_id | __pyx_v_enc_id)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1131, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "_pysndfile.pyx":1127
+  /* "_pysndfile.pyx":1125
  *         return pos
  * 
  * cdef _construct_format(major, encoding) :             # <<<<<<<<<<<<<<
@@ -10929,7 +10893,7 @@ static PyObject *__pyx_f_10_pysndfile__construct_format(PyObject *__pyx_v_major,
   return __pyx_r;
 }
 
-/* "_pysndfile.pyx":1135
+/* "_pysndfile.pyx":1133
  *     return  major_id | enc_id
  * 
  * def construct_format(major, encoding) :             # <<<<<<<<<<<<<<
@@ -10967,11 +10931,11 @@ static PyObject *__pyx_pw_10_pysndfile_11construct_format(PyObject *__pyx_self, 
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_encoding)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("construct_format", 1, 2, 2, 1); __PYX_ERR(0, 1135, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("construct_format", 1, 2, 2, 1); __PYX_ERR(0, 1133, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "construct_format") < 0)) __PYX_ERR(0, 1135, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "construct_format") < 0)) __PYX_ERR(0, 1133, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -10984,7 +10948,7 @@ static PyObject *__pyx_pw_10_pysndfile_11construct_format(PyObject *__pyx_self, 
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("construct_format", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1135, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("construct_format", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1133, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("_pysndfile.construct_format", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -11003,20 +10967,20 @@ static PyObject *__pyx_pf_10_pysndfile_10construct_format(CYTHON_UNUSED PyObject
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("construct_format", 0);
 
-  /* "_pysndfile.pyx":1139
+  /* "_pysndfile.pyx":1137
  *     construct a format specification for libsndfile from major format string and encoding string
  *     """
  *     return  _construct_format(major, encoding)             # <<<<<<<<<<<<<<
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_10_pysndfile__construct_format(__pyx_v_major, __pyx_v_encoding); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1139, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_10_pysndfile__construct_format(__pyx_v_major, __pyx_v_encoding); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1137, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "_pysndfile.pyx":1135
+  /* "_pysndfile.pyx":1133
  *     return  major_id | enc_id
  * 
  * def construct_format(major, encoding) :             # <<<<<<<<<<<<<<
@@ -14104,7 +14068,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_encoding_id_to_name, __pyx_k_encoding_id_to_name, sizeof(__pyx_k_encoding_id_to_name), 0, 0, 1, 1},
   {&__pyx_n_s_encoding_id_tuple, __pyx_k_encoding_id_tuple, sizeof(__pyx_k_encoding_id_tuple), 0, 0, 1, 1},
   {&__pyx_n_s_encoding_name_to_id, __pyx_k_encoding_name_to_id, sizeof(__pyx_k_encoding_name_to_id), 0, 0, 1, 1},
-  {&__pyx_n_s_end, __pyx_k_end, sizeof(__pyx_k_end), 0, 0, 1, 1},
   {&__pyx_n_s_endian_id_to_name, __pyx_k_endian_id_to_name, sizeof(__pyx_k_endian_id_to_name), 0, 0, 1, 1},
   {&__pyx_n_s_endian_name_to_id, __pyx_k_endian_name_to_id, sizeof(__pyx_k_endian_name_to_id), 0, 0, 1, 1},
   {&__pyx_n_s_endian_to_id_tuple, __pyx_k_endian_to_id_tuple, sizeof(__pyx_k_endian_to_id_tuple), 0, 0, 1, 1},
@@ -14129,7 +14092,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_get_sndfile_encodings, __pyx_k_get_sndfile_encodings, sizeof(__pyx_k_get_sndfile_encodings), 0, 0, 1, 1},
   {&__pyx_n_s_get_sndfile_formats, __pyx_k_get_sndfile_formats, sizeof(__pyx_k_get_sndfile_formats), 0, 0, 1, 1},
   {&__pyx_n_s_get_sndfile_version, __pyx_k_get_sndfile_version, sizeof(__pyx_k_get_sndfile_version), 0, 0, 1, 1},
-  {&__pyx_kp_s_getcue_returned, __pyx_k_getcue_returned, sizeof(__pyx_k_getcue_returned), 0, 0, 1, 0},
   {&__pyx_n_s_gsm610, __pyx_k_gsm610, sizeof(__pyx_k_gsm610), 0, 0, 1, 1},
   {&__pyx_n_s_htk, __pyx_k_htk, sizeof(__pyx_k_htk), 0, 0, 1, 1},
   {&__pyx_n_s_i, __pyx_k_i, sizeof(__pyx_k_i), 0, 0, 1, 1},
@@ -14174,7 +14136,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_pcmu8, __pyx_k_pcmu8, sizeof(__pyx_k_pcmu8), 0, 0, 1, 1},
   {&__pyx_n_s_pre, __pyx_k_pre, sizeof(__pyx_k_pre), 0, 0, 1, 1},
   {&__pyx_n_s_prerelease, __pyx_k_prerelease, sizeof(__pyx_k_prerelease), 0, 0, 1, 1},
-  {&__pyx_n_s_print, __pyx_k_print, sizeof(__pyx_k_print), 0, 0, 1, 1},
   {&__pyx_n_s_pvf, __pyx_k_pvf, sizeof(__pyx_k_pvf), 0, 0, 1, 1},
   {&__pyx_n_s_pysndfile, __pyx_k_pysndfile, sizeof(__pyx_k_pysndfile), 0, 0, 1, 1},
   {&__pyx_n_s_pysndfile_version, __pyx_k_pysndfile_version, sizeof(__pyx_k_pysndfile_version), 0, 0, 1, 1},
@@ -14476,69 +14437,69 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__30);
   __Pyx_GIVEREF(__pyx_tuple__30);
 
-  /* "_pysndfile.pyx":1041
+  /* "_pysndfile.pyx":1039
  *         """
  *         if self.thisPtr == NULL or not self.thisPtr:
  *             raise RuntimeError("PySndfile::error::no valid soundfilehandle")             # <<<<<<<<<<<<<<
  *         return self.thisPtr.error()
  *     def strError(self) :
  */
-  __pyx_tuple__31 = PyTuple_Pack(1, __pyx_kp_s_PySndfile_error_no_valid_soundfi); if (unlikely(!__pyx_tuple__31)) __PYX_ERR(0, 1041, __pyx_L1_error)
+  __pyx_tuple__31 = PyTuple_Pack(1, __pyx_kp_s_PySndfile_error_no_valid_soundfi); if (unlikely(!__pyx_tuple__31)) __PYX_ERR(0, 1039, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__31);
   __Pyx_GIVEREF(__pyx_tuple__31);
 
-  /* "_pysndfile.pyx":1048
+  /* "_pysndfile.pyx":1046
  *         """
  *         if self.thisPtr == NULL or not self.thisPtr:
  *             raise RuntimeError("PySndfile::error::no valid soundfilehandle")             # <<<<<<<<<<<<<<
  *         return self.thisPtr.strError()
  * 
  */
-  __pyx_tuple__32 = PyTuple_Pack(1, __pyx_kp_s_PySndfile_error_no_valid_soundfi); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 1048, __pyx_L1_error)
+  __pyx_tuple__32 = PyTuple_Pack(1, __pyx_kp_s_PySndfile_error_no_valid_soundfi); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 1046, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__32);
   __Pyx_GIVEREF(__pyx_tuple__32);
 
-  /* "_pysndfile.pyx":1080
+  /* "_pysndfile.pyx":1078
  * 
  *         if self.thisPtr == NULL or not self.thisPtr:
  *             raise RuntimeError("PySndfile::error::no valid soundfilehandle")             # <<<<<<<<<<<<<<
  * 
  *         cdef sf_count_t pos
  */
-  __pyx_tuple__34 = PyTuple_Pack(1, __pyx_kp_s_PySndfile_error_no_valid_soundfi); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(0, 1080, __pyx_L1_error)
+  __pyx_tuple__34 = PyTuple_Pack(1, __pyx_kp_s_PySndfile_error_no_valid_soundfi); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(0, 1078, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__34);
   __Pyx_GIVEREF(__pyx_tuple__34);
 
-  /* "_pysndfile.pyx":1093
+  /* "_pysndfile.pyx":1091
  *             pos = self.thisPtr.seek(offset, whence)
  *         else:
  *             raise ValueError("mode should be one of 'r', 'w' or 'rw' only")             # <<<<<<<<<<<<<<
  * 
  *         if pos == -1:
  */
-  __pyx_tuple__35 = PyTuple_Pack(1, __pyx_kp_s_mode_should_be_one_of_r_w_or_rw); if (unlikely(!__pyx_tuple__35)) __PYX_ERR(0, 1093, __pyx_L1_error)
+  __pyx_tuple__35 = PyTuple_Pack(1, __pyx_kp_s_mode_should_be_one_of_r_w_or_rw); if (unlikely(!__pyx_tuple__35)) __PYX_ERR(0, 1091, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__35);
   __Pyx_GIVEREF(__pyx_tuple__35);
 
-  /* "_pysndfile.pyx":1108
+  /* "_pysndfile.pyx":1106
  * 
  *         if self.thisPtr == NULL or not self.thisPtr:
  *             raise RuntimeError("PySndfile::error::no valid soundfilehandle")             # <<<<<<<<<<<<<<
  * 
  *         if mode == 'rw':
  */
-  __pyx_tuple__36 = PyTuple_Pack(1, __pyx_kp_s_PySndfile_error_no_valid_soundfi); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(0, 1108, __pyx_L1_error)
+  __pyx_tuple__36 = PyTuple_Pack(1, __pyx_kp_s_PySndfile_error_no_valid_soundfi); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(0, 1106, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__36);
   __Pyx_GIVEREF(__pyx_tuple__36);
 
-  /* "_pysndfile.pyx":1120
+  /* "_pysndfile.pyx":1118
  *             pos = self.thisPtr.seek(0, whence)
  *         else:
  *             raise ValueError("mode should be one of 'r', 'w' or 'rw' only")             # <<<<<<<<<<<<<<
  * 
  *         if pos == -1:
  */
-  __pyx_tuple__37 = PyTuple_Pack(1, __pyx_kp_s_mode_should_be_one_of_r_w_or_rw); if (unlikely(!__pyx_tuple__37)) __PYX_ERR(0, 1120, __pyx_L1_error)
+  __pyx_tuple__37 = PyTuple_Pack(1, __pyx_kp_s_mode_should_be_one_of_r_w_or_rw); if (unlikely(!__pyx_tuple__37)) __PYX_ERR(0, 1118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__37);
   __Pyx_GIVEREF(__pyx_tuple__37);
 
@@ -14642,17 +14603,17 @@ static int __Pyx_InitCachedConstants(void) {
   /* "_pysndfile.pyx":34
  * from libcpp.string cimport string
  * 
- * _pysndfile_version=(1,3,0)             # <<<<<<<<<<<<<<
+ * _pysndfile_version=(1,3,1)             # <<<<<<<<<<<<<<
  * def get_pysndfile_version():
  *     """
  */
-  __pyx_tuple__47 = PyTuple_Pack(3, __pyx_int_1, __pyx_int_3, __pyx_int_0); if (unlikely(!__pyx_tuple__47)) __PYX_ERR(0, 34, __pyx_L1_error)
+  __pyx_tuple__47 = PyTuple_Pack(3, __pyx_int_1, __pyx_int_3, __pyx_int_1); if (unlikely(!__pyx_tuple__47)) __PYX_ERR(0, 34, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__47);
   __Pyx_GIVEREF(__pyx_tuple__47);
 
   /* "_pysndfile.pyx":35
  * 
- * _pysndfile_version=(1,3,0)
+ * _pysndfile_version=(1,3,1)
  * def get_pysndfile_version():             # <<<<<<<<<<<<<<
  *     """
  *     return tuple describing the version opf pysndfile
@@ -14707,17 +14668,17 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__55);
   __pyx_codeobj__56 = (PyObject*)__Pyx_PyCode_New(0, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__55, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_Users_roebel_src_pysndfile__pys, __pyx_n_s_get_sndfile_formats, 566, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__56)) __PYX_ERR(0, 566, __pyx_L1_error)
 
-  /* "_pysndfile.pyx":1135
+  /* "_pysndfile.pyx":1133
  *     return  major_id | enc_id
  * 
  * def construct_format(major, encoding) :             # <<<<<<<<<<<<<<
  *     """
  *     construct a format specification for libsndfile from major format string and encoding string
  */
-  __pyx_tuple__57 = PyTuple_Pack(2, __pyx_n_s_major, __pyx_n_s_encoding); if (unlikely(!__pyx_tuple__57)) __PYX_ERR(0, 1135, __pyx_L1_error)
+  __pyx_tuple__57 = PyTuple_Pack(2, __pyx_n_s_major, __pyx_n_s_encoding); if (unlikely(!__pyx_tuple__57)) __PYX_ERR(0, 1133, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__57);
   __Pyx_GIVEREF(__pyx_tuple__57);
-  __pyx_codeobj__58 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__57, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_Users_roebel_src_pysndfile__pys, __pyx_n_s_construct_format, 1135, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__58)) __PYX_ERR(0, 1135, __pyx_L1_error)
+  __pyx_codeobj__58 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__57, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_Users_roebel_src_pysndfile__pys, __pyx_n_s_construct_format, 1133, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__58)) __PYX_ERR(0, 1133, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -14930,7 +14891,7 @@ PyMODINIT_FUNC PyInit__pysndfile(void)
   /* "_pysndfile.pyx":34
  * from libcpp.string cimport string
  * 
- * _pysndfile_version=(1,3,0)             # <<<<<<<<<<<<<<
+ * _pysndfile_version=(1,3,1)             # <<<<<<<<<<<<<<
  * def get_pysndfile_version():
  *     """
  */
@@ -14938,7 +14899,7 @@ PyMODINIT_FUNC PyInit__pysndfile(void)
 
   /* "_pysndfile.pyx":35
  * 
- * _pysndfile_version=(1,3,0)
+ * _pysndfile_version=(1,3,1)
  * def get_pysndfile_version():             # <<<<<<<<<<<<<<
  *     """
  *     return tuple describing the version opf pysndfile
@@ -17884,7 +17845,7 @@ PyMODINIT_FUNC PyInit__pysndfile(void)
   __Pyx_GIVEREF(__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "_pysndfile.pyx":1051
+  /* "_pysndfile.pyx":1049
  *         return self.thisPtr.strError()
  * 
  *     def seek(self, sf_count_t offset, int whence=C_SEEK_SET, mode='rw'):             # <<<<<<<<<<<<<<
@@ -17893,16 +17854,16 @@ PyMODINIT_FUNC PyInit__pysndfile(void)
  */
   __pyx_k__33 = SEEK_SET;
 
-  /* "_pysndfile.pyx":1135
+  /* "_pysndfile.pyx":1133
  *     return  major_id | enc_id
  * 
  * def construct_format(major, encoding) :             # <<<<<<<<<<<<<<
  *     """
  *     construct a format specification for libsndfile from major format string and encoding string
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_10_pysndfile_11construct_format, NULL, __pyx_n_s_pysndfile); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1135, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_10_pysndfile_11construct_format, NULL, __pyx_n_s_pysndfile); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1133, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_construct_format, __pyx_t_1) < 0) __PYX_ERR(0, 1135, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_construct_format, __pyx_t_1) < 0) __PYX_ERR(0, 1133, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "_pysndfile.pyx":1
@@ -20174,112 +20135,6 @@ static void __Pyx_ReleaseBuffer(Py_buffer *view) {
     }
 }
 
-/* Print */
-          #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION < 3
-static PyObject *__Pyx_GetStdout(void) {
-    PyObject *f = PySys_GetObject((char *)"stdout");
-    if (!f) {
-        PyErr_SetString(PyExc_RuntimeError, "lost sys.stdout");
-    }
-    return f;
-}
-static int __Pyx_Print(PyObject* f, PyObject *arg_tuple, int newline) {
-    int i;
-    if (!f) {
-        if (!(f = __Pyx_GetStdout()))
-            return -1;
-    }
-    Py_INCREF(f);
-    for (i=0; i < PyTuple_GET_SIZE(arg_tuple); i++) {
-        PyObject* v;
-        if (PyFile_SoftSpace(f, 1)) {
-            if (PyFile_WriteString(" ", f) < 0)
-                goto error;
-        }
-        v = PyTuple_GET_ITEM(arg_tuple, i);
-        if (PyFile_WriteObject(v, f, Py_PRINT_RAW) < 0)
-            goto error;
-        if (PyString_Check(v)) {
-            char *s = PyString_AsString(v);
-            Py_ssize_t len = PyString_Size(v);
-            if (len > 0) {
-                switch (s[len-1]) {
-                    case ' ': break;
-                    case '\f': case '\r': case '\n': case '\t': case '\v':
-                        PyFile_SoftSpace(f, 0);
-                        break;
-                    default:  break;
-                }
-            }
-        }
-    }
-    if (newline) {
-        if (PyFile_WriteString("\n", f) < 0)
-            goto error;
-        PyFile_SoftSpace(f, 0);
-    }
-    Py_DECREF(f);
-    return 0;
-error:
-    Py_DECREF(f);
-    return -1;
-}
-#else
-static int __Pyx_Print(PyObject* stream, PyObject *arg_tuple, int newline) {
-    PyObject* kwargs = 0;
-    PyObject* result = 0;
-    PyObject* end_string;
-    if (unlikely(!__pyx_print)) {
-        __pyx_print = PyObject_GetAttr(__pyx_b, __pyx_n_s_print);
-        if (!__pyx_print)
-            return -1;
-    }
-    if (stream) {
-        kwargs = PyDict_New();
-        if (unlikely(!kwargs))
-            return -1;
-        if (unlikely(PyDict_SetItem(kwargs, __pyx_n_s_file, stream) < 0))
-            goto bad;
-        if (!newline) {
-            end_string = PyUnicode_FromStringAndSize(" ", 1);
-            if (unlikely(!end_string))
-                goto bad;
-            if (PyDict_SetItem(kwargs, __pyx_n_s_end, end_string) < 0) {
-                Py_DECREF(end_string);
-                goto bad;
-            }
-            Py_DECREF(end_string);
-        }
-    } else if (!newline) {
-        if (unlikely(!__pyx_print_kwargs)) {
-            __pyx_print_kwargs = PyDict_New();
-            if (unlikely(!__pyx_print_kwargs))
-                return -1;
-            end_string = PyUnicode_FromStringAndSize(" ", 1);
-            if (unlikely(!end_string))
-                return -1;
-            if (PyDict_SetItem(__pyx_print_kwargs, __pyx_n_s_end, end_string) < 0) {
-                Py_DECREF(end_string);
-                return -1;
-            }
-            Py_DECREF(end_string);
-        }
-        kwargs = __pyx_print_kwargs;
-    }
-    result = PyObject_Call(__pyx_print, arg_tuple, kwargs);
-    if (unlikely(kwargs) && (kwargs != __pyx_print_kwargs))
-        Py_DECREF(kwargs);
-    if (!result)
-        return -1;
-    Py_DECREF(result);
-    return 0;
-bad:
-    if (kwargs != __pyx_print_kwargs)
-        Py_XDECREF(kwargs);
-    return -1;
-}
-#endif
-
 /* CIntToPy */
           static CYTHON_INLINE PyObject* __Pyx_PyInt_From_unsigned_int(unsigned int value) {
     const unsigned int neg_one = (unsigned int) -1, const_zero = (unsigned int) 0;
@@ -21218,43 +21073,6 @@ raise_neg_overflow:
         "can't convert negative value to unsigned int");
     return (unsigned int) -1;
 }
-
-/* PrintOne */
-          #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION < 3
-static int __Pyx_PrintOne(PyObject* f, PyObject *o) {
-    if (!f) {
-        if (!(f = __Pyx_GetStdout()))
-            return -1;
-    }
-    Py_INCREF(f);
-    if (PyFile_SoftSpace(f, 0)) {
-        if (PyFile_WriteString(" ", f) < 0)
-            goto error;
-    }
-    if (PyFile_WriteObject(o, f, Py_PRINT_RAW) < 0)
-        goto error;
-    if (PyFile_WriteString("\n", f) < 0)
-        goto error;
-    Py_DECREF(f);
-    return 0;
-error:
-    Py_DECREF(f);
-    return -1;
-    /* the line below is just to avoid C compiler
-     * warnings about unused functions */
-    return __Pyx_Print(f, NULL, 0);
-}
-#else
-static int __Pyx_PrintOne(PyObject* stream, PyObject *o) {
-    int res;
-    PyObject* arg_tuple = PyTuple_Pack(1, o);
-    if (unlikely(!arg_tuple))
-        return -1;
-    res = __Pyx_Print(stream, arg_tuple, 1);
-    Py_DECREF(arg_tuple);
-    return res;
-}
-#endif
 
 /* CIntFromPy */
           static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *x) {

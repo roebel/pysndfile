@@ -31,7 +31,7 @@ import os
 cimport numpy as cnp
 from libcpp.string cimport string
 
-_pysndfile_version=(1,3,0)
+_pysndfile_version=(1,3,1)
 def get_pysndfile_version():
     """
     return tuple describing the version opf pysndfile
@@ -1021,8 +1021,6 @@ cdef class PySndfile:
         cdef SF_CUES sf_cues
 
         res = self.thisPtr.command(C_SFC_GET_CUE, &sf_cues, sizeof(sf_cues))
-
-        print("getcue returned:",res)
         if res == 0:
             return []
 
