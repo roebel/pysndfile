@@ -31,7 +31,7 @@ import os
 cimport numpy as cnp
 from libcpp.string cimport string
 
-_pysndfile_version=(1,3,2)
+_pysndfile_version=(1,3,2,1)
 def get_pysndfile_version():
     """
     return tuple describing the version opf pysndfile
@@ -175,6 +175,7 @@ cdef extern from "pysndfile.hh":
     cdef int C_SFC_SET_NORM_DOUBLE "SFC_SET_NORM_DOUBLE"  
     cdef int C_SFC_SET_NORM_FLOAT "SFC_SET_NORM_FLOAT"  
     cdef int C_SFC_SET_SCALE_FLOAT_INT_READ "SFC_SET_SCALE_FLOAT_INT_READ"  
+    cdef int C_SFC_SET_SCALE_INT_FLOAT_WRITE "SFC_SET_SCALE_INT_FLOAT_WRITE"  
 
     cdef int C_SFC_GET_SIMPLE_FORMAT_COUNT "SFC_GET_SIMPLE_FORMAT_COUNT"  
     cdef int C_SFC_GET_SIMPLE_FORMAT "SFC_GET_SIMPLE_FORMAT"  
@@ -368,6 +369,7 @@ _commands_to_id_tuple = (
     ("SFC_SET_NORM_DOUBLE" , C_SFC_SET_NORM_DOUBLE),
     ("SFC_SET_NORM_FLOAT" , C_SFC_SET_NORM_FLOAT),
     ("SFC_SET_SCALE_FLOAT_INT_READ" , C_SFC_SET_SCALE_FLOAT_INT_READ),
+    ("SFC_SET_SCALE_INT_FLOAT_WRITE" , C_SFC_SET_SCALE_INT_FLOAT_WRITE),
 
     ("SFC_GET_SIMPLE_FORMAT_COUNT" , C_SFC_GET_SIMPLE_FORMAT_COUNT),
     ("SFC_GET_SIMPLE_FORMAT" , C_SFC_GET_SIMPLE_FORMAT),

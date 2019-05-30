@@ -1,6 +1,11 @@
 Changes
 -------
 
+Version\_1.3.2.1 (2019-05-30)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  Fixed missing SFC_SET_SCALE_INT_FLOAT_WRITE command
+
 Version\_1.3.2 (2018-07-04)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
