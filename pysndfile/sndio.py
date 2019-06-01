@@ -31,7 +31,7 @@ The module contains 3 functions.
 #
 
 
-from pysndfile import PySndfile, construct_format, stringtype_name_to_id, max_supported_string_length
+from pysndfile import PySndfile, construct_format, stringtype_name_to_id, max_supported_string_length, fileformat_name_to_id, fileformat_id_to_name 
 import numpy as np
 
 def get_info(name, extended_info=False) :
@@ -123,10 +123,16 @@ enc_norm_map = {
     "pcm32": np.float64(2**31),
     }
     
-def read(name, end=None, start=0, dtype=np.float64, return_format=False, sf_strings=None) :
+def read(name, end=None, start=0, dtype=np.float64, return_format=False,
+             sf_strings=None, force_2d=False) :
     """
-    read samples from arbitrary sound files. May return subsets of samples as specified by start and end arguments (Def all samples)
+    read samples from arbitrary sound files into a numpy array. 
+    May return subsets of samples as specified by start and end arguments (Def all samples)
     normalizes samples to [-1,1] if the datatype is a floating point type
+
+    The returned array is 1D for mono sound files and 2D with the channels in the columns
+    for higher number of channels. If force_2d is given mono sound files will be returned 
+    in an array with shape (num_frames, 1)
 
     *Parameters*
 
@@ -143,7 +149,8 @@ def read(name, end=None, start=0, dtype=np.float64, return_format=False, sf_stri
     :param sf_strings: if a dict is given the dict elements will be set to the strings that are available in the
          sound file.
     :type sf_strings: Union[None,dict]
-
+    :param force_2d: forces the returned array to have 2 dimensions with 
+    :type force_2d: bool
     :return: 3 or 4 -tuple containing
         data (1d for mon sounds 2d for multi channel sounds, where channels are in the columns),
         samplerate (int) and encoding (str),
@@ -163,6 +170,9 @@ def read(name, end=None, start=0, dtype=np.float64, return_format=False, sf_stri
     else:
         ff = sf.read_frames(end-start, dtype=dtype)
 
+    if force_2d and ff.ndim == 1:
+        ff = ff.reshape((-1,1))
+        
     if isinstance(sf_strings, dict):
         sf_strings.clear()
         sf_strings.update(sf.get_strings())
