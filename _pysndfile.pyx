@@ -281,6 +281,10 @@ cdef int C_SF_STR_TRACKNUMBER = 0x09
 cdef int C_SF_STR_GENRE = 0x10
 
 
+SF_MAX_CHANNELS  = 1024
+"""int: maximum number if channels supported by libsndfile 1.0.28.
+"""
+
 SF_FORMAT_SUBMASK  = C_SF_FORMAT_SUBMASK
 """int: format submask to retrieve encoding from format integer.
 """
@@ -637,6 +641,9 @@ cdef class PySndfile:
         self.fd = -1
         self.thisPtr = NULL
 
+        if channels > SF_MAX_CHANNELS:
+            raise ValueError( "PySndfile:: max number of channels exceeded {} > {}!".format(channels, SF_MAX_CHANNELS))
+        
         # Check the mode is one of the expected values
         if mode == 'r':
             sfmode = C_SFM_READ
