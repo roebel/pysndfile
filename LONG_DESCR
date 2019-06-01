@@ -105,6 +105,23 @@ Please see the developer documentation
 Changes
 -------
 
+Version\_1.3.3 (2019-06-01)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  fixed missing command C\_SFC\_SET\_SCALE\_INT\_FLOAT\_WRITE (thanks
+   to Svein Seldal for the bug report and fix)
+-  better documentation of sf\_string-io in sndio.read and sndio.write
+-  limit size of strings to be written such that the written file can
+   always be read back with libsndfile 1.0.28 (which imposes different
+   constraints for different formats)
+-  better error handling when number of channels exceeds channel limit
+   imposed by libsndfile.
+-  sndio module now exposes the dicts: fileformat\_name\_to\_id and
+   fileformat\_id\_to\_name
+-  extended sndio.read with force\_2d argument that can be used to force
+   the returned data array to always have 2 dimensions even for mono
+   files.
+
 Version\_1.3.2 (2018-07-04)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
