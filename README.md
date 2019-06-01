@@ -63,6 +63,15 @@ Please see the developer documentation [here](https://pysndfile.readthedocs.io/e
 
 ## Changes
 
+### Version_1.3.3 (2019-06-01)
+
+ * fixed missing command C\_SFC\_SET\_SCALE\_INT\_FLOAT\_WRITE (thanks
+ to Svein Seldal for the bug report and fix)
+ * better documentation of sf_string-io in sndio.read and sndio.write
+ * limit size of strings to be written such that the written file can
+   always be read back with libsndfile 1.0.28 (which imposes different
+   constraints for different formats)
+   
 ### Version_1.3.2 (2018-07-04)
 
  * fixed documentation of sndio module.

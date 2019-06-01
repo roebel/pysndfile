@@ -31,12 +31,27 @@ import os
 cimport numpy as cnp
 from libcpp.string cimport string
 
-_pysndfile_version=(1,3,2)
+_pysndfile_version=(1,3,3)
 def get_pysndfile_version():
     """
     return tuple describing the version opf pysndfile
     """
     return _pysndfile_version
+
+
+_max_supported_string_length_tuple = (
+    ("wav", 2040),
+    ("wavex", 2040),
+    ("aiff", 8190),
+    ("caf", 16370),
+    )
+
+
+max_supported_string_length = dict(_max_supported_string_length_tuple)
+"""dict: the maximum length of each of the string types that can be read
+   from the various sound file formats in libsndfile is limited.
+   we ensure these limits during writing to be able to read the strings back 
+"""
 
 cdef extern from "numpy/arrayobject.h":
     void PyArray_ENABLEFLAGS(cnp.ndarray arr, int flags)
@@ -175,6 +190,7 @@ cdef extern from "pysndfile.hh":
     cdef int C_SFC_SET_NORM_DOUBLE "SFC_SET_NORM_DOUBLE"  
     cdef int C_SFC_SET_NORM_FLOAT "SFC_SET_NORM_FLOAT"  
     cdef int C_SFC_SET_SCALE_FLOAT_INT_READ "SFC_SET_SCALE_FLOAT_INT_READ"  
+    cdef int C_SFC_SET_SCALE_INT_FLOAT_WRITE "SFC_SET_SCALE_INT_FLOAT_WRITE"
 
     cdef int C_SFC_GET_SIMPLE_FORMAT_COUNT "SFC_GET_SIMPLE_FORMAT_COUNT"  
     cdef int C_SFC_GET_SIMPLE_FORMAT "SFC_GET_SIMPLE_FORMAT"  
@@ -368,6 +384,7 @@ _commands_to_id_tuple = (
     ("SFC_SET_NORM_DOUBLE" , C_SFC_SET_NORM_DOUBLE),
     ("SFC_SET_NORM_FLOAT" , C_SFC_SET_NORM_FLOAT),
     ("SFC_SET_SCALE_FLOAT_INT_READ" , C_SFC_SET_SCALE_FLOAT_INT_READ),
+    ("SFC_SET_SCALE_INT_FLOAT_WRITE" , C_SFC_SET_SCALE_INT_FLOAT_WRITE),
 
     ("SFC_GET_SIMPLE_FORMAT_COUNT" , C_SFC_GET_SIMPLE_FORMAT_COUNT),
     ("SFC_GET_SIMPLE_FORMAT" , C_SFC_GET_SIMPLE_FORMAT),
@@ -446,7 +463,7 @@ stringtype_id_to_name = dict([(id, com) for com, id in _stringtype_to_id_tuple[:
 
 def get_sndfile_version():
     """
-    return a tuple of ints representing the version of the libsdnfile that is used
+    return a tuple of ints representing the version of libsndfile that is used
     """
     cdef int status
     cdef char buffer[256]
@@ -975,8 +992,11 @@ cdef class PySndfile:
     def set_string(self, stringtype_name, string) :
         """
         set one of the stringtype to the string given as argument.
-        If you try to write a stringtype that is not  supported by the library
+        If you try to write a stringtype that is not supported by the library
         a RuntimeError will be raised
+        If you try to write a string with length exceeding the length that 
+        can be read by libsndfile version 1.0.28 a RuntimeError will be raised as well
+        these limits are stored in the dict max_supported_string_length.        
         """
         cdef int res = 0
         
@@ -985,6 +1005,10 @@ cdef class PySndfile:
         if stringtype_name not in stringtype_name_to_id :
             raise RuntimeError("PySndfile::error::set_string called with an unsupported stringtype:{0}".format(stringtype_name))
 
+        my_format = self.major_format_str()
+        if my_format in max_supported_string_length :
+            if len(string)> max_supported_string_length[my_format]:
+                raise RuntimeError("pysndfile::set_string::your string to be written into {} has length {} exceeding the length of strings ({}) supported for reading in libsndfile 1.0.28".format(stringtype_name, len(string), max_supported_string_length[my_format]))
         res = self.thisPtr.setString(stringtype_name_to_id[stringtype_name], string)
         if res :
             raise RuntimeError("PySndfile::error::setting string of type {0}\nerror messge is:{1}".format(stringtype_name, sf_error_number(res)))
@@ -993,7 +1017,10 @@ cdef class PySndfile:
         """
         set all strings provided as key value pairs in sf_strings_dict.
         If you try to write a stringtype that is not  supported by the library
-        a RuntimeError will be raised
+        a RuntimeError will be raised.
+        If you try to write a string with length exceeding the length that 
+        can be read by libsndfile version 1.0.28 a RuntimeError will be raised as well
+        these limits are stored in the dict max_supported_string_length.
         """
         for kk in sf_strings_dict:
             self.set_string(kk, sf_strings_dict[kk])

@@ -31,15 +31,17 @@ The module contains 3 functions.
 #
 
 
-from pysndfile import PySndfile, construct_format
+from pysndfile import PySndfile, construct_format, stringtype_name_to_id, max_supported_string_length
 import numpy as np
 
 def get_info(name, extended_info=False) :
     """
     retrieve information from a sound file
 
-    :param name: <str> sndfile name
-    :param extended_info: <bool>
+    :param name: sndfile name
+    :type name: str
+    :param extended_info:
+    :type extended_info: bool
 
     :return: 3 or 5 tuple with meta information read from the soundfile
        in case extended_info is False a 3-tuple comprising samplerate, encoding (str), major format  is returned
@@ -55,10 +57,11 @@ def get_markers(name) :
     """
     retrieve markers from sound file
 
-    :param name: <str> sndfile name
-
+    :param name: sound file name
+    :type name: str
     :return: list of marker tuples containing the marker time
        and marker label.
+    :rtype: List
 
     Note: following the implementation of libsndfile marker labels will be empty strings for all but aiff files.
     """
@@ -74,13 +77,26 @@ def write(name, data, rate=44100, format="aiff", enc='pcm16', sf_strings=None) :
     from the list of keys in pysndfile.encoding_name_to_id.
 
     :param name: sndfile name
+    :type name: str
     :param data: array containing sound data. For mono files an 1d array can be given, for multi channel sound files
                 sound frames are in the rows and data channels in the columns.
-    :param rate: sample rate (int) default s to 44100
-    :param format: sndfile major format (str) default=aiff
-    :param enc: sndfile encoding (str) default=pcm16
+    :type data: numpy.array
+    :param rate: sample rate default s to 44100
+    :type rate: int
+    :param format: sndfile major format default=aiff
+    :type format: str
+    :param enc: sndfile encoding default=pcm16
+    :type enc: str
+    :param sf_strings: dictionary containing bytes in ascii encoding to be written as meta data into the sound file.
+          dictionary keys are limited to the keys available in `stringtype_name_to_id``
+          sf_strings arguments are only supported when the file format supports it.
+          This are currently only the [aiff, wav, wavex, caf] formats.
+          Note that each format imposes a particular limit to the length of 
+          individual strings. These lengths are stored in the dict `max_supported_string_length`. If any of your strings exceeds the limit given in that dict a RuntimeError will be produced
 
-    :return: <int> number of sample frames written.
+    :type sf_strings: Union[dict, None]
+    :return: number of sample frames written.
+    :rtype: int
     """
     nchans = len(data.shape)
     if nchans == 2 :
@@ -114,19 +130,26 @@ def read(name, end=None, start=0, dtype=np.float64, return_format=False, sf_stri
 
     *Parameters*
 
-    :param name: (str) sndfile name
-    :param end: (int) last sample frame to read default=None -> read all samples
-    :param start: (int) first sample frame to read default=0
-    :param dtype: (numpy.dtype) data type of the numpy array that will be returned.
-    :param return_format: (bool) if set then the return tuple will contain an additional element containing the sound file major format
-    :param sf_strings: (None,dict) if a dict is given the dict elements will be set to the strings that are available in the
+    :param name: sound file name
+    :type name: str
+    :param end: end sample frame position (not included into the segment to be returned) default=None -> read all samples
+    :type end: Union[int, None]
+    :param start: first sample frame to read default=0
+    :type start: int
+    :param dtype: data type of the numpy array that will be returned.
+    :type dtype: numpy.dtype
+    :param return_format: if set then the return tuple will contain an additional element containing the sound file major format
+    :type return_format: bool
+    :param sf_strings: if a dict is given the dict elements will be set to the strings that are available in the
          sound file.
+    :type sf_strings: Union[None,dict]
 
     :return: 3 or 4 -tuple containing
         data (1d for mon sounds 2d for multi channel sounds, where channels are in the columns),
         samplerate (int) and encoding (str),
         in case return_format is True then the next element contains the major
         format of the sound file (can be used to recreate a sound file with an identical format).
+    :rtype: Union[Tuple(numpy.array, int, str),Tuple(numpy.array, int, str, str)]
     """
     sf  = PySndfile(name)
     enc = sf.encoding_str()
