@@ -179,6 +179,7 @@ setup(
     long_description = update_long_descr(),
     long_description_content_type='text/x-rstrst',
     license = "LGPL",
+    install_requires= ["numpy", "cython"],
     url = " https://forge-2.ircam.fr/roebel/pysndfile.git",
     keywords = "soundfile,audiofile",
     cmdclass = {
