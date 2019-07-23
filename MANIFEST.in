@@ -2,8 +2,11 @@ include *.md
 include ChangeLog
 include LONG_DESCR
 include requirements.txt
+include pyproject.toml
 recursive-include docs *.txt *.md
 include pysndfile.hh
+include sndfile_linux.pxi
+include sndfile_win32.pxi
 include _pysndfile.pyx
 include tests/*.wav
 include tests/*.py
