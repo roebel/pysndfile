@@ -1,7 +1,7 @@
 include *.md
 include ChangeLog
 include LONG_DESCR
-incude requirements.txt
+include requirements.txt
 recursive-include docs *.txt *.md
 include pysndfile.hh
 include _pysndfile.pyx
