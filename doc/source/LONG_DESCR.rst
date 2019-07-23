@@ -15,7 +15,7 @@ and derived formats) can be read and written with PySndfile.
 The interface has been designed such that a rather large subset of the
 functionality of libsndfile can be used, notably the reading and writing
 of strings into soundfile formats that support these, and a number of
-sf\_commands that allow to control the way libsndfile reads and writes
+sf_commands that allow to control the way libsndfile reads and writes
 the samples. One of the most important ones is the use of the clipping
 command.
 
@@ -43,8 +43,8 @@ More precisely this will happen if
    difference in scaling leads to modification.
 
 To avoid this problem PySndfile sets clipping by default to on. If you
-don't like this you can set it to off individually using the PySndfile
-method set\_auto\_clipping(False).
+don’t like this you can set it to off individually using the PySndfile
+method set_auto_clipping(False).
 
 Implementation
 --------------
@@ -61,15 +61,15 @@ via Anaconda channel roebel
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Precompiled packages are available for `Anaconda
-python3 <https://anaconda.org/roebel/pysndfile>`__ under Linux (x86\_64)
+python3 <https://anaconda.org/roebel/pysndfile>`__ under Linux (x86_64)
 and Mac OS X (> 10.9). For these systems you can install pysndfile
 simply by means of
 
 .. code:: bash
 
-    conda install -c roebel pysndfile
+   conda install -c roebel pysndfile
 
-Unfortunately, I don't have a windows machine and therefore I cannot
+Unfortunately, I don’t have a windows machine and therefore I cannot
 provide any packages for Windows.
 
 compile with conda build recipe
@@ -79,22 +79,43 @@ You can use the conda recipe
 `here <https://github.com/roebel/conda_packages>`__. This build recipe
 wil automatically download and compile libsndfile building pysndfile.
 
+via pypi
+~~~~~~~~
+
+::
+
+   pip install pysndfile
+
+should install pysndfile and python dependencies. Note, that pip cannot
+install libsndfile for you as it is not provided via pypi. To install
+libsndfile you should be able to use the software manager of your system
+for this. This will however only work if your software manager installs
+libsndfile such that the compiler will find it using the default
+settings of the python setup.py compiler.
+
 compile from sources
 ~~~~~~~~~~~~~~~~~~~~
 
-In case you want to manually compile pysndfile requires availability of
-libsndfile http://www.mega-nerd.com/libsndfile/.
+Note that for ompiling from sources you need to install requirements
+listed in requirements.txt file before starting the compilation.
+Moreover you need to install libsndfile as described in the previous
+section.
 
 If the libsndfile (header and library) is not installed in the default
 compiler search path you have to specify the library and include
 directories to be added to this search paths. For this you can use
-either the command line options --sndfile-libdir and --sndfile-incdir
-that are available for the build\_ext command or specify these two
-parameters in the setup.cfg file.
+either the command line options –sndfile-libdir and –sndfile-incdir that
+are available for the build_ext command or specify these two parameters
+in the setup.cfg file.
 
-Besides this the setup is pretty standard. Note, that the cython source
-\_pysndfile.pyx will be compiled with cython only if cython is
-installed.
+Windows
+^^^^^^^
+
+An experimental support for using pysndfile under windows has been added
+since version 1.3.4. For further comments see
+`here <https://github.com/roebel/pysndfile/issues/3>`__. Note, that I do
+not have any windows machine and cannot provide any help in making this
+work.
 
 Documentation
 -------------

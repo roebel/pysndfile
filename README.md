@@ -44,24 +44,48 @@ Windows.
 You can use the conda recipe [here](https://github.com/roebel/conda_packages).
 This build recipe wil automatically download and compile libsndfile building pysndfile. 
 
+### via pypi
+
+```
+pip install pysndfile
+```
+
+should install pysndfile and python dependencies. Note, that pip cannot install libsndfile for you
+as it is not provided via pypi. To install libsndfile you should be able to use the software manager
+of your system for this. This will however only work if your software manager installs libsndfile
+such that the compiler will find it using the default settings of the python setup.py compiler.
+
 ### compile from sources
 
-In case you want to manually compile
-pysndfile requires availability of libsndfile [http://www.mega-nerd.com/libsndfile/](http://www.mega-nerd.com/libsndfile/).
+Note that for ompiling from sources you need to install requirements listed in requirements.txt file before starting the compilation. Moreover you need to install libsndfile as described in the previous section.
 
 If the libsndfile (header and library) is not installed in the default compiler search path you have to
 specify the library and include directories to be added to this search paths. For this you can use either the
 command line options --sndfile-libdir and --sndfile-incdir that are available for the build_ext command
 or specify these two parameters in the setup.cfg file.
 
-Besides this the setup is pretty standard. Note, that the cython source _pysndfile.pyx will be compiled with cython only if cython is installed.
+#### Windows ####
 
+An experimental support for using pysndfile under windows has been added since version
+1.3.4. For further comments see [here](https://github.com/roebel/pysndfile/issues/3).
+Note, that I do not have any windows machine and cannot provide any help in making this work.
 
 ## Documentation
 
 Please see the developer documentation [here](https://pysndfile.readthedocs.io/en/latest/modules.html).
 
 ## Changes
+
+### Version_1.3.4 (2019-07-23)
+
+ * added support for automatic installation of requirements
+ * remove precompiled cython source file and rely on pip requirements to provide cython
+   so that cython compilation will always be possible.
+ * added experimental support for installation on win32 (thanks
+   to Svein Seldal for the contributions). 
+ * use expanduser for replacing ~ in filenames
+ * adapted cython sorce code to avoid all compiler warnings due to deprecated numpy api 
+ * removed use of ez_setup.py that is no longer required.
 
 ### Version_1.3.3 (2019-06-01)
 
