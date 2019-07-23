@@ -31,6 +31,9 @@ import os
 cimport numpy as cnp
 from libcpp.string cimport string
 
+cdef extern from "Python.h":
+    ctypedef int Py_intptr_t
+
 IF UNAME_SYSNAME == "Windows":
     from libc.stddef cimport wchar_t
 
@@ -53,7 +56,7 @@ def get_pysndfile_version():
     """
     return _pysndfile_version
 
-
+    
 _max_supported_string_length_tuple = (
     ("wav", 2040),
     ("wavex", 2040),
@@ -71,8 +74,15 @@ max_supported_string_length = dict(_max_supported_string_length_tuple)
 cdef extern from "numpy/arrayobject.h":
     void PyArray_ENABLEFLAGS(cnp.ndarray arr, int flags)
 
+
+cdef extern from "numpy/arrayobject.h":
+    ctypedef Py_intptr_t npy_intp
+    void *PyArray_DATA(cnp.ndarray arr)
+    int PyArray_NDIM(cnp.ndarray arr)
+    npy_intp* PyArray_DIMS(cnp.ndarray arr)
+
 cdef extern from "pysndfile.hh":
-    cdef struct SF_FORMAT_INFO:
+    ctypedef struct SF_FORMAT_INFO:
         int format
         char *name
         char *extension
@@ -823,7 +833,7 @@ cdef class PySndfile:
         cdef cnp.ndarray[cnp.float64_t, ndim=2] ty = np.empty((nframes, self.thisPtr.channels()),
                                                                 dtype=np.float64, order='C')
 
-        res = self.thisPtr.readf(<double*>ty.data, nframes)
+        res = self.thisPtr.readf(<double*> PyArray_DATA(ty), nframes)
         if not res == nframes:
             raise RuntimeError("Asked %d frames, read %d" % (nframes, res))
         return ty
@@ -834,7 +844,7 @@ cdef class PySndfile:
         cdef cnp.ndarray[cnp.float32_t, ndim=2] ty = np.empty((nframes, self.thisPtr.channels()),
                                                                 dtype=np.float32, order='C')
 
-        res = self.thisPtr.readf(<float*>ty.data, nframes)
+        res = self.thisPtr.readf(<float*>PyArray_DATA(ty), nframes)
         if not res == nframes:
             raise RuntimeError("Asked %d frames, read %d" % (nframes, res))
         return ty
@@ -845,7 +855,7 @@ cdef class PySndfile:
         cdef cnp.ndarray[cnp.int32_t, ndim=2] ty = np.empty((nframes, self.thisPtr.channels()),
                                                             dtype=np.int32, order='C')
 
-        res = self.thisPtr.readf(<int*>ty.data, nframes)
+        res = self.thisPtr.readf(<int*>PyArray_DATA(ty), nframes)
         if not res == nframes:
             raise RuntimeError("Asked %d frames, read %d" % (nframes, res))
         return ty
@@ -856,7 +866,7 @@ cdef class PySndfile:
         cdef cnp.ndarray[cnp.int16_t, ndim=2] ty = np.empty((nframes, self.thisPtr.channels()),
                                                             dtype=np.short, order='C')
 
-        res = self.thisPtr.readf(<short*>ty.data, nframes)
+        res = self.thisPtr.readf(<short*>PyArray_DATA(ty), nframes)
         if not res == nframes:
             raise RuntimeError("Asked %d frames, read %d" % (nframes, res))
         return ty
@@ -885,15 +895,15 @@ cdef class PySndfile:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
         
         # First, get the number of channels and frames from input
-        if input.ndim == 2:
-            nc = input.shape[1]
+        if PyArray_NDIM(input) == 2:
+            nc = PyArray_DIMS(input)[1]
             nframes = input.size / nc
-        elif input.ndim == 1:
+        elif PyArray_NDIM(input) == 1:
             nc = 1
             input = input[:, None]
             nframes = input.size
         else:
-            raise ValueError("PySndfile::write_frames::error cannot handle arrays of {0:d} dimensions, please restrict to  2 dimensions".format(input.ndim))
+            raise ValueError("PySndfile::write_frames::error cannot handle arrays of {0:d} dimensions, please restrict to  2 dimensions".format(PyArray_NDIM(input)))
 
         # Number of channels should be the one expected
         if not nc == self.thisPtr.channels():
@@ -906,16 +916,16 @@ cdef class PySndfile:
             if (self.thisPtr.format() & C_SF_FORMAT_SUBMASK) not in [C_SF_FORMAT_FLOAT, C_SF_FORMAT_DOUBLE]:
                 if (np.max(np.abs(input.flat)) > 1.) :
                     warnings.warn("write_frames::warning::audio data has been clipped while writing to file {0}.".format(self.filename.decode("UTF-8")))
-            res = self.thisPtr.writef(<double*>input.data, nframes)
+            res = self.thisPtr.writef(<double*>PyArray_DATA(input), nframes)
         elif input.dtype == np.float32:
             if (self.thisPtr.format() & C_SF_FORMAT_SUBMASK) not in [C_SF_FORMAT_FLOAT, C_SF_FORMAT_DOUBLE]:
                 if (np.max(np.abs(input.flat)) > 1.) :
                     warnings.warn("write_frames::warning::audio data has been clipped while writing to file {0}.".format(self.filename.decode("UTF-8")))
-            res = self.thisPtr.writef(<float*>input.data, nframes)
+            res = self.thisPtr.writef(<float*>PyArray_DATA(input), nframes)
         elif input.dtype == np.int32:
-            res = self.thisPtr.writef(<int*>input.data, nframes)
+            res = self.thisPtr.writef(<int*>PyArray_DATA(input), nframes)
         elif input.dtype == np.short:
-            res = self.thisPtr.writef(<short*>input.data, nframes)
+            res = self.thisPtr.writef(<short*>PyArray_DATA(input), nframes)
         else:
             raise RuntimeError("type of input {0} not understood".format(str(input.dtype)))
 
