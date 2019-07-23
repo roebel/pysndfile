@@ -52,8 +52,8 @@ pip install pysndfile
 
 should install pysndfile and python dependencies. Note, that pip cannot install libsndfile for you
 as it is not provided via pypi. To install libsndfile you should be able to use the software manager
-of your system for this. This will however only work if your software manager installs libsndfile
-such that the compiler will find it using the default settings of the python setup.py compiler.
+of your system. This will however only work if your software manager installs libsndfile
+such that the compiler used by the setup.py script will find it.
 
 ### compile from sources
 
