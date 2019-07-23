@@ -84,7 +84,7 @@ Please see the developer documentation [here](https://pysndfile.readthedocs.io/e
  * added experimental support for installation on win32 (thanks
    to Svein Seldal for the contributions). 
  * use expanduser for replacing ~ in filenames
- * adapted cython sorce code to avoid all compiler warnings due to deprecated numpy api 
+ * adapted cython source code to avoid all compiler warnings due to deprecated numpy api 
  * removed use of ez_setup.py that is no longer required.
 
 ### Version_1.3.3 (2019-06-01)
