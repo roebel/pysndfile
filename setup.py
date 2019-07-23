@@ -157,6 +157,11 @@ def update_long_descr():
 
     return open(LONG_DESCR_path).read()
 
+
+with open('./requirements.txt') as f:
+    install_requires = [line.strip('\n') for line in f.readlines()]
+
+
 # read should not be used because it does not update LONG_DESCR if required.
 def read_long_descr():
     LONG_DESCR_path = os.path.join(os.path.dirname(__file__), 'LONG_DESCR')
@@ -176,7 +181,7 @@ setup(
     long_description = update_long_descr(),
     long_description_content_type='text/x-rst',
     license = "LGPL",
-    install_requires= ["numpy", "cython"],
+    install_requires= install_requires,
     url = " https://forge-2.ircam.fr/roebel/pysndfile.git",
     keywords = "soundfile,audiofile",
     cmdclass = {
