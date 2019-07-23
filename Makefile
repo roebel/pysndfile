@@ -21,7 +21,7 @@ install-user:
 
 clean:
 	$(PYTHON) setup.py clean -a
-
+	rm -f _pysndfile.cpp
 sdist:
 	$(PYTHON) setup.py sdist
 	@echo now do
