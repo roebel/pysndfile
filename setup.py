@@ -174,7 +174,7 @@ setup(
     author_email = "axel.dot.roebel@ircam.dot.fr",
     description = "pysndfile provides PySndfile, a Cython wrapper class for reading/writing soundfiles using libsndfile",
     long_description = update_long_descr(),
-    long_description_content_type='text/x-rstrst',
+    long_description_content_type='text/x-rst',
     license = "LGPL",
     install_requires= ["numpy", "cython"],
     url = " https://forge-2.ircam.fr/roebel/pysndfile.git",
