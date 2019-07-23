@@ -29,3 +29,5 @@ sdist:
 	@echo for testing and
 	@echo twine upload -r pypi dist/pysndfile-${vv}.tar.gz
 	@echo for final distribution
+	@echo in case you want to try a clean install from test.pypi.org use
+	@echo pip install --no-cache-dir --extra-index-url https://test.pypi.org/simple/  pysndfile==${vv} 
