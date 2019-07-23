@@ -3,7 +3,7 @@ python_version_full := $(wordlist 2,4,$(subst ., ,$(shell ${PYTHON} --version 2>
 python_version_major := $(word 1,${python_version_full})
 CYTHON=cython
 PIP=pip 
-vv=$(shell grep _pysndfile_version= _pysndfile.pyx | cut -f2 -d'(' | cut -f1 -d')')
+vv=$(shell grep _pysndfile_version= _pysndfile.pyx | tr '(),' '++.' | cut -f2 -d'+' )
 all: build
 build : cythonize Makefile setup.py
 	$(PYTHON) setup.py build_ext 
