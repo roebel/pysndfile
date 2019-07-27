@@ -34,7 +34,7 @@ from libcpp.string cimport string
 cdef extern from "Python.h":
     ctypedef int Py_intptr_t
   
-_pysndfile_version=(1,3,5)
+_pysndfile_version=(1,3,6)
 def get_pysndfile_version():
     """
     return tuple describing the version opf pysndfile

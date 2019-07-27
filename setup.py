@@ -117,6 +117,30 @@ for line in open("_pysndfile.pyx") :
         _pysndfile_version_str = re.split('[()]', line)[1].replace(',','.')
         break
 
+README_path       = os.path.join(os.path.dirname(__file__), 'README.md')
+README_cksum_path = os.path.join(os.path.dirname(__file__), 'README.md.cksum')    
+
+def write_readme_checksum(rdlen, rdsum):
+    with open(README_cksum_path, "w") as fi:
+        print("{} {}".format(rdlen, rdsum), file=fi)
+
+def read_readme_checksum():
+    try:
+        with open(README_cksum_path, "r") as fi:
+            rdlen, rdsum = fi.read().split()
+            return int(rdlen), int(rdsum)
+    except OSError:
+            return 0, 0
+
+def calc_readme_checksum():
+
+    readme = open(README_path).read()
+    readme_length = len(readme)
+    readme_sum    = sum(bytes(readme, encoding="utf8"))
+
+    return readme_length, readme_sum
+    
+
 # Utility function to read the README file.
 # Used for the long_description.  It's nice, because now 1) we have a top level
 # README file and 2) it's easier to type in the README file than to put a raw
@@ -124,15 +148,18 @@ for line in open("_pysndfile.pyx") :
 def update_long_descr():
     README_path     = os.path.join(os.path.dirname(__file__), 'README.md')
     LONG_DESCR_path = os.path.join(os.path.dirname(__file__), 'LONG_DESCR')
-    if ((not os.path.exists(LONG_DESCR_path))
-            or os.path.getmtime(README_path) > os.path.getmtime(LONG_DESCR_path)):
+    crdck = calc_readme_checksum()
+    rrdck = read_readme_checksum()
+    if ((not os.path.exists(LONG_DESCR_path)) or rrdck != crdck):
+        if rrdck != crdck:
+            print("readme check sum {} does not match readme {}, recalculate LONG_DESCR".format(rrdck, crdck))
         try :
             subprocess.check_call(["pandoc", "-f", "markdown", '-t', 'rst', '-o', LONG_DESCR_path, README_path], shell=False)
         except (OSError, subprocess.CalledProcessError) as ex:
             print("setup.py::error:: pandoc command failed. Cannot update LONG_DESCR.txt from modified README.md" + str(
                 ex))
 
-        # prepare inpiut for documentation
+        # prepare input for documentation
         with open(LONG_DESCR_path) as infile:
             with open(os.path.join("doc", "source", "LONG_DESCR.rst"), "w") as outfile:
                 for ind, line in enumerate(infile):
@@ -155,6 +182,7 @@ def update_long_descr():
                 for line in infile:
                     outfile.write(line)
 
+            write_readme_checksum(crdck[0], crdck[1])
     return open(LONG_DESCR_path).read()
 
 

@@ -1,4 +1,5 @@
 include *.md
+include *.md.cksum
 include ChangeLog
 include LONG_DESCR
 include requirements.txt
