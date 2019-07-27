@@ -1,6 +1,14 @@
 Changes
 -------
 
+Version_1.3.5 (2019-07-27)
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  fixed two copy paste bug introduced in 1.3.4 1.3.4 did in fact not
+   work at all :-(
+-  added a check target to the makefile that performs a complete
+   built/install/test cycle to avoid problems as in 1.3.4
+
 Version_1.3.4 (2019-07-23)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
