@@ -10,7 +10,7 @@ build : cythonize Makefile setup.py
 
 cythonize : _pysndfile.cpp
 
-_pysndfile.cpp: _pysndfile.pyx pysndfile.hh
+_pysndfile.cpp: _pysndfile.pyx pysndfile.hh sndfile_linux.pxi sndfile_win32.pxi
 	$(CYTHON) -${python_version_major} --cplus $<
 
 install:
@@ -31,3 +31,7 @@ sdist:
 	@echo for final distribution
 	@echo in case you want to try a clean install from test.pypi.org use
 	@echo pip install --no-cache-dir --extra-index-url https://test.pypi.org/simple/  pysndfile==${vv} 
+
+check: build
+	pip install --no-build-isolation --no-deps --no-cache --upgrade --target tests/pysndfile_inst_dir .
+	cd tests; $(PYTHON) pysndfile_test.py

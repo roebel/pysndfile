@@ -2,9 +2,9 @@ from __future__ import print_function
 import numpy as np
 import os
 
-from pysndfile import get_sndfile_version
-from pysndfile import *
-import pysndfile
+from pysndfile_inst_dir.pysndfile import get_sndfile_version
+from pysndfile_inst_dir.pysndfile import *
+import pysndfile_inst_dir.pysndfile as pysndfile
 
 mydir = os.path.dirname(__file__)
 
