@@ -122,7 +122,7 @@ Version 0.2.14 (2017-07-26)
 Version 0.2.13 (2017-06-03)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  fixed using “~” for representing $HOME in filenames:
+-  fixed using "~" for representing $HOME in filenames:
 -  \_pysndfile.pyx: replaced using cython getenv by os.environ to avoid
    type incompatibilities in python3
 

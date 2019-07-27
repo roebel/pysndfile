@@ -82,6 +82,7 @@ Please see the developer documentation [here](https://pysndfile.readthedocs.io/e
 
  * fixed potential but undesired build dependency of pandoc
  * added link to explanation for using pysndfile under windows
+ * fixed pandoc problem that does produce non ASCII chars in rst output.
 
 ### Version_1.3.5 (2019-07-27)
 

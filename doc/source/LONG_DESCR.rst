@@ -43,7 +43,7 @@ More precisely this will happen if
    difference in scaling leads to modification.
 
 To avoid this problem PySndfile sets clipping by default to on. If you
-don’t like this you can set it to off individually using the PySndfile
+don't like this you can set it to off individually using the PySndfile
 method set_auto_clipping(False).
 
 Implementation
@@ -69,7 +69,7 @@ simply by means of
 
    conda install -c roebel pysndfile
 
-Unfortunately, I don’t have a windows machine and therefore I cannot
+Unfortunately, I don't have a windows machine and therefore I cannot
 provide any packages for Windows.
 
 compile with conda build recipe
@@ -104,7 +104,7 @@ section.
 If the libsndfile (header and library) is not installed in the default
 compiler search path you have to specify the library and include
 directories to be added to this search paths. For this you can use
-either the command line options –sndfile-libdir and –sndfile-incdir that
+either the command line options --sndfile-libdir and --sndfile-incdir that
 are available for the build_ext command or specify these two parameters
 in the setup.cfg file.
 
