@@ -1,10 +1,5 @@
 from libc.stddef cimport wchar_t
 
-cdef extern from *:
-    """
-    #define ENABLE_SNDFILE_WINDOWS_PROTOTYPES 1
-    """
-
 cdef extern from "Windows.h":
     ctypedef const wchar_t *LPCWSTR
 

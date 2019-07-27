@@ -66,6 +66,12 @@ cdef extern from "numpy/arrayobject.h":
     int PyArray_NDIM(cnp.ndarray arr)
     npy_intp* PyArray_DIMS(cnp.ndarray arr)
 
+IF UNAME_SYSNAME == "Windows":
+    cdef extern from *:
+        """
+        #define ENABLE_SNDFILE_WINDOWS_PROTOTYPES 1
+        """
+
 cdef extern from "pysndfile.hh":
     ctypedef struct SF_FORMAT_INFO:
         int format
