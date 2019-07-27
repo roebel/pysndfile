@@ -33,23 +33,8 @@ from libcpp.string cimport string
 
 cdef extern from "Python.h":
     ctypedef int Py_intptr_t
-
-IF UNAME_SYSNAME == "Windows":
-    from libc.stddef cimport wchar_t
-
-    cdef extern from "Windows.h":
-        ctypedef const wchar_t *LPCWSTR
-
-    cdef extern from "Python.h":
-       wchar_t* PyUnicode_AsWideCharString(object, Py_ssize_t *)
-       void PyMem_Free(void *p)
-
-    cdef extern from *:
-        """
-        #define ENABLE_SNDFILE_WINDOWS_PROTOTYPES 1
-        """
-
-_pysndfile_version=(1,3,4)
+  
+_pysndfile_version=(1,3,5)
 def get_pysndfile_version():
     """
     return tuple describing the version opf pysndfile
@@ -270,10 +255,10 @@ cdef extern from "pysndfile.hh":
     
     cdef int C_SF_COUNT_MAX "SF_COUNT_MAX"  
 
-IF UNAME_SYSNAME == "Linux":
-    include "sndfile_linux.pxi"
 IF UNAME_SYSNAME == "Windows":
     include "sndfile_win32.pxi"
+ELSE:
+    include "sndfile_linux.pxi"
 
 # these two come with more recent versions of libsndfile
 # to not break compilation they are defined outside sndfile.h
@@ -642,7 +627,7 @@ cdef class PySndfile:
         IF UNAME_SYSNAME == "Windows":
            cdef Py_ssize_t length
            cdef wchar_t *my_wchars
-           
+
         # -1 will indicate that the file has been open from filename, not from
         # file descriptor
         self.fd = -1
@@ -689,9 +674,8 @@ cdef class PySndfile:
                 else:
                     raise RuntimeError("PySndfile::error while converting {0} into wchars".format(filename))
             ELSE:
-                self.thisPtr = new SndfileHandle(self.bfilename.c_str(), sfmode, format, channels, samplerate)
+                self.thisPtr = new SndfileHandle(self.filename.c_str(), sfmode, format, channels, samplerate)
             
-            self.thisPtr = new SndfileHandle(self.filename.c_str(), sfmode, format, channels, samplerate)
 
         if self.thisPtr == NULL or self.thisPtr.rawHandle() == NULL:
             raise IOError("PySndfile::error while opening {0}\n\t->{1}".format(self.filename,
