@@ -1,6 +1,12 @@
 Changes
 -------
 
+Version_1.3.6 (2019-07-27)
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  fixed potential but undesired build dependency of pandoc
+-  added link to explanation for using pysndfile under windows
+
 Version_1.3.5 (2019-07-27)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 

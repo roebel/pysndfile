@@ -67,14 +67,21 @@ or specify these two parameters in the setup.cfg file.
 #### Windows ####
 
 An experimental support for using pysndfile under windows has been added since version
-1.3.4. For further comments see [here](https://github.com/roebel/pysndfile/issues/3).
-Note, that I do not have any windows machine and cannot provide any help in making this work.
+1.3.4. For further comments see [here](https://github.com/roebel/pysndfile/issues/3)
+as well as [build scripts](https://gist.github.com/sveinse/97411b95d36a6b8c430d4d381b620ecb)
+provided by sveinse. Note, that I do not have any windows machine and cannot provide
+any help in making this work.
 
 ## Documentation
 
 Please see the developer documentation [here](https://pysndfile.readthedocs.io/en/latest/modules.html).
 
 ## Changes
+
+### Version_1.3.6 (2019-07-27)
+
+ * fixed potential but undesired build dependency of pandoc
+ * added link to explanation for using pysndfile under windows
 
 ### Version_1.3.5 (2019-07-27)
 

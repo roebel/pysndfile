@@ -113,9 +113,11 @@ Windows
 
 An experimental support for using pysndfile under windows has been added
 since version 1.3.4. For further comments see
-`here <https://github.com/roebel/pysndfile/issues/3>`__. Note, that I do
-not have any windows machine and cannot provide any help in making this
-work.
+`here <https://github.com/roebel/pysndfile/issues/3>`__ as well as
+`build
+scripts <https://gist.github.com/sveinse/97411b95d36a6b8c430d4d381b620ecb>`__
+provided by sveinse. Note, that I do not have any windows machine and
+cannot provide any help in making this work.
 
 Documentation
 -------------
