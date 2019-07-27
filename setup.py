@@ -64,12 +64,13 @@ def compiler_is_clang(comp) :
 class sdist_subclass(sdist) :
     def run(self):
         # Make sure the compiled Cython files in the distribution are up-to-date
-        from Cython.Build import cythonize
-        update_long_descr()
-        cythonize(['_pysndfile.pyx'])
+        # the cynthonized cpp file is no longer part of the distribution
+        # and the long dscrption is updated anyway below
+        #from Cython.Build import cythonize
+        #update_long_descr()
+        #cythonize(['_pysndfile.pyx'])
         shutil.move("setup.cfg", "setup.cfg.default")
         shutil.copy2("setup.cfg.dist", "setup.cfg")
-        shutil.copy2("_pysndfile.cpp", "_pysndfile_precythonized.cpp")
         sdist.run(self)
         shutil.move("setup.cfg.default", "setup.cfg")
 
