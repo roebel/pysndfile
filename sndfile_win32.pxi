@@ -1,12 +1,3 @@
-from libc.stddef cimport wchar_t
-
-cdef extern from "Windows.h":
-    ctypedef const wchar_t *LPCWSTR
-
-cdef extern from "Python.h":
-    wchar_t* PyUnicode_AsWideCharString(object, Py_ssize_t *)
-    void PyMem_Free(void *p)
-
 
 cdef extern from "pysndfile.hh":
     cdef cppclass SndfileHandle :
