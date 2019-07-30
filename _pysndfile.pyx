@@ -23,6 +23,7 @@
 #
 
 # cython: embedsignature=True
+# cython: language_level=2
 
 import numpy as np
 import warnings
@@ -34,10 +35,10 @@ from libcpp.string cimport string
 cdef extern from "Python.h":
     ctypedef int Py_intptr_t
   
-_pysndfile_version=(1,3,6)
+_pysndfile_version=(1, 3, 7, "dev1")
 def get_pysndfile_version():
     """
-    return tuple describing the version opf pysndfile
+    return tuple describing the version of pysndfile
     """
     return _pysndfile_version
 

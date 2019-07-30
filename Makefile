@@ -3,15 +3,18 @@ python_version_full := $(wordlist 2,4,$(subst ., ,$(shell ${PYTHON} --version 2>
 python_version_major := $(word 1,${python_version_full})
 CYTHON=cython
 PIP=pip 
-vv=$(shell grep _pysndfile_version= _pysndfile.pyx | tr '(),' '++.' | cut -f2 -d'+' )
+vv=$(shell $(PYTHON) setup.py get_version )
 all: build
 build : cythonize Makefile setup.py
 	$(PYTHON) setup.py build_ext 
 
 cythonize : _pysndfile.cpp
 
+# dont adapt language_level for the moment, it does not seem to make any difference anyway
+# language_level is now hard-coded in the source
+# $(CYTHON) -${python_version_major} --cplus $<
 _pysndfile.cpp: _pysndfile.pyx pysndfile.hh sndfile_linux.pxi sndfile_win32.pxi
-	$(CYTHON) -${python_version_major} --cplus $<
+	$(CYTHON) --cplus $<
 
 install:
 	$(PIP) install .

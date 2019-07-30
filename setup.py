@@ -6,6 +6,7 @@ import shutil
 import subprocess
 import re
 import numpy as np
+import hashlib
 
 from setuptools import setup
 from distutils.core import Extension
@@ -20,7 +21,6 @@ try :
     sys.path=pp
 except Exception:
     pass
-
 
 compile_for_RTD =  "READTHEDOCS" in os.environ
 
@@ -38,7 +38,10 @@ else:
 
 try :
     from Cython.Build import cythonize
-    ext_modules = cythonize(ext_modules, force=compile_for_RTD )
+    # dont adapt language level to python
+    #  languge_level is hard-coded in the pyx source
+    #ext_modules = cythonize(ext_modules, force=compile_for_RTD, language_level=sys.version_info[0])
+    ext_modules = cythonize(ext_modules, force=compile_for_RTD, language_level=2)
 except ImportError  :
     print("cannot import cythonize - to be able to cythonize the source please install cython")
     sys.exit(1)
@@ -115,8 +118,12 @@ class build_ext_subclass( build_ext ):
 # get _pysndfile version number
 for line in open("_pysndfile.pyx") :
     if "_pysndfile_version=" in line:
-        _pysndfile_version_str = re.split('[()]', line)[1].replace(',','.')
+        _pysndfile_version_str = re.split('[()]', line)[1].replace(',','.',3).replace(',','-',1).replace('"','').replace(' ','')
         break
+
+if sys.argv[1] == "get_version":
+    print(_pysndfile_version_str)
+    sys.exit(0)
 
 README_path       = os.path.join(os.path.dirname(__file__), 'README.md')
 README_cksum_path = os.path.join(os.path.dirname(__file__), 'README.md.cksum')    
@@ -129,7 +136,7 @@ def read_readme_checksum():
     try:
         with open(README_cksum_path, "r") as fi:
             rdlen, rdsum = fi.read().split()
-            return int(rdlen), int(rdsum)
+            return rdlen, rdsum
     except OSError:
             return 0, 0
 
@@ -137,7 +144,7 @@ def calc_readme_checksum():
 
     readme = open(README_path).read()
     readme_length = len(readme)
-    readme_sum    = sum(bytes(readme, encoding="utf8"))
+    readme_sum    = hashlib.sha256(bytes(readme, encoding="utf8")).hexdigest()
 
     return readme_length, readme_sum
     
@@ -149,8 +156,8 @@ def calc_readme_checksum():
 def update_long_descr():
     README_path     = os.path.join(os.path.dirname(__file__), 'README.md')
     LONG_DESCR_path = os.path.join(os.path.dirname(__file__), 'LONG_DESCR')
-    crdck = calc_readme_checksum()
-    rrdck = read_readme_checksum()
+    crdck = calc_readme_checksum()[1]
+    rrdck = read_readme_checksum()[1]
     if ((not os.path.exists(LONG_DESCR_path)) or rrdck != crdck):
         if rrdck != crdck:
             print("readme check sum {} does not match readme {}, recalculate LONG_DESCR".format(rrdck, crdck))
