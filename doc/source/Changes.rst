@@ -1,6 +1,14 @@
 Changes
 -------
 
+Version_1.3.7 (dev1)
+~~~~~~~~~~~~~~~~~~~~
+
+-  removed cython (a build requirement) from requirements.txt
+-  avoid cython warning and fix language_level in the .pyx source code
+-  add and support pre-release tags in the version number
+-  use hashlib to calculate the README checksum.
+
 Version_1.3.6 (2019-07-27)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
