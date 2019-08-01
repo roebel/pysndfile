@@ -37,4 +37,5 @@ sdist:
 
 check: build
 	pip install --no-build-isolation --no-deps --no-cache --upgrade --target tests/pysndfile_inst_dir .
+	touch tests/pysndfile_inst_dir/__init__.py
 	cd tests; $(PYTHON) pysndfile_test.py
