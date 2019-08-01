@@ -78,7 +78,7 @@ Please see the developer documentation [here](https://pysndfile.readthedocs.io/e
 
 ## Changes
 
-### Version_1.3.7
+### Version_1.3.7 (2019-08-01)
 
  * removed cython (a build requirement) from requirements.txt
  * avoid cython warning and fix language_level in the .pyx source code
