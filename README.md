@@ -78,6 +78,13 @@ Please see the developer documentation [here](https://pysndfile.readthedocs.io/e
 
 ## Changes
 
+### Version_1.3.8 (2019-10-22) 
+
+ * (no changes in functionality)
+ * added documentation to distributed files
+ * added missing licence file to distribution
+ * thanks @toddrme2178 for patches.
+  
 ### Version_1.3.7 (2019-08-01)
 
  * removed cython (a build requirement) from requirements.txt
