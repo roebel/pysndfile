@@ -35,7 +35,7 @@ from libcpp.string cimport string
 cdef extern from "Python.h":
     ctypedef int Py_intptr_t
   
-_pysndfile_version=(1, 3, 8)
+_pysndfile_version=(1, 4, 0)
 def get_pysndfile_version():
     """
     return tuple describing the version of pysndfile
@@ -139,6 +139,10 @@ cdef extern from "pysndfile.hh":
     cdef int C_SF_FORMAT_SD2 "SF_FORMAT_SD2"     # /* Sound Designer 2 */
     cdef int C_SF_FORMAT_FLAC "SF_FORMAT_FLAC"   # /* FLAC lossless file format */
     cdef int C_SF_FORMAT_CAF "SF_FORMAT_CAF"     # /* Core Audio File format */
+    cdef int C_SF_FORMAT_WVE "SF_FORMAT_WVE"     # /* Psion WVE format */
+    cdef int C_SF_FORMAT_OGG "SF_FORMAT_OGG"     # /* Xiph OGG container */
+    cdef int C_SF_FORMAT_MPCK "SF_FORMAT_MPC2K"  # /* Akai MPC 2000 sampler */
+    cdef int C_SF_FORMAT_RF64 "SF_FORMAT_RF64"   # /* RF64 WAV file */
 
     #/* Subtypes from here on. */
     cdef int C_SF_FORMAT_PCM_S8 "SF_FORMAT_PCM_S8"    # /* Signed 8 bit data */
@@ -360,6 +364,10 @@ _fileformat_id_tuple = (
     ('sd2'  , C_SF_FORMAT_SD2),
     ('flac' , C_SF_FORMAT_FLAC),
     ('caf'  , C_SF_FORMAT_CAF),
+    ('wve'  , C_SF_FORMAT_WVE),
+    ('ogg'  , C_SF_FORMAT_OGG),
+    ('mpck'  , C_SF_FORMAT_MPCK),
+    ('rf64'  , C_SF_FORMAT_RF64),
     )
 
 
@@ -699,6 +707,13 @@ cdef class PySndfile:
 
         self.set_auto_clipping(True)
 
+    # supoort use as context manager
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        self.close()
+
     def get_name(self):
         """
         :return: <str> filename that was used to open the underlying sndfile
@@ -706,8 +721,16 @@ cdef class PySndfile:
         return self.filename
 
     def __dealloc__(self):
-        del self.thisPtr
-            
+        self.close()
+
+    def close(self):
+        """
+        Closes file and deallocates internal structures
+        """
+        if self.thisPtr != NULL and self.thisPtr:
+            del self.thisPtr
+            self.thisPtr = NULL
+
     def command(self, command, arg=0) :
         """
         interface for passing commands via sf_command to underlying soundfile
@@ -793,14 +816,22 @@ cdef class PySndfile:
         #repstr  += "Duration    : %s\n" % self._generate_duration_str()
         return "\n".join(repstr)
 
-    def read_frames(self, sf_count_t nframes=-1, dtype=np.float64):
+
+    def read_frames(self, sf_count_t nframes=-1, dtype=np.float64, force_2d = False, fill_value=None, min_read=0):
         """
         Read the given number of frames and put the data into a numpy array of
         the requested dtype.
 
-        :param nframes: <int> number of frames to read (default = -1 -> read all).
-        :param dtype: <numpy dtype> dtype of the returned array containing read data (see note).
-
+        :param nframes: number of frames to read (default = -1 -> read all).
+        :type nframes: int
+        :param dtype: data type of the returned array containing read data (see note).
+        :type dtype: numpy.dtype
+        :param force_2d: always return 2D arrays even if file is mono
+        :type force_2d: bool
+        :param fill_value: value to use for filling frames in case nframes is larger than the file
+        :type fill_value: any tye that can be assigned to an array containing dtype
+        :param min_read: when fill_value is not None and EOFError will be thrown when the number
+                 of read sample frames is equal to or lower than this value
         :return: np.array<dtype> with sound data
 
         *Notes*
@@ -814,61 +845,81 @@ cdef class PySndfile:
         if nframes < 0 :
             nframes = self.thisPtr.frames()
         if dtype == np.float64:
-            y = self.read_frames_double(nframes)
+            y = self.read_frames_double(nframes, fill_value=fill_value, min_read=min_read)
         elif dtype == np.float32:
-            y = self.read_frames_float(nframes)
+            y = self.read_frames_float(nframes, fill_value=fill_value, min_read=min_read)
         elif dtype == np.int32:
-            y = self.read_frames_int(nframes)
+            y = self.read_frames_int(nframes, fill_value=fill_value, min_read=min_read)
         elif dtype == np.int16:
-            y = self.read_frames_short(nframes)
+            y = self.read_frames_short(nframes, fill_value=fill_value, min_read=min_read)
         else:
             raise RuntimeError("Sorry, dtype %s not supported" % str(dtype))
 
-        if y.shape[1] == 1:
+        if y.shape[1] == 1 and not force_2d:
             y.shape = (y.shape[0],)
         return y
 
-    cdef read_frames_double(self, sf_count_t nframes):
+    cdef read_frames_double(self, sf_count_t nframes, fill_value=None, min_read=0):
         cdef sf_count_t res
         cdef cnp.ndarray[cnp.float64_t, ndim=2] ty = np.empty((nframes, self.thisPtr.channels()),
                                                                 dtype=np.float64, order='C')
 
         res = self.thisPtr.readf(<double*> PyArray_DATA(ty), nframes)
         if not res == nframes:
-            raise RuntimeError("Asked %d frames, read %d" % (nframes, res))
+            if fill_value is None:
+                raise RuntimeError("Asked %d frames, read %d" % (nframes, res))
+            elif res <= min_read:
+                raise EOFError()
+            else:
+                ty[res:,:] = fill_value
         return ty
 
-    cdef read_frames_float(self, sf_count_t nframes):
+    cdef read_frames_float(self, sf_count_t nframes, fill_value=None, min_read=0):
         cdef sf_count_t res
-        # Use Fortran order to cope with interleaving
+        # Use C order to cope with interleaving
         cdef cnp.ndarray[cnp.float32_t, ndim=2] ty = np.empty((nframes, self.thisPtr.channels()),
                                                                 dtype=np.float32, order='C')
 
         res = self.thisPtr.readf(<float*>PyArray_DATA(ty), nframes)
         if not res == nframes:
-            raise RuntimeError("Asked %d frames, read %d" % (nframes, res))
+            if fill_value is None:
+                raise RuntimeError("Asked %d frames, read %d" % (nframes, res))
+            elif res <= min_read:
+                raise EOFError()
+            else:
+                ty[res:,:] = fill_value
         return ty
 
-    cdef read_frames_int(self, sf_count_t nframes):
+    cdef read_frames_int(self, sf_count_t nframes, fill_value=None, min_read=0):
         cdef sf_count_t res
-        # Use Fortran order to cope with interleaving
+        # Use C order to cope with interleaving
         cdef cnp.ndarray[cnp.int32_t, ndim=2] ty = np.empty((nframes, self.thisPtr.channels()),
                                                             dtype=np.int32, order='C')
 
         res = self.thisPtr.readf(<int*>PyArray_DATA(ty), nframes)
         if not res == nframes:
-            raise RuntimeError("Asked %d frames, read %d" % (nframes, res))
+            if fill_value is None:
+                raise RuntimeError("Asked %d frames, read %d" % (nframes, res))
+            elif res <= min_read:
+                raise EOFError()
+            else:
+                ty[res:,:] = fill_value
         return ty
 
-    cdef read_frames_short(self, sf_count_t nframes):
+    cdef read_frames_short(self, sf_count_t nframes, fill_value=None, min_read=0):
         cdef sf_count_t res
-        # Use Fortran order to cope with interleaving
+        # Use C order to cope with interleaving
         cdef cnp.ndarray[cnp.int16_t, ndim=2] ty = np.empty((nframes, self.thisPtr.channels()),
                                                             dtype=np.short, order='C')
 
         res = self.thisPtr.readf(<short*>PyArray_DATA(ty), nframes)
-        if not res == nframes:
-            raise RuntimeError("Asked %d frames, read %d" % (nframes, res))
+        if res < nframes:
+            if fill_value is None:
+                raise RuntimeError("Asked %d frames, read %d" % (nframes, res))
+            elif res <= min_read:
+                raise EOFError()
+            else:
+                ty[res:,:] = fill_value
         return ty
 
     def write_frames(self, cnp.ndarray input):
