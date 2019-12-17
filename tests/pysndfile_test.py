@@ -51,8 +51,8 @@ del b
 
 b= PySndfile(os.path.join(mydir,'test_2cF.wav'))
 bff=b.read_frames()
-b= PySndfile(os.path.join(mydir,'test_2cC.wav'))
-bfc=b.read_frames()
+with PySndfile(os.path.join(mydir,'test_2cC.wav')) as b:
+    bfc=b.read_frames()
 
 if np.any (ff2 != bff):
     print('error in test_2cF.wav')
