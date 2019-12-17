@@ -78,6 +78,15 @@ Please see the developer documentation [here](https://pysndfile.readthedocs.io/e
 
 ## Changes
 
+### Version_1.4.0 (2019-12-17) 
+
+ * Extended PySndfile class:
+    * support use as context manager
+    * added support for wve, ogg, MPC2000 sampler and RF64 wav files
+    * added support for forcing to return 2D arrays even for mono files
+    * added method to close the file and release all resources.
+    * support reading more frames than present in the file using the fill_value for all values positioned after the end of the file
+
 ### Version_1.3.8 (2019-10-22) 
 
  * (no changes in functionality)
