@@ -166,12 +166,10 @@ def read(name, end=None, start=0, dtype=np.float64, return_format=False,
         raise IOError("sndio.read::error:: while seeking at starting position")
     
     if end == None:
-        ff = sf.read_frames(dtype=dtype)
+        ff = sf.read_frames(dtype=dtype, force_2d=force_2d)
     else:
-        ff = sf.read_frames(end-start, dtype=dtype)
+        ff = sf.read_frames(end-start, dtype=dtype, force_2d=force_2d)
 
-    if force_2d and ff.ndim == 1:
-        ff = ff.reshape((-1,1))
         
     if isinstance(sf_strings, dict):
         sf_strings.clear()
