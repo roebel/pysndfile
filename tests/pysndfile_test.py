@@ -70,7 +70,7 @@ elif np.any (ff2 != bfc):
     print("bfc", bfc)
     write_error = True
 else:
-    print("no erors detected for io with difernt sample encodings")
+    print("no errors detected for io with difernt sample encodings")
 
 # check reading part of file
 ss,_,_ =  pysndfile.sndio.read(os.path.join(mydir,'test.wav'), force_2d=True)
@@ -79,7 +79,15 @@ ssend,_,_ =  pysndfile.sndio.read(os.path.join(mydir,'test.wav'), start=100, for
 
 if np.any(ss != np.concatenate((ssstart, ssend), axis=0)):
     read_error = True
-    print("error reading file segments")
+    print("error reading file segments with sndio")
+
+ww = PySndfile(os.path.join(mydir,'test.wav'))
+wwstart = ww.read_frames(100, force_2d=True)
+wwend = ww.read_frames(force_2d=True)
+
+if np.any(ss != np.concatenate((wwstart, wwend), axis=0)):
+    read_error = True
+    print("error reading file segments with class")
 
 # check writing flac
 if "flac" in majors:

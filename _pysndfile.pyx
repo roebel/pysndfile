@@ -35,7 +35,7 @@ from libcpp.string cimport string
 cdef extern from "Python.h":
     ctypedef int Py_intptr_t
   
-_pysndfile_version=(1, 4, 1)
+_pysndfile_version=(1, 4, 2)
 def get_pysndfile_version():
     """
     return tuple describing the version of pysndfile
@@ -860,7 +860,7 @@ cdef class PySndfile:
         if nframes < 0 :
             whence = C_SEEK_CUR | C_SFM_READ
             pos = self.thisPtr.seek(0, whence)
-            nframes = self.thisPtr.frames()
+            nframes = self.thisPtr.frames() - pos
         if dtype == np.float64:
             y = self.read_frames_double(nframes, fill_value=fill_value, min_read=min_read)
         elif dtype == np.float32:
