@@ -30,8 +30,9 @@ The module contains 3 functions.
 # along with pysndfile.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from __future__ import absolute_import
 
-from pysndfile import PySndfile, construct_format, stringtype_name_to_id, max_supported_string_length, fileformat_name_to_id, fileformat_id_to_name 
+from ._pysndfile import PySndfile, construct_format, stringtype_name_to_id, max_supported_string_length, fileformat_name_to_id, fileformat_id_to_name 
 import numpy as np
 
 def get_info(name, extended_info=False) :
@@ -124,7 +125,7 @@ enc_norm_map = {
     }
     
 def read(name, end=None, start=0, dtype=np.float64, return_format=False,
-             sf_strings=None, force_2d=False) :
+             sf_strings=None, force_2d=False):
     """
     read samples from arbitrary sound files into a numpy array. 
     May return subsets of samples as specified by start and end arguments (Def all samples)
@@ -166,7 +167,7 @@ def read(name, end=None, start=0, dtype=np.float64, return_format=False,
         raise IOError("sndio.read::error:: while seeking at starting position")
     
     if end == None:
-        ff = sf.read_frames(dtype=dtype, force_2d=force_2d)
+        ff = sf.read_frames(sf.frames() - start, dtype=dtype, force_2d=force_2d)
     else:
         ff = sf.read_frames(end-start, dtype=dtype, force_2d=force_2d)
 
