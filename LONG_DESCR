@@ -128,13 +128,19 @@ Please see the developer documentation
 Changes
 -------
 
+Version_1.4.2 (2019-12-18)
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  fixed PySndfile.read_frames method to properly handle reading frames
+   in parts (previous fix was incomplete)
+
 Version_1.4.1 (2019-12-18)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -  extended supported commands to change compression level when writing
    flac and ogg files
--  fixed PySndfile.read_frames method to preoperly handle reading all
-   remaining frames in case some frames have already been read
+-  fixed PySndfile.read_frames and sndio.read method to properly handle
+   reading frames from the middle of a file
 
 Version_1.4.0 (2019-12-17)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
