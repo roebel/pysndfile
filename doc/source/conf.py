@@ -24,9 +24,9 @@ copyright = '2018, Axel Roebel'
 author = 'Axel Roebel'
 
 # The short X.Y version
-version = '1.3'
+version = '1.4'
 # The full version, including alpha/beta/rc tags
-release = '1.3'
+release = '1.4'
 
 
 # -- General configuration ---------------------------------------------------
