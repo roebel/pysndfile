@@ -35,7 +35,7 @@ from libcpp.string cimport string
 cdef extern from "Python.h":
     ctypedef int Py_intptr_t
   
-_pysndfile_version=(1, 4, 0)
+_pysndfile_version=(1, 4, 1)
 def get_pysndfile_version():
     """
     return tuple describing the version of pysndfile
@@ -243,6 +243,14 @@ cdef extern from "pysndfile.hh":
     cdef int C_SFC_GET_BROADCAST_INFO "SFC_GET_BROADCAST_INFO"  
     cdef int C_SFC_SET_BROADCAST_INFO "SFC_SET_BROADCAST_INFO"  
 
+    cdef int C_SFC_WAVEX_SET_AMBISONIC "SFC_WAVEX_SET_AMBISONIC"
+    cdef int C_SFC_WAVEX_GET_AMBISONIC "SFC_WAVEX_GET_AMBISONIC"
+
+    cdef int C_SFC_RF64_AUTO_DOWNGRADE "SFC_RF64_AUTO_DOWNGRADE"
+
+    cdef int C_SFC_SET_VBR_ENCODING_QUALITY "SFC_SET_VBR_ENCODING_QUALITY"
+    cdef int C_SFC_SET_COMPRESSION_LEVEL "SFC_SET_COMPRESSION_LEVEL"
+
     cdef int C_SF_STR_TITLE "SF_STR_TITLE"  
     cdef int C_SF_STR_COPYRIGHT "SF_STR_COPYRIGHT"  
     cdef int C_SF_STR_SOFTWARE "SF_STR_SOFTWARE"  
@@ -441,10 +449,17 @@ _commands_to_id_tuple = (
     ("SFC_GET_INSTRUMENT" , C_SFC_GET_INSTRUMENT),
     ("SFC_SET_INSTRUMENT" , C_SFC_SET_INSTRUMENT),
 
-    ("SFC_GET_LOOP_INFO" , C_SFC_GET_LOOP_INFO),
+    ("SFC_GET_LOOP_INFO", C_SFC_GET_LOOP_INFO),
 
-    ("SFC_GET_BROADCAST_INFO" , C_SFC_GET_BROADCAST_INFO),
-    ("SFC_SET_BROADCAST_INFO" , C_SFC_SET_BROADCAST_INFO),
+    ("SFC_GET_BROADCAST_INFO", C_SFC_GET_BROADCAST_INFO),
+    ("SFC_SET_BROADCAST_INFO", C_SFC_SET_BROADCAST_INFO),
+
+    ("SFC_WAVEX_SET_AMBISONIC", C_SFC_WAVEX_SET_AMBISONIC),
+    ("SFC_WAVEX_GET_AMBISONIC", C_SFC_WAVEX_GET_AMBISONIC),
+    ("SFC_RF64_AUTO_DOWNGRADE", C_SFC_RF64_AUTO_DOWNGRADE),
+
+    ("SFC_SET_VBR_ENCODING_QUALITY", C_SFC_SET_VBR_ENCODING_QUALITY),
+    ("SFC_SET_COMPRESSION_LEVEL", C_SFC_SET_COMPRESSION_LEVEL),
     )
     
 
@@ -843,6 +858,8 @@ cdef class PySndfile:
             raise RuntimeError("PySndfile::error::no valid soundfilehandle")
 
         if nframes < 0 :
+            whence = C_SEEK_CUR | C_SFM_READ
+            pos = self.thisPtr.seek(0, whence)
             nframes = self.thisPtr.frames()
         if dtype == np.float64:
             y = self.read_frames_double(nframes, fill_value=fill_value, min_read=min_read)
