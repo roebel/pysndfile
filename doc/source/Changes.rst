@@ -1,6 +1,14 @@
 Changes
 -------
 
+Version_1.4.3 (2020-01-20)
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  changed sndio functions to all use PySndfile as context manager. This
+   fixes the problem that the sndfile remains open when an error occurs
+   which may in turn lead to inconsistencies if the sndfile is tried to
+   be rewritten in an exception handler.
+
 Version_1.4.2 (2019-12-18)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
