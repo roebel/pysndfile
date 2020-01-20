@@ -49,10 +49,10 @@ def get_info(name, extended_info=False) :
        in case extended_info is True a 5-tuple comprising additionally the number of frames and the number of channels
        is returned.
     """
-    sf  = PySndfile(name)
-    if extended_info:
-        return sf.samplerate(), sf.encoding_str(), sf.major_format_str(), sf.frames(), sf.channels()
-    return sf.samplerate(), sf.encoding_str(), sf.major_format_str()
+    with PySndfile(name) as sf:
+        if extended_info:
+            return sf.samplerate(), sf.encoding_str(), sf.major_format_str(), sf.frames(), sf.channels()
+        return sf.samplerate(), sf.encoding_str(), sf.major_format_str()
 
 def get_markers(name) :
     """
@@ -66,8 +66,9 @@ def get_markers(name) :
 
     Note: following the implementation of libsndfile marker labels will be empty strings for all but aiff files.
     """
-    sf  = PySndfile(name)
-    return sf.get_cue_mrks()
+    
+    with PySndfile(name) as sf:
+        return sf.get_cue_mrks()
 
 
 def write(name, data, rate=44100, format="aiff", enc='pcm16', sf_strings=None) :
@@ -105,17 +106,18 @@ def write(name, data, rate=44100, format="aiff", enc='pcm16', sf_strings=None) :
     elif nchans != 1:
         raise RuntimeError("error:sndio.write:can only be called with vectors or matrices ")
 
-    sf  = PySndfile(name, "w",
+    with  PySndfile(name, "w",
                     format=construct_format(format, enc),
-                    channels = nchans, samplerate = rate)
+                    channels = nchans, samplerate = rate) as sf:
 
-    if sf_strings is not None:
-        sf.set_strings(sf_strings)
-    nf = sf.write_frames(data)
+        if sf_strings is not None:
+            sf.set_strings(sf_strings)
+        nf = sf.write_frames(data)
 
-    if nf != data.shape[0]:
-        raise IOError("sndio.write::error::writing of samples failed")
-    return nf
+        if nf != data.shape[0]:
+            raise IOError("sndio.write::error::writing of samples failed")
+        
+        return nf
 
 enc_norm_map = {
     "pcm8" : np.float64(2**7),
@@ -159,29 +161,22 @@ def read(name, end=None, start=0, dtype=np.float64, return_format=False,
         format of the sound file (can be used to recreate a sound file with an identical format).
     :rtype: Union[Tuple(numpy.array, int, str),Tuple(numpy.array, int, str, str)]
     """
-    sf  = PySndfile(name)
-    enc = sf.encoding_str()
 
-    nf = sf.seek(start, 0)
-    if not nf == start:
-        raise IOError("sndio.read::error:: while seeking at starting position")
+    with PySndfile(name) as sf:
+        enc = sf.encoding_str()
+        nf = sf.seek(start, 0)
+        if not nf == start:
+            raise IOError("sndio.read::error:: while seeking at starting position")
     
-    if end == None:
-        ff = sf.read_frames(sf.frames() - start, dtype=dtype, force_2d=force_2d)
-    else:
-        ff = sf.read_frames(end-start, dtype=dtype, force_2d=force_2d)
+        if end == None:
+            ff = sf.read_frames(sf.frames() - start, dtype=dtype, force_2d=force_2d)
+        else:
+            ff = sf.read_frames(end-start, dtype=dtype, force_2d=force_2d)
 
-        
-    if isinstance(sf_strings, dict):
-        sf_strings.clear()
-        sf_strings.update(sf.get_strings())
+        if isinstance(sf_strings, dict):
+            sf_strings.clear()
+            sf_strings.update(sf.get_strings())
 
-    # if norm and (enc not in ["float32" , "float64"]) :
-    #     if enc in enc_norm_map :
-    #         ff = ff / enc_norm_map[sf.encoding_str()]
-    #     else :
-    #         raise IOError("sndio.read::error::normalization of compressed pcm data is not supported")
-
-    if return_format:
-        return ff, sf.samplerate(), enc, sf.major_format_str()
-    return ff, sf.samplerate(), enc
+        if return_format:
+            return ff, sf.samplerate(), enc, sf.major_format_str()
+        return ff, sf.samplerate(), enc
