@@ -70,7 +70,7 @@ elif np.any (ff2 != bfc):
     print("bfc", bfc)
     write_error = True
 else:
-    print("no errors detected for io with difernt sample encodings")
+    print("no errors detected for io with different sample encodings")
 
 # check reading part of file
 ss,_,_ =  pysndfile.sndio.read(os.path.join(mydir,'test.wav'), force_2d=True)
