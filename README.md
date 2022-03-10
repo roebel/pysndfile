@@ -78,6 +78,10 @@ Please see the developer documentation [here](https://pysndfile.readthedocs.io/e
 
 ## Changes
 
+### Version_1.4.4 (2022-03-11) 
+
+ * Fix for win32: improved error handling for PyUnicode_AsWideCharString (thanks to Andrey Bienkowski) 
+
 ### Version_1.4.3 (2020-01-20) 
 
  * changed sndio functions to all use PySndfile as context manager. This fixes the problem that the sndfile
