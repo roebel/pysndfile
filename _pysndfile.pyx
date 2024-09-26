@@ -35,7 +35,7 @@ from libcpp.string cimport string
 cdef extern from "Python.h":
     ctypedef int Py_intptr_t
   
-_pysndfile_version=(1, 4, 4)
+_pysndfile_version=(1, 4, 5)
 def get_pysndfile_version():
     """
     return tuple describing the version of pysndfile
@@ -982,12 +982,12 @@ cdef class PySndfile:
 
         if input.dtype == np.float64:
             if (self.thisPtr.format() & C_SF_FORMAT_SUBMASK) not in [C_SF_FORMAT_FLOAT, C_SF_FORMAT_DOUBLE]:
-                if (np.max(np.abs(input.flat)) > 1.) :
+                if (input.size > 0 and np.max(np.abs(input.flat)) > 1.) :
                     warnings.warn("write_frames::warning::audio data has been clipped while writing to file {0}.".format(self.filename.decode("UTF-8")))
             res = self.thisPtr.writef(<double*>PyArray_DATA(input), nframes)
         elif input.dtype == np.float32:
             if (self.thisPtr.format() & C_SF_FORMAT_SUBMASK) not in [C_SF_FORMAT_FLOAT, C_SF_FORMAT_DOUBLE]:
-                if (np.max(np.abs(input.flat)) > 1.) :
+                if (input.size > 0 and np.max(np.abs(input.flat)) > 1.) :
                     warnings.warn("write_frames::warning::audio data has been clipped while writing to file {0}.".format(self.filename.decode("UTF-8")))
             res = self.thisPtr.writef(<float*>PyArray_DATA(input), nframes)
         elif input.dtype == np.int32:
