@@ -4,8 +4,9 @@ Changes
 Version_1.4.5 (2024-10-10)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  Fix: Avoid crash when length of sound file is ==0 (thanks to Frederic
-   Cornu)
+-  Extension: support Path for filename arguments in sndio.
+-  Fix: Avoid crash in sndio.write when a zero-sized array is stored
+   (thanks to Frederic Cornu).
 -  Fix: Makefile rule for check command, did not find the "tests"
    directory on all OS.
 
