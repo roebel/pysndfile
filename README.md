@@ -83,6 +83,7 @@ Please see the developer documentation [here](https://pysndfile.readthedocs.io/e
  * Extension: support Path for filename arguments in sndio.
  * Fix: Avoid crash in sndio.write when a zero-sized array is stored (thanks to Frederic Cornu).
  * Fix: Makefile rule for check command, did not find the "tests" directory on all OS.
+ * Update: setup.py now uses packaging instead of pkg_resources.
  
 ### Version_1.4.4 (2022-03-11)
 

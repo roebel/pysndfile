@@ -11,7 +11,7 @@ import hashlib
 import io
 
 from setuptools import setup
-from pkg_resources import parse_version
+from packaging.version import parse
 from distutils.core import Extension
 from distutils.command.build_ext import build_ext
 from distutils.command.sdist import sdist 
@@ -132,7 +132,7 @@ for line in open("_pysndfile.pyx") :
         break
 
 if sys.argv[1] == "get_version":
-    print(parse_version(_pysndfile_version_str))
+    print(parse(_pysndfile_version_str))
     sys.exit(0)
 
 README_path       = os.path.join(os.path.dirname(__file__), 'README.md')

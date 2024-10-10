@@ -9,6 +9,7 @@ Version_1.4.5 (2024-10-10)
    (thanks to Frederic Cornu).
 -  Fix: Makefile rule for check command, did not find the "tests"
    directory on all OS.
+-  Update: setup.py now uses packaging instead of pkg_resources.
 
 Version_1.4.4 (2022-03-11)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
