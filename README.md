@@ -81,7 +81,8 @@ Please see the developer documentation [here](https://pysndfile.readthedocs.io/e
 ### Version_1.4.5 (2024-10-10) 
 
  * Fix: Avoid crash when length of sound file is ==0 (thanks to Frederic Cornu) 
-
+ * Fix: Makefile rule for check command, did not find the "tests" directory on all OS.
+ 
 ### Version_1.4.4 (2022-03-11) 
 
  * Fix for win32: improved error handling for PyUnicode_AsWideCharString (thanks to Andrey Bienkowski) 
