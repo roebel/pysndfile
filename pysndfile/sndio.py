@@ -31,11 +31,12 @@ The module contains 3 functions.
 #
 
 from __future__ import absolute_import
-
+from typing import Union, Optional, Dict
+from pathlib import Path
 from ._pysndfile import PySndfile, construct_format, stringtype_name_to_id, max_supported_string_length, fileformat_name_to_id, fileformat_id_to_name 
 import numpy as np
 
-def get_info(name, extended_info=False) :
+def get_info(name: Union[Path,str], extended_info=False) :
     """
     retrieve information from a sound file
 
@@ -49,7 +50,7 @@ def get_info(name, extended_info=False) :
        in case extended_info is True a 5-tuple comprising additionally the number of frames and the number of channels
        is returned.
     """
-    with PySndfile(name) as sf:
+    with PySndfile(str(name)) as sf:
         if extended_info:
             return sf.samplerate(), sf.encoding_str(), sf.major_format_str(), sf.frames(), sf.channels()
         return sf.samplerate(), sf.encoding_str(), sf.major_format_str()
@@ -59,7 +60,7 @@ def get_markers(name) :
     retrieve markers from sound file
 
     :param name: sound file name
-    :type name: str
+    :type name: Union[str, Path]
     :return: list of marker tuples containing the marker time
        and marker label.
     :rtype: List
@@ -67,19 +68,19 @@ def get_markers(name) :
     Note: following the implementation of libsndfile marker labels will be empty strings for all but aiff files.
     """
     
-    with PySndfile(name) as sf:
+    with PySndfile(str(name)) as sf:
         return sf.get_cue_mrks()
 
 
-def write(name, data, rate=44100, format="aiff", enc='pcm16', sf_strings=None) :
+def write(name: Union[Path, str], data:np.ndarray, rate=44100, format="aiff", enc='pcm16', sf_strings:Optional[Dict[bytes, bytes]]=None) :
     """
-    Write datavector to sndfile using samplerate, format and encoding as specified
+    Write data-vector to sndfile using samplerate, format and encoding as specified
     valid format strings are all the keys in the dict pysndfile.fileformat_name_to_id
     valid encodings are those that are supported by the selected format
     from the list of keys in pysndfile.encoding_name_to_id.
 
     :param name: sndfile name
-    :type name: str
+    :type name: Union[str, OPath]
     :param data: array containing sound data. For mono files an 1d array can be given, for multi channel sound files
                 sound frames are in the rows and data channels in the columns.
     :type data: numpy.array
@@ -106,7 +107,7 @@ def write(name, data, rate=44100, format="aiff", enc='pcm16', sf_strings=None) :
     elif nchans != 1:
         raise RuntimeError("error:sndio.write:can only be called with vectors or matrices ")
 
-    with  PySndfile(name, "w",
+    with  PySndfile(str(name), "w",
                     format=construct_format(format, enc),
                     channels = nchans, samplerate = rate) as sf:
 
@@ -126,8 +127,8 @@ enc_norm_map = {
     "pcm32": np.float64(2**31),
     }
     
-def read(name, end=None, start=0, dtype=np.float64, return_format=False,
-             sf_strings=None, force_2d=False):
+def read(name:Union[Path,str], end:Optional[int]=None, start:int=0, dtype=np.float64, return_format=False,
+             sf_strings:Dict[str,str]=None, force_2d=False):
     """
     read samples from arbitrary sound files into a numpy array. 
     May return subsets of samples as specified by start and end arguments (Def all samples)
@@ -140,7 +141,7 @@ def read(name, end=None, start=0, dtype=np.float64, return_format=False,
     *Parameters*
 
     :param name: sound file name
-    :type name: str
+    :type name: Union[str, Path]
     :param end: end sample frame position (not included into the segment to be returned) default=None -> read all samples
     :type end: Union[int, None]
     :param start: first sample frame to read default=0
@@ -162,7 +163,7 @@ def read(name, end=None, start=0, dtype=np.float64, return_format=False,
     :rtype: Union[Tuple(numpy.array, int, str),Tuple(numpy.array, int, str, str)]
     """
 
-    with PySndfile(name) as sf:
+    with PySndfile(str(name)) as sf:
         enc = sf.encoding_str()
         nf = sf.seek(start, 0)
         if not nf == start:

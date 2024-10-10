@@ -1,5 +1,6 @@
 from __future__ import print_function
 import os
+from pathlib import Path
 import sys
 import numpy as np
 
@@ -27,6 +28,8 @@ try:
     a = PySndfile(os.path.join(mydir,'test1.wav'))
 except IOError as e:
     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    print("The following error is expected, as the file test1.wav does not exist.")
+    print("--------------------------------")
     print(e)
     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
@@ -48,11 +51,11 @@ print("ff2.shape    ",ff2.shape)
 b = PySndfile(os.path.join(mydir,'test_2cC.wav'), "w", a.format(), 2, a.samplerate())
 b.write_frames(np.require(ff2, requirements='C'))
 
-b = PySndfile(os.path.join(mydir,'test_2cF.wav'), "w", a.format(), 2, a.samplerate())
+b = PySndfile(Path(os.path.join(mydir,'test_2cF.wav')), "w", a.format(), 2, a.samplerate())
 b.write_frames(np.require(ff2, requirements='F'))
 del b
 
-b= PySndfile(os.path.join(mydir,'test_2cF.wav'))
+b= PySndfile(Path(mydir) /'test_2cF.wav')
 bff=b.read_frames()
 with PySndfile(os.path.join(mydir,'test_2cC.wav')) as b:
     bfc=b.read_frames()
