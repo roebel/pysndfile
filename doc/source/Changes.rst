@@ -1,6 +1,16 @@
 Changes
 -------
 
+Version_1.4.6rc1 (2024-10-11)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  Fix: Fixed setup.py to find libsndfile in standard locations such
+   that pip install can be used more easily. Provide proper warning in
+   case libsndfile is not found. Support using non-standard installation
+   directories by means of environment variable SOUNDFILE_INSTALL_DIR.
+-  Removed the requirement for --no-build-isolation in the check target
+   of the Makefile
+
 Version_1.4.5 (2024-10-10)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 

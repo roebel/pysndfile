@@ -53,11 +53,17 @@ pip install pysndfile
 should install pysndfile and python dependencies. Note, that pip cannot install libsndfile for you
 as it is not provided via pypi. To install libsndfile you should be able to use the software manager
 of your system. This will however only work if your software manager installs libsndfile
-such that the compiler used by the setup.py script will find it.
+such that the compiler used by the setup.py script will find it. The setup.py script will search
+for the  dynamic library libsndfile, as well as the include file sndfile.h,
+in a few standard locations, (/usr, /usr/local, and for anaconda envrinments as well in the exec_prefix directory
+of the python executable you are using). 
+If libsndfile is not found you may eitehr adapt the setup.cfg file or set teh envroinement
+variable SNDFILE_INSTALL_DIR, to inform the buidl_ext sub command about the location to use.
+
 
 ### compile from sources
 
-Note that for ompiling from sources you need to install requirements listed in requirements.txt file before starting the compilation. Moreover you need to install libsndfile as described in the previous section.
+Note that for compiling from sources you need to install requirements listed in requirements.txt file before starting the compilation. Moreover you need to install libsndfile as described in the previous section.
 
 If the libsndfile (header and library) is not installed in the default compiler search path you have to
 specify the library and include directories to be added to this search paths. For this you can use either the
@@ -78,6 +84,12 @@ Please see the developer documentation [here](https://pysndfile.readthedocs.io/e
 
 ## Changes
 
+### Version_1.4.6rc1 (2024-10-11)
+
+ * Fix: Fixed setup.py to find libsndfile in standard locations such that pip install can be used more easily. Provide proper warning in
+  case libsndfile is not found. Support using non-standard installation directories by means of environment variable SOUNDFILE_INSTALL_DIR.
+ * Removed the requirement for --no-build-isolation in the check target of the Makefile
+  
 ### Version_1.4.5 (2024-10-10)
 
  * Extension: support Path for filename arguments in sndio.

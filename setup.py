@@ -9,15 +9,49 @@ import re
 import numpy as np
 import hashlib
 import io
-
+from pathlib import Path
 from setuptools import setup
 from packaging.version import parse
 from distutils.core import Extension
 from distutils.command.build_ext import build_ext
 from distutils.command.sdist import sdist 
+import sysconfig
 
 import os
 import sys
+
+
+sndfile_locations = [
+    os.environ.get("SNDFILE_INSTALL_DIR", None),
+    sysconfig.get_config_var("exec_prefix"),
+    "/usr/local",
+    "/usr"
+]
+if sys.platform == "darwin":
+    sndfile_locations.append("/opt/local")
+
+
+def find_libsndfile():
+    """
+    search for libsndfile in a few standard locations, display error if not found
+    
+    """
+
+    lib_dir = None
+    inc_dir = None
+    for dir in sndfile_locations:
+        if dir is not None:
+
+            inc_dir = Path(dir) / "include"
+            lib_dir = Path(dir) / "lib"
+            if (((lib_dir / "libsndfile.so").exists() or (lib_dir / "libsndfile.dylib").exists())
+                and (inc_dir / "sndfile.h").exists()):
+                lib_dir = str(lib_dir)
+                inc_dir = str(inc_dir)
+                print(f"will use libsndfile installation found in {dir}")
+                break
+    
+    return lib_dir, inc_dir
 
 
 def utf8_to_bytes(ss):
@@ -103,12 +137,31 @@ class build_ext_subclass( build_ext ):
     def finalize_options(self) :
         build_ext.finalize_options(self)
         if not compile_for_RTD:
+            auto_sndfile_libdir, auto_sndfile_incdir = find_libsndfile()
             if self.sndfile_libdir  is not None :
                 self.library_dirs.append(self.sndfile_libdir)
                 self.rpath.append(self.sndfile_libdir)
+            elif auto_sndfile_libdir is not None:
+                self.library_dirs.append(auto_sndfile_libdir)
+                self.rpath.append(auto_sndfile_libdir)
+            else:        
+                print(
+f"""libsndfile library was not found in standard locations: {[ss for ss in sndfile_locations if ss]}. Please either set envvar SNDFILE_INSTALL_DIR to the directory 
+containing the libsndfile install or adapt the setup.cfg file to point to the correct location"""
+)
+                sys.exit(1)
+
             if self.sndfile_incdir  is not None :
                     self.include_dirs.append(self.sndfile_incdir)
-                
+            elif auto_sndfile_incdir is not None:
+                    self.include_dirs.append(auto_sndfile_incdir)
+            else:
+                print(
+f"""libsndfile include file was not found under standard locations: {[ss for ss in sndfile_locations if ss]}. Please either set envvar SNDFILE_INSTALL_DIR to the directory 
+containing the libsndfile install or adapt the setup.cfg file to point to the correct location"""
+)
+                sys.exit(1)
+
     def build_extensions(self):
         #c = self.compiler.compiler_type
         #print("compiler attr", self.compiler.__dict__)

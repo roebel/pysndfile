@@ -91,12 +91,18 @@ install libsndfile for you as it is not provided via pypi. To install
 libsndfile you should be able to use the software manager of your
 system. This will however only work if your software manager installs
 libsndfile such that the compiler used by the setup.py script will find
-it.
+it. The setup.py script will search for the dynamic library libsndfile,
+as well as the include file sndfile.h, in a few standard locations,
+(/usr, /usr/local, and for anaconda envrinments as well in the
+exec_prefix directory of the python executable you are using). If
+libsndfile is not found you may eitehr adapt the setup.cfg file or set
+teh envroinement variable SNDFILE_INSTALL_DIR, to inform the buidl_ext
+sub command about the location to use.
 
 compile from sources
 ~~~~~~~~~~~~~~~~~~~~
 
-Note that for ompiling from sources you need to install requirements
+Note that for compiling from sources you need to install requirements
 listed in requirements.txt file before starting the compilation.
 Moreover you need to install libsndfile as described in the previous
 section.
