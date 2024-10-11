@@ -34,7 +34,6 @@ if sys.platform == "darwin":
 def find_libsndfile():
     """
     search for libsndfile in a few standard locations, display error if not found
-    
     """
 
     lib_dir = None
@@ -48,7 +47,7 @@ def find_libsndfile():
                 and (inc_dir / "sndfile.h").exists()):
                 lib_dir = str(lib_dir)
                 inc_dir = str(inc_dir)
-                print(f"will use libsndfile installation found in {dir}")
+                print(f"will use libsndfile installation found in {dir}", file=sys.stderr)
                 break
     
     return lib_dir, inc_dir
@@ -87,25 +86,25 @@ try :
     #ext_modules = cythonize(ext_modules, force=compile_for_RTD, language_level=sys.version_info[0])
     ext_modules = cythonize(ext_modules, force=compile_for_RTD, language_level=2)
 except ImportError  :
-    print("cannot import cythonize - to be able to cythonize the source please install cython")
+    print("cannot import cythonize - to be able to cythonize the source please install cython", file=sys.stderr)
     sys.exit(1)
 
 # check clang compiler and disable warning
 def compiler_is_clang(comp) :
-    print("check for clang compiler ... ", end="")
+    print("check for clang compiler ... ", end="", file=sys.stderr)
     try:
         cc_output = subprocess.check_output(comp+['--version'],
                                             stderr = subprocess.STDOUT, shell=False)
     except OSError as ex:
-        print("compiler test call failed with error {0:d} msg: {1}".format(ex.errno, ex.strerror))
-        print("no")
+        print("compiler test call failed with error {0:d} msg: {1}".format(ex.errno, ex.strerror), file=sys.stderr)
+        print("no", file=sys.stderr)
         return False
 
     ret = re.search(b"clang", cc_output) is not None
     if ret :
-        print("yes")
+        print("yes", file=sys.stderr)
     else:
-        print("no")
+        print("no", file=sys.stderr)
     return ret
 
 class sdist_subclass(sdist) :
@@ -147,7 +146,7 @@ class build_ext_subclass( build_ext ):
             else:        
                 print(
 f"""libsndfile library was not found in standard locations: {[ss for ss in sndfile_locations if ss]}. Please either set envvar SNDFILE_INSTALL_DIR to the directory 
-containing the libsndfile install or adapt the setup.cfg file to point to the correct location"""
+containing the libsndfile install or adapt the setup.cfg file to point to the correct location""", file=sys.stderr
 )
                 sys.exit(1)
 
@@ -158,7 +157,7 @@ containing the libsndfile install or adapt the setup.cfg file to point to the co
             else:
                 print(
 f"""libsndfile include file was not found under standard locations: {[ss for ss in sndfile_locations if ss]}. Please either set envvar SNDFILE_INSTALL_DIR to the directory 
-containing the libsndfile install or adapt the setup.cfg file to point to the correct location"""
+containing the libsndfile install or adapt the setup.cfg file to point to the correct location""", file=sys.stderr
 )
                 sys.exit(1)
 
