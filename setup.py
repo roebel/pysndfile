@@ -47,7 +47,6 @@ def find_libsndfile():
                 and (inc_dir / "sndfile.h").exists()):
                 lib_dir = str(lib_dir)
                 inc_dir = str(inc_dir)
-                print(f"will use libsndfile installation found in {dir}", file=sys.stderr)
                 break
     
     return lib_dir, inc_dir
@@ -137,10 +136,13 @@ class build_ext_subclass( build_ext ):
         build_ext.finalize_options(self)
         if not compile_for_RTD:
             auto_sndfile_libdir, auto_sndfile_incdir = find_libsndfile()
+            print("build_ext::config::", ">>"*10, file=sys.stderr)
             if self.sndfile_libdir  is not None :
+                print(f"build_ext::received libdir as cfg option: {self.sndfile_libdir}", file=sys.stderr)
                 self.library_dirs.append(self.sndfile_libdir)
                 self.rpath.append(self.sndfile_libdir)
             elif auto_sndfile_libdir is not None:
+                print(f"build_ext::auto detected libsndfile library: {auto_sndfile_libdir}", file=sys.stderr)
                 self.library_dirs.append(auto_sndfile_libdir)
                 self.rpath.append(auto_sndfile_libdir)
             else:        
@@ -151,15 +153,19 @@ containing the libsndfile install or adapt the setup.cfg file to point to the co
                 sys.exit(1)
 
             if self.sndfile_incdir  is not None :
-                    self.include_dirs.append(self.sndfile_incdir)
+                print(f"build_ext::received include dir as cfg option: {self.sndfile_incdir}", file=sys.stderr)
+                self.include_dirs.append(self.sndfile_incdir)
             elif auto_sndfile_incdir is not None:
-                    self.include_dirs.append(auto_sndfile_incdir)
+                print(f"build_ext::auto detected libsndfile include dir: {auto_sndfile_incdir}", file=sys.stderr)
+                self.include_dirs.append(auto_sndfile_incdir)
             else:
                 print(
 f"""libsndfile include file was not found under standard locations: {[ss for ss in sndfile_locations if ss]}. Please either set envvar SNDFILE_INSTALL_DIR to the directory 
 containing the libsndfile install or adapt the setup.cfg file to point to the correct location""", file=sys.stderr
 )
                 sys.exit(1)
+            print("build_ext::config::", "<<"*10, file=sys.stderr)
+
 
     def build_extensions(self):
         #c = self.compiler.compiler_type

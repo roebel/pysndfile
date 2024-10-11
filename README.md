@@ -84,7 +84,12 @@ Please see the developer documentation [here](https://pysndfile.readthedocs.io/e
 
 ## Changes
 
-### Version_1.4.6rc1 (2024-10-11)
+### Version_1.4.7rc1 (2024-10-11)
+
+ * Fix (build): avoid depreciation message when using setup.cfg for selecting libsndfile installation to be used.
+ * Extension (build): build_ext.finalize_options now communicates the sndfile library and include dirs that are used.
+
+### Version_1.4.6 (2024-10-11)
 
  * Fix: Fixed setup.py to find libsndfile in standard locations such that pip install can be used more easily. Provide proper warning in
   case libsndfile is not found. Support using non-standard installation directories by means of environment variable SOUNDFILE_INSTALL_DIR.
