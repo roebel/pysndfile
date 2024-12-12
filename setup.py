@@ -19,7 +19,12 @@ import sysconfig
 
 import os
 import sys
+import platform
 
+if os.environ.get("PYSNDFILE_USE_STATIC", "0") != "0":
+    from collections import namedtuple
+    if os.environ.get("PYSNDFILE_IGNORE_PKG_CONFIG", "0") == "0":
+        import pkgconfig
 
 sndfile_locations = [
     os.environ.get("SNDFILE_INSTALL_DIR", None),
@@ -41,13 +46,28 @@ def find_libsndfile():
     for dir in sndfile_locations:
         if dir is not None:
 
-            inc_dir = Path(dir) / "include"
-            lib_dir = Path(dir) / "lib"
-            if (((lib_dir / "libsndfile.so").exists() or (lib_dir / "libsndfile.dylib").exists())
-                and (inc_dir / "sndfile.h").exists()):
-                lib_dir = str(lib_dir)
-                inc_dir = str(inc_dir)
-                break
+            tmp_inc_dir = Path(dir) / "include"
+            tmp_lib_dir = Path(dir) / "lib"
+            if (tmp_inc_dir / "sndfile.h").exists():
+                if platform.system() == "Windows":
+                    # static and shared libraries have the same name on windows
+                    # (at least when installed through vcpkg)
+                   found_lib = (tmp_lib_dir / "sndfile.lib").exists()
+                elif os.environ.get("PYSNDFILE_USE_STATIC", "0") != "0":
+                    # only check for the mandatory main library, others are
+                    # optional
+                    found_lib = (tmp_lib_dir / "libsndfile.a").exists()
+                elif platform.system() == "Linux":
+                    found_lib = (tmp_lib_dir / "libsndfile.so").exists()
+                elif platform.system() == "Darwin":
+                    found_lib = (tmp_lib_dir / "libsndfile.dylib").exists()
+                else:
+                    print("unsupported platform", platform.system(), file=sys.stderr)
+                    exit(1)
+                if found_lib:
+                    inc_dir = str(tmp_inc_dir)
+                    lib_dir = str(tmp_lib_dir)
+                    break
     
     return lib_dir, inc_dir
 
@@ -71,6 +91,13 @@ if compile_for_RTD:
                              define_macros=[('READTHEDOCS_ENV', '1'), ("NPY_NO_DEPRECATED_API", "NPY_1_13_API_VERSION")],
                              include_dirs = [np.get_include()],
                              language="c++")]
+elif os.environ.get("PYSNDFILE_USE_STATIC", "0") != "0":
+    # static libraries for libsndfile should be integrated into the exiension,
+    # but their location will only be known in finalize_options
+    ext_modules = [Extension("_pysndfile", ["_pysndfile.pyx"],
+                             include_dirs = [np.get_include()],
+                             language="c++",
+                             define_macros = [("NPY_NO_DEPRECATED_API", "NPY_1_13_API_VERSION") ] )]
 else:
     ext_modules = [Extension("_pysndfile", ["_pysndfile.pyx"],
                              libraries = ["sndfile"],
@@ -128,7 +155,157 @@ class build_ext_subclass( build_ext ):
     fcompiler = None
     sndfile_incdir = None
     sndfile_libdir = None
-        
+
+
+    def _define_sndfile_libraries(self, lib_dir):
+        if os.environ.get("PYSNDFILE_USE_STATIC", "0") == "0":
+            if self.library_dirs:
+                self.library_dirs.append(lib_dir)
+            else:
+                self.library_dirs = [lib_dir]
+
+            # not available on windows (crashes the build)
+            if platform.system() != "Windows":
+                self.rpath.append(lib_dir)
+        else:
+            # on linux or mac, a full path must be used for static libraries
+            # because the name alone would pick the shared ones instead
+            # on windows setuptools does not pass these to the linker, but on
+            # the other hand most static and import libraries have the same name
+            # and so cannot be installed in the same directory
+            lib_path = Path(lib_dir)
+
+            libs_added = False
+            if platform.system() == "Windows":
+                if self.library_dirs:
+                    self.library_dirs.append(lib_dir)
+                else:
+                    self.library_dirs = [lib_dir]
+                lib_prefix = ""
+                lib_suffix = ".lib"
+            else:
+                lib_prefix = "lib"
+                lib_suffix = ".a"
+
+            # sometimes pkg-config or the libsndfile install are broken and
+            # provide wrong information, this variable allows to bypass it
+            if os.environ.get("PYSNDFILE_IGNORE_PKG_CONFIG", "0") == "0":
+                old_config_path = os.environ.get("PKG_CONFIG_PATH")
+                try:
+                    # try to get the installed optional libraries from
+                    # pkg-config
+                    # known issue: lame (libmp3lame) is sometimes not mentioned
+                    # in sndfile.pc despite being required and on windows its
+                    # name is wrong (it should be libmp3lame-static)
+                    os.environ["PKG_CONFIG_PATH"] = str(lib_path / "pkgconfig")
+                    for name in \
+                        pkgconfig.parse("sndfile", static = True)["libraries"]:
+                        path = lib_path / (lib_prefix + name + lib_suffix)
+                        if path.exists():
+                            # use name only for windows (setuptools ignores
+                            # link_objects)
+                            if platform.system() == "Windows":
+                                if self.libraries:
+                                    self.libraries.append(name)
+                                else:
+                                    self.libraries = [name]
+                            else:
+                                if self.link_objects:
+                                    self.link_objects.append(str(path))
+                                else:
+                                    self.link_objects = [str(path)]
+                        else:
+                            # those are probably shared objects (e.g. libm)
+                            if self.libraries:
+                                self.libraries.append(name)
+                            else:
+                                self.libraries = [name]
+                    libs_added = True
+                except:
+                    pass
+                finally:
+                    if old_config_path:
+                        os.environ["PKG_CONFIG_PATH"] = old_config_path
+                    else:
+                        os.environ.pop("PKG_CONFIG_PATH")
+
+            if not libs_added:
+                # without pkg-config into, check which optional libraries are
+                # available and assume libsndfile actually uses them
+                lib_name = "sndfile"
+                path = str(lib_path / (lib_prefix + lib_name + lib_suffix))
+
+                # use name only for windows (setuptools ignores link_objects)
+                if platform.system() == "Windows":
+                    if self.libraries:
+                        self.libraries.append(lib_name)
+                    else:
+                        self.libraries = [lib_name]
+                else:
+                    if self.link_objects:
+                        self.link_objects.append(path)
+                    else:
+                        self.link_objects = [path]
+
+                check_libm = (platform.system() != "Windows")
+                DepLib = namedtuple("DepLib",
+                                    ["name", "needs_libm", "is_lame",
+                                     "needs_shlw"])
+                all_libs = [
+                    DepLib("FLAC", check_libm, False, False),
+                    DepLib("vorbisenc", False, False, False),
+                    DepLib("vorbis", check_libm, False, False),
+                    DepLib("ogg", False, False, False),
+                    DepLib("opus", check_libm, False, False),
+                    DepLib("mpg123", check_libm, False,
+                           platform.system() == "Windows")
+                ]
+                # some windows installations have a different name for lame,
+                # if both variants are present, the usual name is probably an
+                # import tibrary, so prefer the altername one
+                if platform.system() == "Windows":
+                     all_libs.append(DepLib("libmp3lame-static", False, True,
+                                            False))
+
+                     # some installs split lame with libmp3lame depending on
+                     # libmpghip
+                     all_libs.append(DepLib("libmpghip-static", False, False,
+                                            False))
+                all_libs.append(DepLib("mp3lame", check_libm, True, False))
+                add_m = False
+                lame_added = False
+                add_shlw = False
+                for opt in all_libs:
+                    path = lib_path / (lib_prefix + opt.name + lib_suffix)
+                    if path.exists():
+                        do_add = True
+                        if opt.is_lame:
+                            if lame_added:
+                                do_add = False
+                            else:
+                                lame_added = True
+                        if do_add:
+                            # use name only for windows (setuptools ignores
+                            # link_objects)
+                            if platform.system() == "Windows":
+                                self.libraries.append(opt.name)
+                            else:
+                                self.link_objects.append(str(path))
+                            if opt.needs_libm:
+                                add_m = True
+                            if opt.needs_shlw:
+                                add_shlw = True
+                if add_m:
+                    if self.libraries:
+                        self.libraries.append("m")
+                    else:
+                        self.libraries = ["m"]
+                if add_shlw:
+                    if self.libraries:
+                        self.libraries.append("shlwapi")
+                    else:
+                        self.libraries = ["shlwapi"]
+
     def initialize_options(self) :
         build_ext.initialize_options(self)
 
@@ -139,12 +316,10 @@ class build_ext_subclass( build_ext ):
             print("build_ext::config::", ">>"*10, file=sys.stderr)
             if self.sndfile_libdir  is not None :
                 print(f"build_ext::received libdir as cfg option: {self.sndfile_libdir}", file=sys.stderr)
-                self.library_dirs.append(self.sndfile_libdir)
-                self.rpath.append(self.sndfile_libdir)
+                self._define_sndfile_libraries(self.sndfile_libdir)
             elif auto_sndfile_libdir is not None:
                 print(f"build_ext::auto detected libsndfile library: {auto_sndfile_libdir}", file=sys.stderr)
-                self.library_dirs.append(auto_sndfile_libdir)
-                self.rpath.append(auto_sndfile_libdir)
+                self._define_sndfile_libraries(auto_sndfile_libdir)
             else:        
                 print(
 f"""libsndfile library was not found in standard locations: {[ss for ss in sndfile_locations if ss]}. Please either set envvar SNDFILE_INSTALL_DIR to the directory 
@@ -271,6 +446,10 @@ def update_long_descr():
                     outfile.write(line)
 
             write_readme_checksum(crdck[0], crdck[1])
+        try :
+            subprocess.check_call(["pandoc", "-f", "rst", '-t', 'plain', '--ascii', '-o', 'ChangeLog', os.path.join("doc", "source", "Changes.rst")], shell=False)
+        except (OSError, subprocess.CalledProcessError) as ex:
+            print("setup.py::error:: pandoc command failed. Cannot update ChangeLog from modified Changes.rst" + str(ex))
     return open(LONG_DESCR_path).read()
 
 

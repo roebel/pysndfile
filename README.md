@@ -57,8 +57,8 @@ such that the compiler used by the setup.py script will find it. The setup.py sc
 for the  dynamic library libsndfile, as well as the include file sndfile.h,
 in a few standard locations, (/usr, /usr/local, and for anaconda envrinments as well in the exec_prefix directory
 of the python executable you are using). 
-If libsndfile is not found you may eitehr adapt the setup.cfg file or set teh envroinement
-variable SNDFILE_INSTALL_DIR, to inform the buidl_ext sub command about the location to use.
+If libsndfile is not found you may either adapt the setup.cfg file or set the environment
+variable SNDFILE_INSTALL_DIR, to inform the build_ext sub command about the location to use.
 
 
 ### compile from sources
@@ -66,9 +66,31 @@ variable SNDFILE_INSTALL_DIR, to inform the buidl_ext sub command about the loca
 Note that for compiling from sources you need to install requirements listed in requirements.txt file before starting the compilation. Moreover you need to install libsndfile as described in the previous section.
 
 If the libsndfile (header and library) is not installed in the default compiler search path you have to
-specify the library and include directories to be added to this search paths. For this you can use either the
-command line options --sndfile-libdir and --sndfile-incdir that are available for the build_ext command
-or specify these two parameters in the setup.cfg file.
+specify the library and include directories to be added to this search paths. For this you can either set the
+environment variable SNDFILE_INSTALL_DIR to the installation path
+or specify sndfile_libdir and sndfile_incdir in the setup.cfg file.
+
+### self-contained extension
+
+Both when installing from pypi or building a wheel from source (or sdist) the
+extension will need the libsndfile shared library, which must be available at
+runtime.
+
+Since version 1.4.7, it is possible to integrate libsndfile into the extension,
+removing this requirement. This will greatly increase the size of the extension,
+but can be useful to avoid conflicts between different libsndfile versions or to
+build a self-contained wheel.
+
+To do this, the installed libsndfile must include static libraries for itself
+and its dependencies. Then define the PYSNDFILE_USE_STATIC environment variable
+(either without a value or to anything except 0) before installing or building
+as usual. The dependencies will be searched using pkg-config if available, or by
+looking for possible dependencies in the same directory as libsndfile itself.
+
+In some installations of libsndfile though, the pkg-config information is
+incorrect (usually a missing or misspelled dependency), which will lead to an
+error when building/installing or importing. In this case, also define the
+PYSNDFILE_IGNORE_PKG_CONFIG environment variable and build/install again.
 
 #### Windows ####
 
@@ -83,6 +105,12 @@ any help in making this work.
 Please see the developer documentation [here](https://pysndfile.readthedocs.io/en/latest/modules.html).
 
 ## Changes
+
+### Version_1.4.7rc2 (2024-12-12)
+
+ * Extension (build): Optionally use static libraries for libsndfile to build a self-contained wheel or avoid runtime requirements/conflicts. This is done by defining the environment variable PYSNDFILE_USE_STATIC (and optionally PYSNDFILE_IGNORE_PKG_CONFIG)
+ * Fix (build): Fixed build and installation on Windows
+ * Fix (documentation): Generate ChangeLog from README.md and have INSTALL.txt refer to it
 
 ### Version_1.4.7rc1 (2024-10-11)
 
@@ -274,14 +302,41 @@ this update is purely administrative, no code changes
  * Added missing files to distribution.
  * force current cythonized version to be distributed.
 
+### Version 0.2.7
+
+ * Fixed typo in include directive in MANIFEST.in.
+
+### Version 0.2.5
+
+ * Added missing file _pysndfile.pyx.
+
 ### Version 0.2.4 
  
  * Compatibility with python 3 (thanks to Eduardo Moguillansky)
  * bug fix: ensure that vectors returned by read_frames function own their data.
 
+### Version 0.2.3
+
+ * Use print function syntax for a print statement that was not yet using it.
+ * Avoid newline in compiler detection message.
+ * import print_function for compatibility with 2.6
+ * python 3 compatibility
+ * Generate error message for too high dimensional input.
+
+### Version 0.2.2
+
+ * don't use SF_STR_ALBUM and SF_STR_LICENSE from sndfile.h because this breaks compilation for older versions.
+ * don't use SF_STR_TRACKNUMBER and SF_STR_GENRE from sndfile.h because this breaks compilation for older versions.
+ * Fixed documentation for write function.
+ * Fixed typo in accessing function argument
+
+### Version 0.2.1
+
+ * Initial release
+
 ## Copyright
 
-Copyright (C) 2014-2018 IRCAM
+Copyright (C) 2014-2024 IRCAM
 
 ## Author
 

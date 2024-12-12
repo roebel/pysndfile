@@ -1,6 +1,17 @@
 Changes
 -------
 
+Version_1.4.7rc2 (2024-12-12)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  Extension (build): Optionally use static libraries for libsndfile to
+   build a self-contained wheel or avoid runtime requirements/conflicts.
+   This is done by defining the environment variable
+   PYSNDFILE_USE_STATIC (and optionally PYSNDFILE_IGNORE_PKG_CONFIG)
+-  Fix (build): Fixed build and installation on Windows
+-  Fix (documentation): Generate ChangeLog from README.md and have
+   INSTALL.txt refer to it
+
 Version_1.4.7rc1 (2024-10-11)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -243,10 +254,45 @@ Version 0.2.9
 -  Added missing files to distribution.
 -  force current cythonized version to be distributed.
 
+Version 0.2.7
+~~~~~~~~~~~~~
+
+-  Fixed typo in include directive in MANIFEST.in.
+
+Version 0.2.5
+~~~~~~~~~~~~~
+
+-  Added missing file \_pysndfile.pyx.
+
 Version 0.2.4
 ~~~~~~~~~~~~~
 
 -  Compatibility with python 3 (thanks to Eduardo Moguillansky)
 -  bug fix: ensure that vectors returned by read_frames function own
    their data.
+
+Version 0.2.3
+~~~~~~~~~~~~~
+
+-  Use print function syntax for a print statement that was not yet
+   using it.
+-  Avoid newline in compiler detection message.
+-  import print_function for compatibility with 2.6
+-  python 3 compatibility
+-  Generate error message for too high dimensional input.
+
+Version 0.2.2
+~~~~~~~~~~~~~
+
+-  don't use SF_STR_ALBUM and SF_STR_LICENSE from sndfile.h because this
+   breaks compilation for older versions.
+-  don't use SF_STR_TRACKNUMBER and SF_STR_GENRE from sndfile.h because
+   this breaks compilation for older versions.
+-  Fixed documentation for write function.
+-  Fixed typo in accessing function argument
+
+Version 0.2.1
+~~~~~~~~~~~~~
+
+-  Initial release
 

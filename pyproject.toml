@@ -1,3 +1,5 @@
 [build-system]
 # Minimum requirements for the build system to execute.
-requires = ["setuptools", "numpy>=1.13.0", "cython>=0.25.0", "packaging>=20.0", "wheel" ]  # PEP 508 specifications.
+# pkgconfig is only required when using a static version of libsndfile, but I
+# don't know how to check an environment variable here (PYSNDFILE_USE_STATIC)
+requires = ["setuptools", "numpy>=1.13.0", "cython>=0.25.0", "packaging>=20.0", "wheel", "pkgconfig" ]  # PEP 508 specifications.
