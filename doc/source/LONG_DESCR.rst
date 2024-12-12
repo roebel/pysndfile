@@ -95,8 +95,8 @@ it. The setup.py script will search for the dynamic library libsndfile,
 as well as the include file sndfile.h, in a few standard locations,
 (/usr, /usr/local, and for anaconda envrinments as well in the
 exec_prefix directory of the python executable you are using). If
-libsndfile is not found you may eitehr adapt the setup.cfg file or set
-teh envroinement variable SNDFILE_INSTALL_DIR, to inform the buidl_ext
+libsndfile is not found you may either adapt the setup.cfg file or set
+the environment variable SNDFILE_INSTALL_DIR, to inform the build_ext
 sub command about the location to use.
 
 compile from sources
@@ -109,10 +109,34 @@ section.
 
 If the libsndfile (header and library) is not installed in the default
 compiler search path you have to specify the library and include
-directories to be added to this search paths. For this you can use
-either the command line options --sndfile-libdir and --sndfile-incdir that
-are available for the build_ext command or specify these two parameters
-in the setup.cfg file.
+directories to be added to this search paths. For this you can either
+set the environment variable SNDFILE_INSTALL_DIR to the installation
+path or specify sndfile_libdir and sndfile_incdir in the setup.cfg file.
+
+self-contained extension
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Both when installing from pypi or building a wheel from source (or
+sdist) the extension will need the libsndfile shared library, which must
+be available at runtime.
+
+Since version 1.4.7, it is possible to integrate libsndfile into the
+extension, removing this requirement. This will greatly increase the
+size of the extension, but can be useful to avoid conflicts between
+different libsndfile versions or to build a self-contained wheel.
+
+To do this, the installed libsndfile must include static libraries for
+itself and its dependencies. Then define the PYSNDFILE_USE_STATIC
+environment variable (either without a value or to anything except 0)
+before installing or building as usual. The dependencies will be
+searched using pkg-config if available, or by looking for possible
+dependencies in the same directory as libsndfile itself.
+
+In some installations of libsndfile though, the pkg-config information
+is incorrect (usually a missing or misspelled dependency), which will
+lead to an error when building/installing or importing. In this case,
+also define the PYSNDFILE_IGNORE_PKG_CONFIG environment variable and
+build/install again.
 
 Windows
 ^^^^^^^

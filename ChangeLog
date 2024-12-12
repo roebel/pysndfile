@@ -1,143 +1,263 @@
-Version_1.1.0 (2018-02-13)
----------------------------
+Changes
 
- * changed sndio.get_info function to be able to return addtional info about number of frames and
-	number of channels.
+Version_1.4.7rc2 (2024-12-12)
+
+-   Extension (build): Optionally use static libraries for libsndfile to
+    build a self-contained wheel or avoid runtime
+    requirements/conflicts. This is done by defining the environment
+    variable PYSNDFILE_USE_STATIC (and optionally
+    PYSNDFILE_IGNORE_PKG_CONFIG)
+-   Fix (build): Fixed build and installation on Windows
+-   Fix (documentation): Generate ChangeLog from README.md and have
+    INSTALL.txt refer to it
+
+Version_1.4.7rc1 (2024-10-11)
+
+-   Fix (build): avoid depreciation message when using setup.cfg for
+    selecting libsndfile installation to be used.
+-   Extension (build): build_ext.finalize_options now communicates the
+    sndfile library and include dirs that are used.
+
+Version_1.4.6 (2024-10-11)
+
+-   Fix: Fixed setup.py to find libsndfile in standard locations such
+    that pip install can be used more easily. Provide proper warning in
+    case libsndfile is not found. Support using non-standard
+    installation directories by means of environment variable
+    SOUNDFILE_INSTALL_DIR.
+-   Removed the requirement for --no-build-isolation in the check target
+    of the Makefile
+
+Version_1.4.5 (2024-10-10)
+
+-   Extension: support Path for filename arguments in sndio.
+-   Fix: Avoid crash in sndio.write when a zero-sized array is stored
+    (thanks to Frederic Cornu).
+-   Fix: Makefile rule for check command, did not find the "tests"
+    directory on all OS.
+-   Update: setup.py now uses packaging instead of pkg_resources.
+
+Version_1.4.4 (2022-03-11)
+
+-   Fix for win32: improved error handling for
+    PyUnicode_AsWideCharString (thanks to Andrey Bienkowski)
+
+Version_1.4.3 (2020-01-20)
+
+-   changed sndio functions to all use PySndfile as context manager.
+    This fixes the problem that the sndfile remains open when an error
+    occurs which may in turn lead to inconsistencies if the sndfile is
+    tried to be rewritten in an exception handler.
+
+Version_1.4.2 (2019-12-18)
+
+-   fixed PySndfile.read_frames method to properly handle reading frames
+    in parts (previous fix was incomplete)
+
+Version_1.4.1 (2019-12-18)
+
+-   extended supported commands to change compression level when writing
+    flac and ogg files
+-   fixed PySndfile.read_frames and sndio.read method to properly handle
+    reading frames from the middle of a file
+
+Version_1.4.0 (2019-12-17)
+
+-   Extended PySndfile class:
+    -   support use as context manager
+    -   added support for wve, ogg, MPC2000 sampler and RF64 wav files
+    -   added support for forcing to return 2D arrays even for mono
+        files
+    -   added method to close the file and release all resources.
+    -   support reading more frames than present in the file using the
+        fill_value for all values positioned after the end of the file
+
+Version_1.3.8 (2019-10-22)
+
+-   (no changes in functionality)
+-   added documentation to distributed files
+-   added missing licence file to distribution
+-   thanks @toddrme2178 for patches.
+
+Version_1.3.7 (2019-08-01)
+
+-   removed cython (a build requirement) from requirements.txt
+-   avoid cython warning and fix language_level in the .pyx source code
+-   add and support pre-release tags in the version number
+-   use hashlib to calculate the README checksum.
+-   fixed support for use with python 2.7 that was broken since 1.3.4
+
+Version_1.3.6 (2019-07-27)
+
+-   fixed potential but undesired build dependency of pandoc
+-   added link to explanation for using pysndfile under windows
+-   fixed pandoc problem that does produce non ASCII chars in rst
+    output.
+
+Version_1.3.5 (2019-07-27)
+
+-   fixed two copy paste bug introduced in 1.3.4 1.3.4 did in fact not
+    work at all :-(
+-   added a check target to the makefile that performs a complete
+    built/install/test cycle to avoid problems as in 1.3.4
+
+Version_1.3.4 (2019-07-23)
+
+-   added support for automatic installation of requirements
+-   remove precompiled cython source file and rely on pip requirements
+    to provide cython so that cython compilation will always be
+    possible.
+-   added experimental support for installation on win32 (thanks to
+    Svein Seldal for the contributions).
+-   use expanduser for replacing ~ in filenames
+-   adapted cython source code to avoid all compiler warnings due to
+    deprecated numpy api
+-   removed use of ez_setup.py that is no longer required.
+
+Version_1.3.3 (2019-06-01)
+
+-   fixed missing command C_SFC_SET_SCALE_INT_FLOAT_WRITE (thanks to
+    Svein Seldal for the bug report and fix)
+-   better documentation of sf_string-io in sndio.read and sndio.write
+-   limit size of strings to be written such that the written file can
+    always be read back with libsndfile 1.0.28 (which imposes different
+    constraints for different formats)
+-   better error handling when number of channels exceeds channel limit
+    imposed by libsndfile.
+-   sndio module now exposes the dicts: fileformat_name_to_id and
+    fileformat_id_to_name
+-   extended sndio.read with force_2d argument that can be used to force
+    the returned data array to always have 2 dimensions even for mono
+    files.
+
+Version_1.3.2 (2018-07-04)
+
+-   fixed documentation of sndio module.
+
+Version_1.3.1 (2018-07-04)
+
+-   Extended sndio by means of adding a enw function that allows
+    retrieving embed markers from sound files. Names marker labels will
+    be retrieved only for aiff files.
+-   removed print out in pysndfile.get_cue_mrks(self) function.
+-   fixed version number in documentation.
+
+Version_1.3.0 (2018-07-04)
+
+-   Added support for retrieving cue points from aiff and wav files.
+
+Version_1.2.2 (2018-06-11)
+
+-   fixed c++-include file that was inadvertently scrambled.
+
+Version_1.2.1 (2018-06-11)
+
+-   fixed formatting error in long description and README.
+-   setup.py to explicitly select formatting of the long description.
+
+Version_1.2.0 (2018-06-11)
+
+-   support reading and writing sound file strings in sndio module
+-   Improved documentation of module constant mappings and PySndfile
+    methods.
+-   Added a new method supporting to write all strings in a dictionary
+    to the sound file.
+
+Version_1.1.1 (2018-06-10)
+
+this update is purely administrative, no code changes
+
+-   moved project to IRCAM GitLab
+-   moved doc to ReadTheDoc
+-   fixed documentation.
+
+Version_1.1.0 (2018-02-13)
+
+-   support returning extended sndfile info covering number of frames
+    and number of channels from function sndio.get_info.
 
 Version_1.0.0 (2017-07-26)
----------------------------
-2017-07-26 Roebel
 
- * No interface changes. but after a long time of successful use under
-	python 2 and python 3 I decided to move to a 1.0.0 release.
+-   Updated version number to 1.0.0:
+-   pysndfile has now been used for quiet a while under python 3 and
+    most problems seem to be fixed.
+-   changed setup.py to avoid uploading outdated LONG_DESC file.
 
 Version_0.2.15 (2017-07-26)
----------------------------
-2017-07-26 Roebel 
-	* fixed get_sndfile_version function and tests script:
-	adapted char handling to be compatible with python 3
 
-Version_0.2.14 (2017-07-26)
----------------------------
-2017-07-26 Roebel 
-	* fixed filename display in warning messages due to invalid pointer to filename:
-	 -  replaced char* by  std::string 
+-   fixed get_sndfile_version function and tests script: adapted char
+    handling to be compatible with python 3.
 
-Version_0.2.13 (2017-06-03)
----------------------------
-2017-05-11 Roebel (03caffc)
-	* fixed problem when using "~" for representing $HOME in filenames:
-	 -  replaced using cython getenv by os.environ to avoid
-	type incompatibilities in python3
+Version 0.2.14 (2017-07-26)
 
-Version_0.2.12 (2017-05-11)
----------------------------
-2017-05-11 Roebel (5d4d543)
-	* fixed problem in sndio.read:
-	 - optionally return full information required to store the file using the corresponding write function
-	* _pysndfile.pyx:
-	 - add constants SF_FORMAT_TYPEMASK and SF_FORMAT_SUBMASK, SF_FORMAT_ENDMASK to python interface
-	 - Added new function for getting internal sf log in case of errors.
-	 - Improved consistency of variable definitions by means of retrieving them automatically from sndfile.h
+-   fixed filename display in warning messages due to invalid pointer:
+    replaced char* by std::string
 
-Version_0.2.11 (2015-05-17)
----------------------------
-2015-05-17 Roebel (3981343, 6eec597, 1cd1617)
-	* setup.py: fixed problem with compilers not providing the
-	  compiler attribute (e.g. MSVC) (Thanks to Felix Hanke for reporting the problem)
-	* _pysndfile.pyx: fixed problem when deriving from PySndfile using
-	  a modified list of __init__ parameters in the derived class
-          (Thanks to Sam Perry for the suggestion).
+Version 0.2.13 (2017-06-03)
 
-Version_0.2.8-0.2.10 (2014-11-17)
----------------------------------
-2014-11-17 Roebel (f924fe9, 0257328, 4ec9497, 56445f8, ffb6d31, a06a40d,
-	22b9c4f, 49eb5ed, b9f8c3c)
-	* Various problems with missing files and documentation.
+-   fixed using "~" for representing $HOME in filenames:
+-   _pysndfile.pyx: replaced using cython getenv by os.environ to avoid
+    type incompatibilities in python3
 
-Version_0.2.7 (2014-10-03)
---------------------------
+Version 0.2.12 (2017-05-11)
 
-2014-10-03 Axel Roebel (827221d, c157421, 84d201f, ff81c14, 0bd039f,
-	2938e16, 827221d, c157421) :
-	* MANIFEST.in, _pysndfile.pyx, _pysndfile_precythonized.cpp :
-        Fixed typo in include directive in MANIFEST.in.
+-   fixed problem in sndio.read: Optionally return full information
+    required to store the file using the corresponding write function
+-   _pysndfile.pyx: add constants SF_FORMAT_TYPEMASK and
+    SF_FORMAT_SUBMASK, SF_FORMAT_ENDMASK to python interface Added new
+    function for getting internal sf log in case of errors. Improved
+    consistency of variable definitions by means of retrieving them
+    automatically from sndfile.h
 
-Version_0.2.5 (2014-10-03)
---------------------------
+Version 0.2.11 (2015-05-17)
 
-2014-10-03 Axel Roebel (2ac71ed, 648ab07) :
-	* MANIFEST.in, _pysndfile.pyx :
-        (HEAD, master) Added missing file _pysndfile.pyx.
-        Updated version to 0.2.5. 
-	Only change is to include the missing _pysndfile.pyx to the distribution.
+-   setup.py: fixed problem with compilers not providing the compiler
+    attribute (MSVC) (Thanks to Felix Hanke for reporting the problem)
+-   _pysndfile.pyx: fixed problem when deriving from PySndfile using a
+    modified list of init parameters in the derived class (Thanks to Sam
+    Perry for the suggestion).
 
-Version_0.2.4 (2014-08-19)
---------------------------
+Version 0.2.10
 
-2014-08-19 Axel Roebel (fa687dc, 58e5970, 5d42be2) :
-	* _pysndfile.pyx :
-        Ensure to return monofiles as 1d arrays without effecting the
-	ownership of the arrays returned by read_frames.
+-   setup.py: rebuild LONG_DESC only if sdist method is used.
 
-2014-08-18 Axel Roebel (d4790e6, 7834f11, 81f8b6b, 4ffd00f) :
-	* test.wav, tests/test.wav, tests/pysndfile_test.py, pysndfile_test.py
-	* tests/pysndfile_test.py :
-        merged from remote master changes of test organization
-        search and create test sounds in tests sub directory
-        moved testsnds into tests directory
-        moved test file into its own directory
+Version 0.2.9
 
-Version_0.2.3 (2014-08-17)
---------------------------
+-   Added missing files to distribution.
+-   force current cythonized version to be distributed.
 
-2014-08-17 Axel Roebel (c190cb0, b64354a) :
-	* pysndfile_test.py, setup.py :
-	Fixed small problems of py3 branch:
-        - Use print function syntax for a print statement that was not yet using it.
-        - Avoid newline in compiler detection message.
+Version 0.2.7
 
-2014-08-17 Axel Roebel (45f5ce9) :
-	* _pysndfile.pyx :
-        Updated version to 0.2.3.
+-   Fixed typo in include directive in MANIFEST.in.
 
-2014-08-17 Axel Roebel (e5926ab) :
+Version 0.2.5
 
-	* _pysndfile.pyx, pysndfile/Faiff.py, pysndfile/__init__.py,
-	* pysndfile_test.py, setup.py :
+-   Added missing file _pysndfile.pyx.
 
-        Merge branch 'py3' contributed by Eduardo Moguillansky for python
-	3 compatibility :
+Version 0.2.4
 
-	2014-06-17 Eduardo Moguillansky (aea7be1, e95e726) :
-        (github/py3, py3) import print_function for compatibility with 2.6
-setup.py
+-   Compatibility with python 3 (thanks to Eduardo Moguillansky)
+-   bug fix: ensure that vectors returned by read_frames function own
+    their data.
 
-        python 3 compatibility
+Version 0.2.3
 
-2014-06-14 Axel Roebel (a34234f, 6df94aa) :
+-   Use print function syntax for a print statement that was not yet
+    using it.
+-   Avoid newline in compiler detection message.
+-   import print_function for compatibility with 2.6
+-   python 3 compatibility
+-   Generate error message for too high dimensional input.
 
-	* pysndfile/sndio.py :
-        Generate error message for too high dimensional input.
+Version 0.2.2
 
-Version_0.2.2 (2014-06-11)
---------------------------
+-   don't use SF_STR_ALBUM and SF_STR_LICENSE from sndfile.h because
+    this breaks compilation for older versions.
+-   don't use SF_STR_TRACKNUMBER and SF_STR_GENRE from sndfile.h because
+    this breaks compilation for older versions.
+-   Fixed documentation for write function.
+-   Fixed typo in accessing function argument
 
-2014-06-10 Axel Roebel (5b06fb8) :
+Version 0.2.1
 
-	* _pysndfile_precythonized.cpp:
-        update for 0.2.2.
-
-	* _pysndfile.pyx :
-        Increased version to 0.2.2.
-	don't use SF_STR_ALBUM and SF_STR_LICENSE from sndfile.h because this breaks compilation for older versions.
-        don't use SF_STR_TRACKNUMBER and SF_STR_GENRE from sndfile.h because this breaks compilation for older versions.
-
-	* pysndfile/sndio.py
-        Fixed documentation for write function.
-	Fixed typo in accessing function argument
-
-Version_0.2.1 (2014-05-12)
---------------------------
-
-	Initial release
+-   Initial release
