@@ -106,14 +106,11 @@ Please see the developer documentation [here](https://pysndfile.readthedocs.io/e
 
 ## Changes
 
-### Version_1.4.7rc2 (2024-12-12)
+### Version_1.4.7 (2024-12-13)
 
  * Extension (build): Optionally use static libraries for libsndfile to build a self-contained wheel or avoid runtime requirements/conflicts. This is done by defining the environment variable PYSNDFILE_USE_STATIC (and optionally PYSNDFILE_IGNORE_PKG_CONFIG)
  * Fix (build): Fixed build and installation on Windows
  * Fix (documentation): Generate ChangeLog from README.md and have INSTALL.txt refer to it
-
-### Version_1.4.7rc1 (2024-10-11)
-
  * Fix (build): avoid depreciation message when using setup.cfg for selecting libsndfile installation to be used.
  * Extension (build): build_ext.finalize_options now communicates the sndfile library and include dirs that are used.
 
