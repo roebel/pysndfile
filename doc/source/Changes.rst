@@ -1,9 +1,11 @@
 Changes
 -------
 
-Version_1.4.7 (2024-12-13)
+Version_1.4.7 (2024-12-17)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+-  Remove tests directory from sdist because the test is not a standard
+   PyTest one and led to confusion
 -  Extension (build): Optionally use static libraries for libsndfile to
    build a self-contained wheel or avoid runtime requirements/conflicts.
    This is done by defining the environment variable
