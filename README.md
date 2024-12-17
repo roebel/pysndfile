@@ -108,8 +108,8 @@ Please see the developer documentation [here](https://pysndfile.readthedocs.io/e
 
 ### Version_1.4.7 (2024-12-17)
 
- * Remove tests directory from sdist because the test is not a standard PyTest
-   one and led to confusion
+ * Remove tests directory from sdist because the test is not a standard unittest
+   and led to confusion
  * Extension (build): Optionally use static libraries for libsndfile to build a self-contained wheel or avoid runtime requirements/conflicts. This is done by defining the environment variable PYSNDFILE_USE_STATIC (and optionally PYSNDFILE_IGNORE_PKG_CONFIG)
  * Fix (build): Fixed build and installation on Windows
  * Fix (documentation): Generate ChangeLog from README.md and have INSTALL.txt refer to it
