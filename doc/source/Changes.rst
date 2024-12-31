@@ -1,9 +1,10 @@
 Changes
 -------
 
-Version_1.4.7 (2024-12-17)
+Version_1.4.7 (2024-12-31)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+-  Fix: Remove deprecated IF conditions in Cython code
 -  Remove tests directory from sdist because the test is not a standard
    unittest and led to confusion
 -  Extension (build): Optionally use static libraries for libsndfile to
