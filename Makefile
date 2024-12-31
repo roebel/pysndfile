@@ -13,7 +13,7 @@ cythonize : _pysndfile.cpp
 # dont adapt language_level for the moment, it does not seem to make any difference anyway
 # language_level is now hard-coded in the source
 # $(CYTHON) -${python_version_major} --cplus $<
-_pysndfile.cpp: _pysndfile.pyx pysndfile.hh sndfile_linux.pxi sndfile_win32.pxi
+_pysndfile.cpp: _pysndfile.pyx pysndfile.hh
 	$(CYTHON) --cplus $<
 
 install:
