@@ -9,7 +9,5 @@ include pysndfile.hh
 include sndfile_linux.pxi
 include sndfile_win32.pxi
 include _pysndfile.pyx
-include tests/*.wav
-include tests/*.py
 exclude _pysndfile.cpp
 include  COPYING*.txt

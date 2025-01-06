@@ -67,20 +67,20 @@ cdef extern from "numpy/arrayobject.h":
     int PyArray_NDIM(cnp.ndarray arr)
     npy_intp* PyArray_DIMS(cnp.ndarray arr)
 
-IF UNAME_SYSNAME == "Windows":
-    cdef extern from *:
-        """
-        #define ENABLE_SNDFILE_WINDOWS_PROTOTYPES 1
-        """
-    
-    from libc.stddef cimport wchar_t
+cdef extern from *:
+    """
+    #ifdef _WIN32
+    #include <Windows.h>
+    #define ENABLE_SNDFILE_WINDOWS_PROTOTYPES 1
+    #endif
+    """
 
-    cdef extern from "Windows.h":
-        ctypedef const wchar_t *LPCWSTR
+from libc.stddef cimport wchar_t
+ctypedef const wchar_t *LPCWSTR
 
-    cdef extern from "Python.h":
-        wchar_t* PyUnicode_AsWideCharString(object, Py_ssize_t *) except NULL
-        void PyMem_Free(void *p)
+cdef extern from "Python.h":
+    wchar_t* PyUnicode_AsWideCharString(object, Py_ssize_t *) except NULL
+    void PyMem_Free(void *p)
 
 cdef extern from "pysndfile.hh":
     ctypedef struct SF_FORMAT_INFO:
@@ -283,10 +283,35 @@ cdef extern from "pysndfile.hh":
     
     cdef int C_SF_COUNT_MAX "SF_COUNT_MAX"  
 
-IF UNAME_SYSNAME == "Windows":
-    include "sndfile_win32.pxi"
-ELSE:
-    include "sndfile_linux.pxi"
+    cdef cppclass SndfileHandle :
+        SndfileHandle(const char *path, int mode, int format, int channels, int samplerate)
+        SndfileHandle(const int fh, int close_desc, int mode, int format, int channels, int samplerate)
+
+        # will only be used (and defined) on Windows, it is just a declaration
+        # on other platforms
+        SndfileHandle(LPCWSTR path, int mode, int format, int channels, int samplerate)
+        sf_count_t frames()
+        int format()
+        int channels()
+        int samplerate()
+        int seekable()
+        int error()
+        char* strError()
+        int command (int cmd, void *data, int datasize)
+        int get_cue_count()
+        sf_count_t seek (sf_count_t frames, int whence)
+        void writeSync () 
+        sf_count_t readf (short *ptr, sf_count_t items) 
+        sf_count_t readf (int *ptr, sf_count_t items) 
+        sf_count_t readf (float *ptr, sf_count_t items) 
+        sf_count_t readf (double *ptr, sf_count_t items)
+        sf_count_t writef (const short *ptr, sf_count_t items) 
+        sf_count_t writef (const int *ptr, sf_count_t items) 
+        sf_count_t writef (const float *ptr, sf_count_t items) 
+        sf_count_t writef (const double *ptr, sf_count_t items)
+        SNDFILE* rawHandle()
+        int setString (int str_type, const char* str)
+        const char* getString (int str_type)
 
 # these two come with more recent versions of libsndfile
 # to not break compilation they are defined outside sndfile.h
@@ -627,6 +652,26 @@ def get_sndfile_formats():
             fmt.append(fileformat_id_to_name[i & C_SF_FORMAT_TYPEMASK])
     return fmt
 
+# a convoluted way to have Windows-specific code for file names, now that the
+# Cython IF construct is deprecated and slated for removal
+cdef extern from *:
+    """
+    #ifdef _WIN32
+    #define PySndfile_filename_type wchar_t*
+    #define PySndfile_convert_filename(self_filename, filename) PyUnicode_AsWideCharString((filename), NULL)
+    #define PySndfile_free_filename(filename) PyMem_Free(filename)
+    #else
+    #define PySndfile_filename_type const char*
+    #define PySndfile_convert_filename(self_filename, filename) (self_filename.c_str())
+    #define PySndfile_free_filename(filename)
+    #endif
+    """
+
+    ctypedef char* filename_type "PySndfile_filename_type"
+    cdef filename_type convert_filename "PySndfile_convert_filename" (const string& self_filename, object filename)
+    cdef void free_filename "PySndfile_free_filename" (filename_type filename)
+    
+
 cdef class PySndfile:
     """\
     PySndfile is a python class for reading/writing audio files.
@@ -663,9 +708,7 @@ cdef class PySndfile:
         cdef const char*cfilename
         cdef int fh
 
-        IF UNAME_SYSNAME == "Windows":
-           cdef Py_ssize_t length
-           cdef wchar_t *my_wchars
+        cdef filename_type filename_for_ctor
 
         # -1 will indicate that the file has been open from filename, not from
         # file descriptor
@@ -698,22 +741,22 @@ cdef class PySndfile:
         else:
             filename = os.path.expanduser(filename)
 
-            IF UNAME_SYSNAME == "Windows":
-                # Need to get the wchars before filename is converted to utf-8
-                my_wchars = PyUnicode_AsWideCharString(filename, &length)
-            
             if isinstance(filename, unicode):
-                filename = bytes(filename, "UTF-8")
-            self.filename = filename
+                tmp_filename = bytes(filename, "UTF-8")
+            else:
+                tmp_filename = filename
+            self.filename = tmp_filename
 
-            IF UNAME_SYSNAME == "Windows":
-                if length > 0:
-                    self.thisPtr = new SndfileHandle(my_wchars, sfmode, format, channels, samplerate)
-                    PyMem_Free(my_wchars)
-                else:
-                    raise RuntimeError("PySndfile::error while converting {0} into wchars".format(filename))
-            ELSE:
-                self.thisPtr = new SndfileHandle(self.filename.c_str(), sfmode, format, channels, samplerate)
+            # on Windows, the original filename must be converted to wchar_t,
+            # not the one converted to utf-8
+            filename_for_ctor = convert_filename(self.filename, filename)
+
+            # this should only happen on Windows
+            if filename_for_ctor == NULL:
+                raise RuntimeError("PySndfile::error while converting {0} into wchars".format(filename))
+
+            self.thisPtr = new SndfileHandle(filename_for_ctor, sfmode, format, channels, samplerate)
+            free_filename(filename_for_ctor)
             
 
         if self.thisPtr == NULL or self.thisPtr.rawHandle() == NULL:
