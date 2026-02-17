@@ -41,29 +41,42 @@ def find_libsndfile():
     search for libsndfile in a few standard locations, display error if not found
     """
 
+    # support for Debian multiarch layout thanks to Alastair Porter
+    multiarch = sysconfig.get_config_var("MULTIARCH")
+    if platform.system() == "Windows":
+        # static and shared libraries have the same name on windows (at least
+        # when installed through vcpkg)
+        lib_name = "sndfile.lib"
+    elif os.environ.get("PYSNDFILE_USE_STATIC", "0") != "0":
+        # only check for the mandatory main library, others are optional
+        lib_name = "libsndfile.a"
+    elif platform.system() == "Linux":
+        lib_name = "libsndfile.so"
+    elif platform.system() == "Darwin":
+        lib_name = "libsndfile.dylib"
+    else:
+        print("unsupported platform", platform.system(), file=sys.stderr)
+        exit(1)
     lib_dir = None
     inc_dir = None
     for dir in sndfile_locations:
         if dir is not None:
 
-            tmp_inc_dir = Path(dir) / "include"
-            tmp_lib_dir = Path(dir) / "lib"
-            if (tmp_inc_dir / "sndfile.h").exists():
-                if platform.system() == "Windows":
-                    # static and shared libraries have the same name on windows
-                    # (at least when installed through vcpkg)
-                   found_lib = (tmp_lib_dir / "sndfile.lib").exists()
-                elif os.environ.get("PYSNDFILE_USE_STATIC", "0") != "0":
-                    # only check for the mandatory main library, others are
-                    # optional
-                    found_lib = (tmp_lib_dir / "libsndfile.a").exists()
-                elif platform.system() == "Linux":
-                    found_lib = (tmp_lib_dir / "libsndfile.so").exists()
-                elif platform.system() == "Darwin":
-                    found_lib = (tmp_lib_dir / "libsndfile.dylib").exists()
-                else:
-                    print("unsupported platform", platform.system(), file=sys.stderr)
-                    exit(1)
+            found_inc = False
+            if multiarch:
+                tmp_inc_dir = Path(dir) / "include" / multiarch
+                found_inc = (tmp_inc_dir / "sndfile.h").exists()
+            if not found_inc:
+                tmp_inc_dir = Path(dir) / "include"
+                found_inc = (tmp_inc_dir / "sndfile.h").exists()
+            if found_inc:
+                found_lib = False
+                if multiarch:
+                    tmp_lib_dir = Path(dir) / "lib" / multiarch
+                    found_lib = (tmp_lib_dir / lib_name).exists()
+                if not found_lib:
+                    tmp_lib_dir = Path(dir) / "lib"
+                    found_lib = (tmp_lib_dir / lib_name).exists()
                 if found_lib:
                     inc_dir = str(tmp_inc_dir)
                     lib_dir = str(tmp_lib_dir)
