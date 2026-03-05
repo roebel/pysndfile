@@ -342,7 +342,13 @@ class build_ext_subclass( build_ext ):
     def finalize_options(self) :
         build_ext.finalize_options(self)
         if not compile_for_RTD:
+            # the environment variable has priority to be able to override the
+            # other search methods
             auto_sndfile_libdir, auto_sndfile_incdir = _find_libsndfile([os.environ.get("SNDFILE_INSTALL_DIR", None)])
+            # pkg-config comes before python prefix because the former can be
+            # disabled by unsetting PKG_CONFIG_PATH, whereas the former is
+            # always defined and there would be no way to override it from a
+            # conda environment
             if not (auto_sndfile_libdir and auto_sndfile_incdir) and os.environ.get("PYSNDFILE_IGNORE_PKG_CONFIG", "0") == "0":
                 try:
                     config_dict = pkgconfig.parse("sndfile")
