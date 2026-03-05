@@ -108,7 +108,7 @@ Please see the developer documentation [here](https://pysndfile.readthedocs.io/e
 
 ### Version_1.5.3 (2026-03-09)
 
- * Fix: Support libsndfile being installed in the Debian multiarch layout when using SNDFILE_INSTALL_DIR or auto detection (it was already working when using setup.cfg)
+ * Fix: Support libsndfile being installed in the Debian multiarch layout when using SNDFILE_INSTALL_DIR or auto detection (Thanks to Alastair Porter)
  * Extension: Use pkg-config to locate libsndfile unless SNDFILE_INSTALL_DIR is defined
 
 ### Version_1.5.2 (2026-02-16)
