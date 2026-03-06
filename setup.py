@@ -21,13 +21,13 @@ import os
 import sys
 import platform
 
+if os.environ.get("PYSNDFILE_IGNORE_PKG_CONFIG", "0") == "0":
+    import pkgconfig
+
 if os.environ.get("PYSNDFILE_USE_STATIC", "0") != "0":
     from collections import namedtuple
-    if os.environ.get("PYSNDFILE_IGNORE_PKG_CONFIG", "0") == "0":
-        import pkgconfig
 
 sndfile_locations = [
-    os.environ.get("SNDFILE_INSTALL_DIR", None),
     sysconfig.get_config_var("exec_prefix"),
     "/usr/local",
     "/usr"
@@ -35,35 +35,50 @@ sndfile_locations = [
 if sys.platform == "darwin":
     sndfile_locations.append("/opt/local")
 
+def _get_libsndfile_lib_name():
+    if platform.system() == "Windows":
+        # static and shared libraries have the same name on windows (at least
+        # when installed through vcpkg)
+        return "sndfile.lib"
+    elif os.environ.get("PYSNDFILE_USE_STATIC", "0") != "0":
+        # only check for the mandatory main library, others are optional
+        return "libsndfile.a"
+    elif platform.system() == "Linux":
+        return "libsndfile.so"
+    elif platform.system() == "Darwin":
+        return "libsndfile.dylib"
+    else:
+        print("unsupported platform", platform.system(), file=sys.stderr)
+        exit(1)
 
-def find_libsndfile():
+def _find_libsndfile(locations):
     """
     search for libsndfile in a few standard locations, display error if not found
     """
 
+    # support for Debian multiarch layout thanks to Alastair Porter
+    multiarch = sysconfig.get_config_var("MULTIARCH")
+    lib_name = _get_libsndfile_lib_name()
     lib_dir = None
     inc_dir = None
-    for dir in sndfile_locations:
+    for dir in locations:
         if dir is not None:
 
-            tmp_inc_dir = Path(dir) / "include"
-            tmp_lib_dir = Path(dir) / "lib"
-            if (tmp_inc_dir / "sndfile.h").exists():
-                if platform.system() == "Windows":
-                    # static and shared libraries have the same name on windows
-                    # (at least when installed through vcpkg)
-                   found_lib = (tmp_lib_dir / "sndfile.lib").exists()
-                elif os.environ.get("PYSNDFILE_USE_STATIC", "0") != "0":
-                    # only check for the mandatory main library, others are
-                    # optional
-                    found_lib = (tmp_lib_dir / "libsndfile.a").exists()
-                elif platform.system() == "Linux":
-                    found_lib = (tmp_lib_dir / "libsndfile.so").exists()
-                elif platform.system() == "Darwin":
-                    found_lib = (tmp_lib_dir / "libsndfile.dylib").exists()
-                else:
-                    print("unsupported platform", platform.system(), file=sys.stderr)
-                    exit(1)
+            found_inc = False
+            if multiarch:
+                tmp_inc_dir = Path(dir) / "include" / multiarch
+                found_inc = (tmp_inc_dir / "sndfile.h").exists()
+            if not found_inc:
+                tmp_inc_dir = Path(dir) / "include"
+                found_inc = (tmp_inc_dir / "sndfile.h").exists()
+            if found_inc:
+                found_lib = False
+                if multiarch:
+                    tmp_lib_dir = Path(dir) / "lib" / multiarch
+                    found_lib = (tmp_lib_dir / lib_name).exists()
+                if not found_lib:
+                    tmp_lib_dir = Path(dir) / "lib"
+                    found_lib = (tmp_lib_dir / lib_name).exists()
                 if found_lib:
                     inc_dir = str(tmp_inc_dir)
                     lib_dir = str(tmp_lib_dir)
@@ -327,7 +342,29 @@ class build_ext_subclass( build_ext ):
     def finalize_options(self) :
         build_ext.finalize_options(self)
         if not compile_for_RTD:
-            auto_sndfile_libdir, auto_sndfile_incdir = find_libsndfile()
+            # the environment variable has priority to be able to override the
+            # other search methods
+            auto_sndfile_libdir, auto_sndfile_incdir = _find_libsndfile([os.environ.get("SNDFILE_INSTALL_DIR", None)])
+            # pkg-config comes before python prefix because the former can be
+            # disabled by unsetting PKG_CONFIG_PATH, whereas the former is
+            # always defined and there would be no way to override it from a
+            # conda environment
+            if not (auto_sndfile_libdir and auto_sndfile_incdir) and os.environ.get("PYSNDFILE_IGNORE_PKG_CONFIG", "0") == "0":
+                try:
+                    config_dict = pkgconfig.parse("sndfile")
+                    for dir in config_dict["include_dirs"]:
+                        if (Path(dir) / "sndfile.h").exists():
+                            auto_sndfile_incdir = dir
+                            break
+                    lib_name = _get_libsndfile_lib_name()
+                    for dir in config_dict["library_dirs"]:
+                        if (Path(dir) / lib_name).exists():
+                            auto_sndfile_libdir = dir
+                            break
+                except:
+                    pass
+            if not (auto_sndfile_libdir and auto_sndfile_incdir):
+                auto_sndfile_libdir, auto_sndfile_incdir = _find_libsndfile(sndfile_locations)
             print("build_ext::config::", ">>"*10, file=sys.stderr)
             if self.sndfile_libdir  is not None :
                 print(f"build_ext::received libdir as cfg option: {self.sndfile_libdir}", file=sys.stderr)
@@ -338,7 +375,7 @@ class build_ext_subclass( build_ext ):
             else:        
                 print(
 f"""libsndfile library was not found in standard locations: {[ss for ss in sndfile_locations if ss]}. Please either set envvar SNDFILE_INSTALL_DIR to the directory 
-containing the libsndfile install or adapt the setup.cfg file to point to the correct location""", file=sys.stderr
+containing the libsndfile install or adapt the setup.cfg file to point to the correct location. If relying on pkg-config from a conda environment, set envvar PKG_CONFIG to use either the system one or pkg-config.bin if libsndfile is in a multiarch layout""", file=sys.stderr
 )
                 sys.exit(1)
 
@@ -351,7 +388,7 @@ containing the libsndfile install or adapt the setup.cfg file to point to the co
             else:
                 print(
 f"""libsndfile include file was not found under standard locations: {[ss for ss in sndfile_locations if ss]}. Please either set envvar SNDFILE_INSTALL_DIR to the directory 
-containing the libsndfile install or adapt the setup.cfg file to point to the correct location""", file=sys.stderr
+containing the libsndfile install or adapt the setup.cfg file to point to the correct location. If relying on pkg-config from a conda environment, set envvar PKG_CONFIG to use either the system one or pkg-config.bin if libsndfile is in a multiarch layout""", file=sys.stderr
 )
                 sys.exit(1)
             print("build_ext::config::", "<<"*10, file=sys.stderr)
